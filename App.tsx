@@ -7,7 +7,7 @@ export default function App() {
       <Image
         source={require("./assets/splash.png")}
         style={{ width: 160, height: 50 }}
-      />
+      /> 
       <StatusBar style="auto" />
     </View>
   );
