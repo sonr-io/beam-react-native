@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "sorn-app",
-    "slug": "sorn-app",
+    "name": "Beam",
+    "slug": "sonr-beam",
     "version": "1.0.0",
+    "owner": "agency",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -27,6 +28,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "",
+    "githubUrl": "https://github.com/agencyenterprise/sonr-react-native-app"
   }
 }
