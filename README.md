@@ -8,8 +8,8 @@ yarn
 yarn ios
 ```
 
-## how to publish the app to expo host
+## how to publish the app to expo host (staging)
 
 ```
-expo publish
+expo publish --release-channel staging
 ```
