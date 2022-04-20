@@ -1,11 +1,21 @@
-import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
-import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
+import {
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  useFonts,
+} from "@expo-google-fonts/poppins";
+import {
+  createStackNavigator,
+  StackScreenProps,
+} from "@react-navigation/stack";
+import React from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { chats } from '../_data/chats';
-import { timeAgo } from '../lib/timeAgo';
-import { Chat } from '../types/Chat';
+import { chats } from "../_data/chats";
+import { timeAgo } from "../lib/timeAgo";
+import { Chat } from "../types/Chat";
 
 const Stack = createStackNavigator();
 
@@ -16,49 +26,62 @@ type Params = {
 
 type ChatListProps = StackScreenProps<Params, "List">;
 
-const ChatList = ({ navigation }: ChatListProps) => (
-  <View style={styles.listContainer}>
-    <Text style={styles.listTitle}>Messages</Text>
-    <View style={styles.list}>
-      {chats.map((chat: Chat) => {
-        const { id, name, lastSeen, messages } = chat;
-        
-        const lastMessage = messages.at(-1);
-        
-        if (!lastMessage) {
-          return <></>
-        }
-        
-        const elapsedTime = timeAgo(lastMessage.timestamp);
+const ChatList = ({ navigation }: ChatListProps) => {
+  let [fontsLoaded] = useFonts({
+    Montserrat_600SemiBold,
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+  });
 
-        const hasUnreadMessage = lastSeen < lastMessage.timestamp
+  if (!fontsLoaded) {
+    return <></>;
+  }
 
-        return (
-          <TouchableOpacity
-            key={id}
-            style={styles.button}
-            onPress={() => navigation.navigate("View", { id })}
-          >
-            <View style={styles.buttonContainer}>
-              {hasUnreadMessage && (<View style={styles.unRead}></View>)}
-              <Image
-                source={require("../../assets/avatar.jpg")}
-                style={styles.avatar}
-              />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.messageName}>{name}</Text>
-                <Text style={styles.lastMessage} numberOfLines={1}>
-                  {lastMessage?.text}
-                </Text>
+  return (
+    <View style={styles.listContainer}>
+      <Text style={styles.listTitle}>Messages</Text>
+      <View style={styles.list}>
+        {chats.map((chat: Chat) => {
+          const { id, name, lastSeen, messages } = chat;
+
+          const lastMessage = messages.at(-1);
+
+          if (!lastMessage) {
+            return <></>;
+          }
+
+          const elapsedTime = timeAgo(lastMessage.timestamp);
+
+          const hasUnreadMessage = lastSeen < lastMessage.timestamp;
+
+          return (
+            <TouchableOpacity
+              key={id}
+              style={styles.button}
+              onPress={() => navigation.navigate("View", { id })}
+            >
+              <View style={styles.buttonContainer}>
+                {hasUnreadMessage && <View style={styles.unRead}></View>}
+                <Image
+                  source={require("../../assets/avatar.jpg")}
+                  style={styles.avatar}
+                />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.messageName}>{name}</Text>
+                  <Text style={styles.lastMessage} numberOfLines={1}>
+                    {lastMessage?.text}
+                  </Text>
+                </View>
+                <Text style={styles.messageTime}>{elapsedTime}</Text>
               </View>
-              <Text style={styles.messageTime}>{elapsedTime}</Text>
-            </View>
-          </TouchableOpacity>
-        );
-      })}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 type ChatViewProps = StackScreenProps<Params, "View">;
 
@@ -79,11 +102,11 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 12,
-    backgroundColor: '#1792FF',
-    position: 'absolute',
+    backgroundColor: "#1792FF",
+    position: "absolute",
     zIndex: 100,
     left: 0,
-    top: 0
+    top: 0,
   },
   listContainer: {
     flex: 1,
@@ -92,10 +115,11 @@ const styles = StyleSheet.create({
     paddingTop: 25,
   },
   listTitle: {
-    alignSelf: "center",
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
+    fontFamily: "Poppins_600SemiBold",
     marginBottom: 20,
+    lineHeight: 32,
   },
   list: {
     alignItems: "stretch",
@@ -107,24 +131,28 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   messageName: {
-    fontSize: 15,
+    fontFamily: "Poppins_500Medium",
+    fontSize: 16,
     lineHeight: 24,
+    color: "#353945",
   },
   lastMessage: {
-    fontSize: 12,
-    lineHeight: 20,
-    color: "#636366",
+    fontFamily: "Poppins_400Regular",
+    fontSize: 14,
+    lineHeight: 24,
+    color: "#777E90",
   },
   messageTime: {
-    fontSize: 11,
+    fontSize: 8,
+    lineHeight: 12,
+    fontFamily: "Montserrat_600SemiBold",
     alignSelf: "flex-start",
+    color: "#777E90",
   },
   button: {
     padding: 12,
-    borderWidth: 1,
-    borderColor: "#d2d3dd",
+    paddingLeft: 0,
     marginBottom: 16,
-    borderRadius: 10,
   },
   buttonContainer: {
     display: "flex",
