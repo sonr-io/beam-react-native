@@ -5,7 +5,7 @@ export const chats: Chat[] = [
   {
     id: "1",
     name: Matheus.id,
-    lastSeen: 1650487185019,
+    lastSeen: 1650487006093,
     messages: [
       { text: "Welcome", sender: Thiago, timestamp: 1650487006982 },
       {
