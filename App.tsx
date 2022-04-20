@@ -1,23 +1,34 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Image, View } from "react-native";
+import "react-native-gesture-handler";
+import React from "react";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import NearbyScreen from "./src/screens/Nearby";
+import ChatScreen from "./src/screens/Chat";
+import ProfileScreen from "./src/screens/Profile";
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("./assets/splash.png")}
-        style={{ width: 160, height: 50 }}
-      /> 
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="Chat"
+        >
+          <Tab.Screen name="Nearby" component={NearbyScreen} />
+          <Tab.Screen name="Chat" component={ChatScreen} />
+          <Tab.Screen name="Profile" component={ProfileScreen} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
