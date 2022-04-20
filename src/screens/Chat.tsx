@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
   createStackNavigator,
@@ -8,7 +8,18 @@ import {
 
 const Stack = createStackNavigator();
 
-const ids = ["1", "2", "3", "4"];
+const chats = [
+  {
+    id: "1",
+    name: "Matheus Bittencourt",
+    lastMessage: "Hey!",
+  },
+  {
+    id: "2",
+    name: "Thiago Fassina",
+    lastMessage: "Long message the should be abbreviated with dots at the end",
+  },
+];
 
 type Params = {
   List: {};
@@ -21,13 +32,25 @@ const ChatList = ({ navigation }: ChatListProps) => (
   <View style={styles.listContainer}>
     <Text style={styles.listTitle}>Messages</Text>
     <View style={styles.list}>
-      {ids.map((id) => (
+      {chats.map(({ id, name, lastMessage }) => (
         <TouchableOpacity
           key={id}
           style={styles.button}
           onPress={() => navigation.navigate("View", { id })}
         >
-          <Text>{id}</Text>
+          <View style={styles.buttonContainer}>
+            <Image
+              source={require("../../assets/avatar.jpg")}
+              style={styles.avatar}
+            />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.messageName}>{name}</Text>
+              <Text style={styles.lastMessage} numberOfLines={1}>
+                {lastMessage}
+              </Text>
+            </View>
+            <Text style={styles.messageTime}>12 : 00 PM</Text>
+          </View>
         </TouchableOpacity>
       ))}
     </View>
@@ -75,12 +98,36 @@ const styles = StyleSheet.create({
   list: {
     alignItems: "stretch",
   },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    marginRight: 12,
+  },
+  messageName: {
+    fontSize: 15,
+    lineHeight: 24,
+  },
+  lastMessage: {
+    fontSize: 12,
+    lineHeight: 20,
+    color: "#636366",
+  },
+  messageTime: {
+    fontSize: 11,
+    alignSelf: "flex-start",
+  },
   button: {
     padding: 12,
     borderWidth: 1,
     borderColor: "#d2d3dd",
     marginBottom: 16,
     borderRadius: 10,
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 
