@@ -63,10 +63,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
             >
               <View style={styles.buttonContainer}>
                 {hasUnreadMessage && <View style={styles.unRead}></View>}
-                <Image
-                  source={require("../../assets/avatar.jpg")}
-                  style={styles.avatar}
-                />
+                <View style={styles.avatar} />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.messageName}>{name}</Text>
                   <Text style={styles.lastMessage} numberOfLines={1}>
@@ -98,16 +95,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  unRead: {
-    width: 12,
-    height: 12,
-    borderRadius: 12,
-    backgroundColor: "#1792FF",
-    position: "absolute",
-    zIndex: 100,
-    left: 0,
-    top: 0,
-  },
   listContainer: {
     flex: 1,
     backgroundColor: "#fff",
@@ -124,11 +111,22 @@ const styles = StyleSheet.create({
   list: {
     alignItems: "stretch",
   },
+  unRead: {
+    width: 12,
+    height: 12,
+    borderRadius: 12,
+    backgroundColor: "#1792FF",
+    position: "absolute",
+    zIndex: 100,
+    left: 3,
+    top: 3,
+  },
   avatar: {
     width: 40,
     height: 40,
     borderRadius: 40,
     marginRight: 12,
+    backgroundColor: "#C4C4C4",
   },
   messageName: {
     fontFamily: "Poppins_500Medium",
