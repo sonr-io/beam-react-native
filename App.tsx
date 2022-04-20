@@ -4,6 +4,7 @@ import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import NearbyScreen from "./src/screens/Nearby";
 import ChatScreen from "./src/screens/Chat";
 import ProfileScreen from "./src/screens/Profile";
 
@@ -13,7 +14,11 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
-        <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="Chat"
+        >
+          <Tab.Screen name="Nearby" component={NearbyScreen} />
           <Tab.Screen name="Chat" component={ChatScreen} />
           <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
