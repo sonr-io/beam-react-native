@@ -25,7 +25,13 @@ const ChatList = ({ navigation }: ChatListProps) => (
         
         const lastMessage = messages.at(-1);
         
-        const elapsedTime = timeAgo(lastSeen);
+        if (!lastMessage) {
+          return <></>
+        }
+        
+        const elapsedTime = timeAgo(lastMessage.timestamp);
+
+        const hasUnreadMessage = lastSeen < lastMessage.timestamp
 
         return (
           <TouchableOpacity
@@ -34,6 +40,7 @@ const ChatList = ({ navigation }: ChatListProps) => (
             onPress={() => navigation.navigate("View", { id })}
           >
             <View style={styles.buttonContainer}>
+              {hasUnreadMessage && (<View style={styles.unRead}></View>)}
               <Image
                 source={require("../../assets/avatar.jpg")}
                 style={styles.avatar}
@@ -67,6 +74,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  unRead: {
+    width: 12,
+    height: 12,
+    borderRadius: 12,
+    backgroundColor: '#1792FF',
+    position: 'absolute',
+    zIndex: 100,
+    left: 0,
+    top: 0
   },
   listContainer: {
     flex: 1,
