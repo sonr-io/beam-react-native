@@ -1,14 +1,14 @@
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { ChatListScreen } from './src/screens/ChatList';
-import NearbyScreen from './src/screens/Nearby';
-import ProfileScreen from './src/screens/Profile';
+import { ChatListScreen } from "./src/screens/ChatList";
+import NearbyScreen from "./src/screens/Nearby";
+import ProfileScreen from "./src/screens/Profile";
 
 const Tab = createBottomTabNavigator();
 

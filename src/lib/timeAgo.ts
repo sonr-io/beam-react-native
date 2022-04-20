@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format } from "date-fns";
 
 export const timeAgo = (date: number) => {
   const millisecondsPerMinute = 60 * 1000;
@@ -9,12 +9,12 @@ export const timeAgo = (date: number) => {
   const elapsed = new Date().getTime() - date;
 
   if (elapsed < millisecondsPerDay) {
-    return format(new Date(date), 'hh:mm aa')
+    return format(new Date(date), "hh:mm aa");
   } else if (elapsed < millisecondsPerDay * 2) {
-    return 'yesterday'
+    return "yesterday";
   } else if (elapsed < millisecondsPerWeek) {
-    return format(new Date(date), 'EEEE')
+    return format(new Date(date), "EEEE");
   } else {
-    return format(new Date(date), 'MM/dd/yyyy')
+    return format(new Date(date), "MM/dd/yyyy");
   }
 };
