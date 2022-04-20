@@ -52,22 +52,22 @@ export const chats: Chat[] = [
   {
     id: "2",
     name: Daniel.id,
-    lastSeen: 1650487185019,
+    lastSeen: 1650331578014,
     messages: [
       {
         text: "Hello there. Thanks for the follow. Did you notice, that I am an egg? A talking egg? Damn!",
         sender: Daniel,
-        timestamp: 1650487185010,
+        timestamp: 1650331578011,
       },
       {
         text: "Yeah that is crazy, but people can change their own picture and build their own Twitter conversation with this generator, so it does not matter that you are an egg",
         sender: Thiago,
-        timestamp: 1650487185011,
+        timestamp: 1650331578010,
       },
       {
         text: "Thanks mate! Feel way better now. Oh, and guys, these messages will be removed once your add your own :-)",
         sender: Daniel,
-        timestamp: 1650487185012,
+        timestamp: 1650331578012,
       },
     ],
   },
