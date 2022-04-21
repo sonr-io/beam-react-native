@@ -24,6 +24,7 @@ import { chats } from "../_data/chats";
 import { Thiago } from "../_data/users";
 import { Chat } from "../types/Chat";
 import BackArrow from "../icons/BackArrow";
+import Send from "../icons/Send";
 
 const Stack = createStackNavigator();
 
@@ -109,12 +110,17 @@ const ChatView = ({ route, navigation }: ChatViewProps) => {
         )}
         keyExtractor={(item) => item.id}
       />
-      <View style={styles.messageInputContainer}>
-        <TextInput
-          style={styles.messageInput}
-          placeholder="New message"
-          placeholderTextColor="#777E90"
-        />
+      <View style={{ backgroundColor: "#FFF" }}>
+        <View style={styles.messageInputContainer}>
+          <TextInput
+            style={styles.messageInput}
+            placeholder="New message"
+            placeholderTextColor="#777E90"
+          />
+          <TouchableOpacity>
+            <Send />
+          </TouchableOpacity>
+        </View>
       </View>
       <KeyboardSpacer topSpacing={-insets.bottom} />
     </>
@@ -171,17 +177,21 @@ const styles = StyleSheet.create({
   },
   messageInputContainer: {
     backgroundColor: "#FFF",
-    paddingHorizontal: 12,
-    paddingBottom: 16,
-  },
-  messageInput: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 16,
+    marginHorizontal: 12,
+    marginBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
     height: 48,
     borderColor: "#1792FF",
     borderWidth: 2,
     borderRadius: 48,
-    paddingHorizontal: 14,
+    paddingLeft: 16,
+    paddingRight: 8,
+  },
+  messageInput: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 16,
+    flex: 1,
   },
 });
 
