@@ -10,7 +10,7 @@ import {
 } from "@react-navigation/stack";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaInsetsContext, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   FlatList,
   TextInput,
@@ -51,22 +51,18 @@ const ChatList = ({ navigation }: ChatListProps) => {
   }
 
   return (
-    <SafeAreaInsetsContext.Consumer>
-      {(insets) => (
-        <View style={{ paddingTop: insets?.top, ...styles.listContainer }}>
-          <GradientHeader text="Messages"></GradientHeader>
-          <View style={styles.list}>
-            {chats.map((chat: Chat) => (
-              <ChatListItem
-                key={chat.id}
-                chat={chat}
-                navitgateToChat={navitgateToChat}
-              />
-            ))}
-          </View>
-        </View>
-      )}
-    </SafeAreaInsetsContext.Consumer>
+    <View style={styles.listContainer}>
+      <GradientHeader text="Messages" />
+      <View style={styles.list}>
+        {chats.map((chat: Chat) => (
+          <ChatListItem
+            key={chat.id}
+            chat={chat}
+            navitgateToChat={navitgateToChat}
+          />
+        ))}
+      </View>
+    </View>
   );
 };
 
