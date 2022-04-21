@@ -1,9 +1,9 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React from "react";
+import { StyleSheet, View } from "react-native";
 
-import { User } from '../../types/User';
+import { User } from "../../types/User";
 
-export const Avatar = (props:{user: User}) => {
+export const Avatar = (props: { user: User }) => {
   return (
     <View>
       {props.user.isOnline && <View style={styles.isOnline}></View>}
