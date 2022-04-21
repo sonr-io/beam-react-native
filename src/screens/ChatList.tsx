@@ -2,7 +2,6 @@ import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
-  Poppins_600SemiBold,
   useFonts,
 } from "@expo-google-fonts/poppins";
 import {
@@ -11,9 +10,11 @@ import {
 } from "@react-navigation/stack";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 
 import { chats } from "../_data/chats";
 import { ChatListItem } from "../components/Chat/ChatListItem";
+import { GradientHeader } from "../components/GradientHeader";
 import { Chat } from "../types/Chat";
 
 const Stack = createStackNavigator();
@@ -30,7 +31,6 @@ const ChatList = ({ navigation }: ChatListProps) => {
     Montserrat_600SemiBold,
     Poppins_400Regular,
     Poppins_500Medium,
-    Poppins_600SemiBold,
   });
 
   const navitgateToChat = (id: string) => {
@@ -42,18 +42,22 @@ const ChatList = ({ navigation }: ChatListProps) => {
   }
 
   return (
-    <View style={styles.listContainer}>
-      <Text style={styles.listTitle}>Messages</Text>
-      <View style={styles.list}>
-        {chats.map((chat: Chat) => (
-          <ChatListItem
-            key={chat.id}
-            chat={chat}
-            navitgateToChat={navitgateToChat}
-          />
-        ))}
-      </View>
-    </View>
+    <SafeAreaInsetsContext.Consumer>
+      {(insets) => (
+        <View style={{ paddingTop: insets?.top, ...styles.listContainer }}>
+          <GradientHeader text="Messages"></GradientHeader>
+          <View style={styles.list}>
+            {chats.map((chat: Chat) => (
+              <ChatListItem
+                key={chat.id}
+                chat={chat}
+                navitgateToChat={navitgateToChat}
+              />
+            ))}
+          </View>
+        </View>
+      )}
+    </SafeAreaInsetsContext.Consumer>
   );
 };
 
@@ -76,14 +80,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 20,
-    paddingTop: 25,
-  },
-  listTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    fontFamily: "Poppins_600SemiBold",
-    marginBottom: 20,
-    lineHeight: 32,
   },
   list: {
     alignItems: "stretch",
