@@ -1,16 +1,19 @@
-import { User } from "../types/User";
+import { User } from '../types/User';
 
 export const Thiago: User = {
   id: "thiago.snr",
   name: "thiago",
+  isOnline: true,
 };
 
 export const Matheus: User = {
   id: "matheus.snr",
   name: "Matheus",
+  isOnline: true,
 };
 
 export const Daniel: User = {
   id: "daniel.snr",
   name: "Daniel",
+  isOnline: false,
 };

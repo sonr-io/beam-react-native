@@ -10,7 +10,7 @@ import {
   StackScreenProps,
 } from "@react-navigation/stack";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { chats } from "../_data/chats";
@@ -54,6 +54,14 @@ const ChatList = ({ navigation }: ChatListProps) => {
           const elapsedTime = timeAgo(lastMessage.timestamp);
 
           const hasUnreadMessage = lastSeen < lastMessage.timestamp;
+          const isOnline = lastMessage.sender.isOnline;
+          const totalUnReadMessages = messages.reduce((count, message) => {
+            if (message.timestamp > lastSeen) {
+              return count + 1;
+            }
+
+            return count;
+          }, 0);
 
           return (
             <TouchableOpacity
@@ -62,10 +70,23 @@ const ChatList = ({ navigation }: ChatListProps) => {
               onPress={() => navigation.navigate("View", { id })}
             >
               <View style={styles.buttonContainer}>
-                {hasUnreadMessage && <View style={styles.unRead}></View>}
+                {isOnline && <View style={styles.isOnline}></View>}
                 <View style={styles.avatar} />
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.messageName}>{name}</Text>
+                  <Text style={styles.messageName}>
+                    {name}
+
+                    {totalUnReadMessages > 0 && (
+                      <>
+                        {" "}
+                        <View style={styles.totalUnReadMessages}>
+                          <Text style={styles.totalUnReadMessagesText}>
+                            {totalUnReadMessages}
+                          </Text>
+                        </View>
+                      </>
+                    )}
+                  </Text>
                   <Text style={styles.lastMessage} numberOfLines={1}>
                     {lastMessage?.text}
                   </Text>
@@ -111,7 +132,7 @@ const styles = StyleSheet.create({
   list: {
     alignItems: "stretch",
   },
-  unRead: {
+  isOnline: {
     width: 12,
     height: 12,
     borderRadius: 12,
@@ -120,6 +141,20 @@ const styles = StyleSheet.create({
     zIndex: 100,
     left: 3,
     top: 3,
+  },
+  totalUnReadMessages: {
+    borderRadius: 2,
+    backgroundColor: "#14B69A",
+    textAlign: "center",
+    paddingBottom: 2,
+    paddingLeft: 4,
+    paddingRight: 4,
+    paddingTop: 2,
+  },
+  totalUnReadMessagesText: {
+    fontFamily: "Montserrat_600SemiBold",
+    color: "#FFFFFF",
+    fontSize: 8,
   },
   avatar: {
     width: 40,
