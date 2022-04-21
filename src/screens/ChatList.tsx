@@ -18,7 +18,6 @@ import { ChatListItem } from "../components/Chat/ChatListItem";
 import { GradientHeader } from "../components/GradientHeader";
 import { chats } from "../_data/chats";
 import { Thiago } from "../_data/users";
-import { timeAgo } from "../lib/timeAgo";
 import { Chat } from "../types/Chat";
 
 const Stack = createStackNavigator();
