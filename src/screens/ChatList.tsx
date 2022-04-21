@@ -11,10 +11,13 @@ import {
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 
-import { chats } from "../_data/chats";
 import { ChatListItem } from "../components/Chat/ChatListItem";
 import { GradientHeader } from "../components/GradientHeader";
+import { chats } from "../_data/chats";
+import { Thiago } from "../_data/users";
+import { timeAgo } from "../lib/timeAgo";
 import { Chat } from "../types/Chat";
 
 const Stack = createStackNavigator();
@@ -63,19 +66,37 @@ const ChatList = ({ navigation }: ChatListProps) => {
 
 type ChatViewProps = StackScreenProps<Params, "View">;
 
-const ChatView = ({ route }: ChatViewProps) => (
-  <View style={styles.container}>
-    <Text>{route.params.id}</Text>
-  </View>
-);
+const ChatView = ({ route }: ChatViewProps) => {
+  const chat = chats.find((chat) => chat.id === route.params.id);
+  const user = Thiago;
+
+  if (!chat) {
+    return <></>;
+  }
+
+  return (
+    <FlatList
+      style={styles.chatContainer}
+      inverted
+      data={chat.messages.slice().reverse()}
+      renderItem={({ item: message }) => (
+        <View
+          style={[
+            styles.messageContainer,
+            message.sender.id === user.id
+              ? styles.outgoingMessage
+              : styles.incomingMessage,
+          ]}
+        >
+          <Text style={styles.message}>{message.text}</Text>
+        </View>
+      )}
+      keyExtractor={(item) => item.id}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   listContainer: {
     flex: 1,
     backgroundColor: "#fff",
@@ -83,6 +104,31 @@ const styles = StyleSheet.create({
   },
   list: {
     alignItems: "stretch",
+  },
+  chatContainer: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 24,
+  },
+  messageContainer: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  outgoingMessage: {
+    alignSelf: "flex-end",
+    backgroundColor: "#777E90",
+    marginLeft: 40,
+  },
+  incomingMessage: {
+    alignSelf: "flex-start",
+    backgroundColor: "#1792FF",
+    marginRight: 40,
+  },
+  message: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 16,
+    color: "#FCFCFD",
   },
 });
 
