@@ -10,8 +10,9 @@ import {
 } from "@react-navigation/stack";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaInsetsContext } from "react-native-safe-area-context";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { SafeAreaInsetsContext, useSafeAreaInsets } from "react-native-safe-area-context";
+import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import KeyboardSpacer from "react-native-keyboard-spacer";
 
 import { ChatListItem } from "../components/Chat/ChatListItem";
 import { GradientHeader } from "../components/GradientHeader";
@@ -67,6 +68,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
 type ChatViewProps = StackScreenProps<Params, "View">;
 
 const ChatView = ({ route }: ChatViewProps) => {
+  const insets = useSafeAreaInsets();
   const chat = chats.find((chat) => chat.id === route.params.id);
   const user = Thiago;
 
@@ -75,24 +77,34 @@ const ChatView = ({ route }: ChatViewProps) => {
   }
 
   return (
-    <FlatList
-      style={styles.chatContainer}
-      inverted
-      data={chat.messages.slice().reverse()}
-      renderItem={({ item: message }) => (
-        <View
-          style={[
-            styles.messageContainer,
-            message.sender.id === user.id
-              ? styles.outgoingMessage
-              : styles.incomingMessage,
-          ]}
-        >
-          <Text style={styles.message}>{message.text}</Text>
-        </View>
-      )}
-      keyExtractor={(item) => item.id}
-    />
+    <>
+      <FlatList
+        style={styles.chatContainer}
+        inverted
+        data={chat.messages.slice().reverse()}
+        renderItem={({ item: message }) => (
+          <View
+            style={[
+              styles.messageContainer,
+              message.sender.id === user.id
+                ? styles.outgoingMessage
+                : styles.incomingMessage,
+            ]}
+          >
+            <Text style={styles.message}>{message.text}</Text>
+          </View>
+        )}
+        keyExtractor={(item) => item.id}
+      />
+      <View style={styles.messageInputContainer}>
+        <TextInput
+          style={styles.messageInput}
+          placeholder="New message"
+          placeholderTextColor="#777E90"
+        />
+      </View>
+      <KeyboardSpacer topSpacing={-insets.bottom} />
+    </>
   );
 };
 
@@ -106,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
   },
   chatContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "#F4F5F6",
     paddingHorizontal: 24,
   },
   messageContainer: {
@@ -130,15 +142,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FCFCFD",
   },
+  messageInputContainer: {
+    backgroundColor: "#FCFCFD",
+    paddingHorizontal: 8,
+    paddingTop: 8,
+    paddingBottom: 16,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+  },
+  messageInput: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 16,
+    height: 48,
+    borderColor: "#1792FF",
+    borderWidth: 2,
+    borderRadius: 48,
+    paddingHorizontal: 14,
+  },
 });
 
 export const ChatListScreen = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="List"
-      component={ChatList}
-      options={{ headerShown: false, title: "Messages" }}
-    />
-    <Stack.Screen name="View" component={ChatView} options={{ title: "" }} />
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="List" component={ChatList} />
+    <Stack.Screen name="View" component={ChatView} />
   </Stack.Navigator>
 );
