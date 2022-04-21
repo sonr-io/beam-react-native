@@ -11,7 +11,11 @@ import {
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaInsetsContext, useSafeAreaInsets } from "react-native-safe-area-context";
-import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import {
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 
 import { ChatListItem } from "../components/Chat/ChatListItem";
@@ -19,6 +23,7 @@ import { GradientHeader } from "../components/GradientHeader";
 import { chats } from "../_data/chats";
 import { Thiago } from "../_data/users";
 import { Chat } from "../types/Chat";
+import BackArrow from "../icons/BackArrow";
 
 const Stack = createStackNavigator();
 
@@ -66,7 +71,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
 
 type ChatViewProps = StackScreenProps<Params, "View">;
 
-const ChatView = ({ route }: ChatViewProps) => {
+const ChatView = ({ route, navigation }: ChatViewProps) => {
   const insets = useSafeAreaInsets();
   const chat = chats.find((chat) => chat.id === route.params.id);
   const user = Thiago;
@@ -77,6 +82,15 @@ const ChatView = ({ route }: ChatViewProps) => {
 
   return (
     <>
+      <View style={styles.chatHeader}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <BackArrow />
+        </TouchableOpacity>
+        <Text style={styles.chatTitle}>{chat.name}</Text>
+      </View>
       <FlatList
         style={styles.chatContainer}
         inverted
@@ -117,8 +131,22 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
   },
   chatContainer: {
-    backgroundColor: "#F4F5F6",
+    backgroundColor: "#FFF",
     paddingHorizontal: 24,
+  },
+  chatHeader: {
+    backgroundColor: "#FFF",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  chatTitle: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 16,
+  },
+  backButton: {
+    paddingVertical: 30,
+    paddingLeft: 24,
+    paddingRight: 18,
   },
   messageContainer: {
     paddingHorizontal: 12,
@@ -142,12 +170,9 @@ const styles = StyleSheet.create({
     color: "#FCFCFD",
   },
   messageInputContainer: {
-    backgroundColor: "#FCFCFD",
-    paddingHorizontal: 8,
-    paddingTop: 8,
+    backgroundColor: "#FFF",
+    paddingHorizontal: 12,
     paddingBottom: 16,
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
   },
   messageInput: {
     fontFamily: "Poppins_400Regular",
