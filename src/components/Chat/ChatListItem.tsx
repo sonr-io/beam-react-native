@@ -11,11 +11,11 @@ export const ChatListItem = (props: {
   navitgateToChat: (id: string) => void;
 }) => {
   const { id, name, lastSeen, messages } = props.chat;
-  
+
   if (!messages) {
     return <></>;
   }
-  
+
   const lastMessage = messages[messages.length - 1];
 
   if (!lastMessage) {
