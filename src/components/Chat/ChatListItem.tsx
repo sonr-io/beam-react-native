@@ -12,7 +12,11 @@ export const ChatListItem = (props: {
 }) => {
   const { id, name, lastSeen, messages } = props.chat;
 
-  const lastMessage = messages.at(-1);
+  if (!messages) {
+    return <></>;
+  }
+
+  const lastMessage = messages[messages.length - 1];
 
   if (!lastMessage) {
     return <></>;
