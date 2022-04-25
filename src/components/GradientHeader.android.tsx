@@ -34,6 +34,7 @@ export const GradientHeader = (props: { text: string }) => {
 };
 
 const styles = StyleSheet.create({
+  mask: {},
   text: {
     fontSize: 24,
     fontWeight: "bold",
