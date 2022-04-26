@@ -19,9 +19,10 @@ import Send from "../../icons/Send";
 import { Message } from "../../types/Chat";
 
 import { chats } from "../../_data/chats";
-import { Thiago } from "../../_data/users";
+import { Thiago, users } from "../../_data/users";
 
 import { Params } from ".";
+import { Avatar } from "../../components/Avatar/Avatar";
 
 type Item =
   | (Message & { type: "message"; last: boolean })
@@ -56,9 +57,10 @@ type Props = StackScreenProps<Params, "View">;
 const ChatView = ({ route, navigation }: Props) => {
   const insets = useSafeAreaInsets();
   const chat = chats.find((chat) => chat.id === route.params.id);
-  const user = Thiago;
+  const recipient = users.find((user) => user.id === chat?.name);
+  const me = Thiago;
 
-  if (!chat) {
+  if (!chat || !recipient) {
     return <></>;
   }
 
@@ -78,7 +80,7 @@ const ChatView = ({ route, navigation }: Props) => {
           if (item.type === "separator") {
             return <View style={{ marginTop: 8 }} />;
           } else if (item.type === "message") {
-            return <ChatItem message={item} user={user} />;
+            return <ChatItem message={item} user={me} />;
           }
 
           return <></>;
@@ -92,6 +94,7 @@ const ChatView = ({ route, navigation }: Props) => {
         >
           <BackArrow />
         </TouchableOpacity>
+        <Avatar user={recipient} />
         <Text style={styles.chatTitle}>
           {(snrUsernamePattern.exec(chat.name) ?? [])[1]}
           <Text style={{ color: "#B1B5C4" }}>.snr</Text>

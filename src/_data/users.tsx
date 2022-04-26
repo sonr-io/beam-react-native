@@ -23,3 +23,5 @@ export const Dylan: User = {
   name: "Dylan",
   isOnline: false,
 };
+
+export const users = [Thiago, Matheus, Daniel, Dylan];
