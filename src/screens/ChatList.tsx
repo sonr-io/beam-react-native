@@ -19,6 +19,7 @@ import {
 } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 
+import { ChatItem } from "../components/Chat/ChatItem";
 import { ChatListItem } from "../components/Chat/ChatListItem";
 import { GradientHeader } from "../components/GradientHeader";
 import { chats } from "../_data/chats";
@@ -86,16 +87,7 @@ const ChatView = ({ route, navigation }: ChatViewProps) => {
         data={chat.messages.slice().reverse()}
         contentInset={{ top: 64, bottom: 84 }}
         renderItem={({ item: message }) => (
-          <View
-            style={[
-              styles.messageContainer,
-              message.sender.id === user.id
-                ? styles.outgoingMessage
-                : styles.incomingMessage,
-            ]}
-          >
-            <Text style={styles.message}>{message.text}</Text>
-          </View>
+          <ChatItem message={message} user={user} />
         )}
         keyExtractor={(item) => item.id}
       />
@@ -157,27 +149,6 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     paddingLeft: 24,
     paddingRight: 18,
-  },
-  messageContainer: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    marginBottom: 20,
-  },
-  outgoingMessage: {
-    alignSelf: "flex-end",
-    backgroundColor: "#777E90",
-    marginLeft: 40,
-  },
-  incomingMessage: {
-    alignSelf: "flex-start",
-    backgroundColor: "#1792FF",
-    marginRight: 40,
-  },
-  message: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 16,
-    color: "#FCFCFD",
   },
   messageInputShadow: {
     shadowOffset: { width: 2, height: 6 },
