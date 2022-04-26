@@ -1,76 +1,30 @@
-import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  useFonts,
-} from "@expo-google-fonts/poppins";
-import {
-  createStackNavigator,
-  StackScreenProps,
-} from "@react-navigation/stack";
+import { StackScreenProps } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
 import React from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   FlatList,
-  TextInput,
   TouchableOpacity,
-} from "react-native-gesture-handler";
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import KeyboardSpacer from "react-native-keyboard-spacer";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ChatItem } from "../components/Chat/ChatItem";
-import { ChatListItem } from "../components/Chat/ChatListItem";
-import { GradientHeader } from "../components/GradientHeader";
-import { chats } from "../_data/chats";
-import { Thiago } from "../_data/users";
-import { Chat } from "../types/Chat";
-import BackArrow from "../icons/BackArrow";
-import Send from "../icons/Send";
+import { ChatItem } from "../../components/Chat/ChatItem";
+import BackArrow from "../../icons/BackArrow";
+import Send from "../../icons/Send";
 
-const Stack = createStackNavigator();
+import { chats } from "../../_data/chats";
+import { Thiago } from "../../_data/users";
 
-type Params = {
-  List: {};
-  View: { id: string };
-};
+import { Params } from ".";
 
-type ChatListProps = StackScreenProps<Params, "List">;
+type Props = StackScreenProps<Params, "View">;
 
-const ChatList = ({ navigation }: ChatListProps) => {
-  const [fontsLoaded] = useFonts({
-    Montserrat_600SemiBold,
-    Poppins_400Regular,
-    Poppins_500Medium,
-  });
-
-  const navitgateToChat = (id: string) => {
-    navigation.navigate("View", { id });
-  };
-
-  if (!fontsLoaded) {
-    return <></>;
-  }
-
-  return (
-    <View style={styles.listContainer}>
-      <GradientHeader text="Messages" />
-      <View style={styles.list}>
-        {chats.map((chat: Chat) => (
-          <ChatListItem
-            key={chat.id}
-            chat={chat}
-            navitgateToChat={navitgateToChat}
-          />
-        ))}
-      </View>
-    </View>
-  );
-};
-
-type ChatViewProps = StackScreenProps<Params, "View">;
-
-const ChatView = ({ route, navigation }: ChatViewProps) => {
+const ChatView = ({ route, navigation }: Props) => {
   const insets = useSafeAreaInsets();
   const chat = chats.find((chat) => chat.id === route.params.id);
   const user = Thiago;
@@ -120,14 +74,6 @@ const ChatView = ({ route, navigation }: ChatViewProps) => {
 };
 
 const styles = StyleSheet.create({
-  listContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 20,
-  },
-  list: {
-    alignItems: "stretch",
-  },
   chatContainer: {
     backgroundColor: "#FFF",
     paddingHorizontal: 24,
@@ -184,9 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ChatListScreen = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="List" component={ChatList} />
-    <Stack.Screen name="View" component={ChatView} />
-  </Stack.Navigator>
-);
+export default ChatView;
