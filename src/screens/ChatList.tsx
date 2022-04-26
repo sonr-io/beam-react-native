@@ -8,8 +8,9 @@ import {
   createStackNavigator,
   StackScreenProps,
 } from "@react-navigation/stack";
+import { BlurView } from "expo-blur";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   FlatList,
@@ -79,19 +80,11 @@ const ChatView = ({ route, navigation }: ChatViewProps) => {
 
   return (
     <>
-      <View style={styles.chatHeader}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <BackArrow />
-        </TouchableOpacity>
-        <Text style={styles.chatTitle}>{chat.name}</Text>
-      </View>
       <FlatList
         style={styles.chatContainer}
         inverted
         data={chat.messages.slice().reverse()}
+        contentInset={{ top: 64, bottom: 84 }}
         renderItem={({ item: message }) => (
           <View
             style={[
@@ -106,16 +99,27 @@ const ChatView = ({ route, navigation }: ChatViewProps) => {
         )}
         keyExtractor={(item) => item.id}
       />
-      <View style={{ backgroundColor: "#FFF" }}>
+      <BlurView intensity={24} style={styles.chatHeader}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <BackArrow />
+        </TouchableOpacity>
+        <Text style={styles.chatTitle}>{chat.name}</Text>
+      </BlurView>
+      <View style={styles.messageInputShadow}>
         <View style={styles.messageInputContainer}>
-          <TextInput
-            style={styles.messageInput}
-            placeholder="New message"
-            placeholderTextColor="#777E90"
-          />
-          <TouchableOpacity>
-            <Send />
-          </TouchableOpacity>
+          <BlurView intensity={24} style={styles.messageInputBlur}>
+            <TextInput
+              style={styles.messageInput}
+              placeholder="New message"
+              placeholderTextColor="#353945"
+            />
+            <TouchableOpacity>
+              <Send />
+            </TouchableOpacity>
+          </BlurView>
         </View>
       </View>
       <KeyboardSpacer topSpacing={-insets.bottom} />
@@ -137,7 +141,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   chatHeader: {
-    backgroundColor: "#FFF",
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    height: 72,
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     flexDirection: "row",
     alignItems: "center",
   },
@@ -171,16 +179,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FCFCFD",
   },
+  messageInputShadow: {
+    shadowOffset: { width: 2, height: 6 },
+    shadowRadius: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.24,
+  },
   messageInputContainer: {
-    backgroundColor: "#FFF",
+    position: "absolute",
+    bottom: 0,
+    width: Dimensions.get("screen").width - 24,
+    height: 48,
     marginHorizontal: 12,
     marginBottom: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    height: 48,
+    backgroundColor: "transparent",
     borderColor: "#1792FF",
     borderWidth: 2,
     borderRadius: 48,
+    overflow: "hidden",
+  },
+  messageInputBlur: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
+    height: 44,
     paddingLeft: 16,
     paddingRight: 8,
   },
