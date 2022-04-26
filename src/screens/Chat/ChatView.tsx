@@ -46,6 +46,8 @@ const addSeparators = (messages: Message[]): Item[] => {
   return output;
 };
 
+const snrUsernamePattern = /(.*)\.snr/;
+
 const ios = Platform.OS === "ios";
 const Blur = ios ? BlurView : View;
 
@@ -90,7 +92,10 @@ const ChatView = ({ route, navigation }: Props) => {
         >
           <BackArrow />
         </TouchableOpacity>
-        <Text style={styles.chatTitle}>{chat.name}</Text>
+        <Text style={styles.chatTitle}>
+          {(snrUsernamePattern.exec(chat.name) ?? [])[1]}
+          <Text style={{ color: "#B1B5C4" }}>.snr</Text>
+        </Text>
       </Blur>
       <View style={styles.messageInputShadow}>
         <View style={styles.messageInputContainer}>
