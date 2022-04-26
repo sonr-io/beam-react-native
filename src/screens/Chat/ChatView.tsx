@@ -9,6 +9,7 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
+  Platform,
 } from "react-native";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -46,6 +47,9 @@ const addSeparators = (messages: Message[]): Item[] => {
   return output;
 };
 
+const ios = Platform.OS === "ios";
+const Blur = ios ? BlurView : View;
+
 type Props = StackScreenProps<Params, "View">;
 
 const ChatView = ({ route, navigation }: Props) => {
@@ -80,7 +84,7 @@ const ChatView = ({ route, navigation }: Props) => {
         }}
         keyExtractor={(item) => item.id}
       />
-      <BlurView intensity={24} style={styles.chatHeader}>
+      <Blur intensity={24} style={styles.chatHeader}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -88,10 +92,10 @@ const ChatView = ({ route, navigation }: Props) => {
           <BackArrow />
         </TouchableOpacity>
         <Text style={styles.chatTitle}>{chat.name}</Text>
-      </BlurView>
+      </Blur>
       <View style={styles.messageInputShadow}>
         <View style={styles.messageInputContainer}>
-          <BlurView intensity={24} style={styles.messageInputBlur}>
+          <Blur intensity={24} style={styles.messageInputBlur}>
             <TextInput
               style={styles.messageInput}
               placeholder="New message"
@@ -100,7 +104,7 @@ const ChatView = ({ route, navigation }: Props) => {
             <TouchableOpacity>
               <Send />
             </TouchableOpacity>
-          </BlurView>
+          </Blur>
         </View>
       </View>
       <KeyboardSpacer topSpacing={-insets.bottom} />
@@ -118,7 +122,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: "100%",
     height: 72,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: ios ? "rgba(255, 255, 255, 0.3)" : "#FFF",
     flexDirection: "row",
     alignItems: "center",
   },
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
   messageInputBlur: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.6)",
+    backgroundColor: ios ? "rgba(255, 255, 255, 0.6)" : "#FFF",
     height: 44,
     paddingLeft: 16,
     paddingRight: 8,
