@@ -7,7 +7,7 @@ import { Message } from "../../types/Chat";
 import { User } from "../../types/User";
 
 interface Props {
-  message: Message;
+  message: Message & { last: boolean };
   user: User;
 }
 
@@ -25,8 +25,14 @@ export const ChatItem: React.FC<Props> = ({ message, user }) => {
         style={[
           styles.message,
           message.sender.id === user.id
-            ? styles.messageOutgoing
-            : styles.messageIncoming,
+            ? [
+                styles.messageOutgoing,
+                message.last && styles.lastMessageOutgoing,
+              ]
+            : [
+                styles.messageIncoming,
+                message.last && styles.lastMessageIncoming,
+              ],
         ]}
       >
         <Text style={styles.messageText}>{message.text}</Text>
@@ -49,7 +55,7 @@ export const ChatItem: React.FC<Props> = ({ message, user }) => {
 
 const styles = StyleSheet.create({
   messageContainer: {
-    marginBottom: 20,
+    marginBottom: 4,
   },
   message: {
     paddingHorizontal: 12,
@@ -65,6 +71,12 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     backgroundColor: "#1792FF",
     marginRight: 40,
+  },
+  lastMessageOutgoing: {
+    borderBottomRightRadius: 4,
+  },
+  lastMessageIncoming: {
+    borderBottomLeftRadius: 4,
   },
   messageText: {
     fontFamily: "Poppins_400Regular",

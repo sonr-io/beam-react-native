@@ -16,11 +16,35 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ChatItem } from "../../components/Chat/ChatItem";
 import BackArrow from "../../icons/BackArrow";
 import Send from "../../icons/Send";
+import { Message } from "../../types/Chat";
 
 import { chats } from "../../_data/chats";
 import { Thiago } from "../../_data/users";
 
 import { Params } from ".";
+
+type Item =
+  | (Message & { type: "message"; last: boolean })
+  | { id: string; type: "separator" };
+
+const addSeparators = (messages: Message[]): Item[] => {
+  let lastMessageSender = messages[0].sender.id;
+  const output: Item[] = [];
+
+  for (const message of messages) {
+    if (lastMessageSender !== message.sender.id) {
+      const lastMessage = output[output.length - 1] as any;
+      lastMessage.last = true;
+      output.push({ id: `${lastMessage.id}#`, type: "separator" });
+    }
+    output.push({ ...message, type: "message", last: false });
+    lastMessageSender = message.sender.id;
+  }
+
+  (output[output.length - 1] as any).last = true;
+
+  return output;
+};
 
 type Props = StackScreenProps<Params, "View">;
 
@@ -33,16 +57,24 @@ const ChatView = ({ route, navigation }: Props) => {
     return <></>;
   }
 
+  const items = addSeparators(chat.messages).reverse();
+
   return (
     <>
       <FlatList
         style={styles.chatContainer}
         inverted
-        data={chat.messages.slice().reverse()}
+        data={items}
         contentInset={{ top: 64, bottom: 84 }}
-        renderItem={({ item: message }) => (
-          <ChatItem message={message} user={user} />
-        )}
+        renderItem={({ item }) => {
+          if (item.type === "separator") {
+            return <View style={{ marginTop: 8 }} />;
+          } else if (item.type === "message") {
+            return <ChatItem message={item} user={user} />;
+          }
+
+          return <></>;
+        }}
         keyExtractor={(item) => item.id}
       />
       <BlurView intensity={24} style={styles.chatHeader}>
@@ -77,6 +109,7 @@ const styles = StyleSheet.create({
   chatContainer: {
     backgroundColor: "#FFF",
     paddingHorizontal: 24,
+    paddingTop: 8,
   },
   chatHeader: {
     position: "absolute",

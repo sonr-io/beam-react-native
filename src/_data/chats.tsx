@@ -1,5 +1,5 @@
 import { Chat } from "../types/Chat";
-import { Daniel, Matheus, Thiago } from "./users";
+import { Daniel, Dylan, Matheus, Thiago } from "./users";
 
 export const chats: Chat[] = [
   {
@@ -83,6 +83,61 @@ export const chats: Chat[] = [
         text: "Thanks mate! Feel way better now. Oh, and guys, these messages will be removed once your add your own :-)",
         sender: Daniel,
         timestamp: 1650331578013,
+      },
+    ],
+  },
+  {
+    id: "3",
+    name: Dylan.id,
+    lastSeen: 1650331578100,
+    messages: [
+      {
+        id: "14",
+        text: "Hello there. Thanks for the follow. Did you notice, that I am an egg? A talking egg? Damn!",
+        sender: Dylan,
+        timestamp: 1650331578101,
+      },
+      {
+        id: "15",
+        text: "Yeah that is crazy, but people can change their own picture and build their own Twitter conversation with this generator, so it does not matter that you are an egg",
+        sender: Thiago,
+        timestamp: 1650331578102,
+      },
+      {
+        id: "16",
+        text: "Thanks mate! Feel way better now. Oh, and guys, these messages will be removed once your add your own :-)",
+        sender: Dylan,
+        timestamp: 1650331578103,
+      },
+      {
+        id: "18",
+        text: "Thanks mate! Feel way better now. Oh, and guys, these messages will be removed once your add your own :-)",
+        sender: Dylan,
+        timestamp: 1650331578104,
+      },
+      {
+        id: "19",
+        text: "Thanks mate! Feel way better now. Oh, and guys, these messages will be removed once your add your own :-)",
+        sender: Dylan,
+        timestamp: 1650331578104,
+      },
+      {
+        id: "20",
+        text: "hey",
+        sender: Thiago,
+        timestamp: 1650331578105,
+      },
+      {
+        id: "21",
+        text: "hey",
+        sender: Thiago,
+        timestamp: 1650331578106,
+      },
+      {
+        id: "22",
+        text: "hey",
+        sender: Thiago,
+        timestamp: 1650331578107,
       },
     ],
   },
