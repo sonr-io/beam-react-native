@@ -65,7 +65,10 @@ const ChatView = ({ route, navigation }: Props) => {
         style={styles.chatContainer}
         inverted
         data={items}
-        contentInset={{ top: 64, bottom: 84 }}
+        contentContainerStyle={{
+          paddingTop: 72,
+          paddingBottom: 84,
+        }}
         renderItem={({ item }) => {
           if (item.type === "separator") {
             return <View style={{ marginTop: 8 }} />;
@@ -109,7 +112,6 @@ const styles = StyleSheet.create({
   chatContainer: {
     backgroundColor: "#FFF",
     paddingHorizontal: 24,
-    paddingTop: 8,
   },
   chatHeader: {
     position: "absolute",

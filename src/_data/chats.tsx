@@ -89,22 +89,28 @@ export const chats: Chat[] = [
   {
     id: "3",
     name: Dylan.id,
-    lastSeen: 1650331578100,
+    lastSeen: 1650331578099,
     messages: [
       {
         id: "14",
         text: "Hello there. Thanks for the follow. Did you notice, that I am an egg? A talking egg? Damn!",
         sender: Dylan,
-        timestamp: 1650331578101,
+        timestamp: 1650331578100,
       },
       {
         id: "15",
+        text: "Hello there. Thanks for the follow. Did you notice, that I am an egg? A talking egg? Damn!",
+        sender: Dylan,
+        timestamp: 1650331578101,
+      },
+      {
+        id: "16",
         text: "Yeah that is crazy, but people can change their own picture and build their own Twitter conversation with this generator, so it does not matter that you are an egg",
         sender: Thiago,
         timestamp: 1650331578102,
       },
       {
-        id: "16",
+        id: "17",
         text: "Thanks mate! Feel way better now. Oh, and guys, these messages will be removed once your add your own :-)",
         sender: Dylan,
         timestamp: 1650331578103,
@@ -138,6 +144,18 @@ export const chats: Chat[] = [
         text: "hey",
         sender: Thiago,
         timestamp: 1650331578107,
+      },
+      {
+        id: "23",
+        text: "hey",
+        sender: Thiago,
+        timestamp: 1650331578108,
+      },
+      {
+        id: "24",
+        text: "hey",
+        sender: Thiago,
+        timestamp: 1650331578109,
       },
     ],
   },
