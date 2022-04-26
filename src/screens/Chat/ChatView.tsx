@@ -3,14 +3,13 @@ import { BlurView } from "expo-blur";
 import React from "react";
 import {
   FlatList,
-  TouchableOpacity,
   View,
   Text,
-  TextInput,
   StyleSheet,
   Dimensions,
   Platform,
 } from "react-native";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -107,7 +106,7 @@ const ChatView = ({ route, navigation }: Props) => {
           </Blur>
         </View>
       </View>
-      <KeyboardSpacer topSpacing={-insets.bottom} />
+      {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
     </>
   );
 };
@@ -136,14 +135,14 @@ const styles = StyleSheet.create({
     paddingRight: 18,
   },
   messageInputShadow: {
+    position: "absolute",
+    bottom: 0,
     shadowOffset: { width: 2, height: 6 },
     shadowRadius: 12,
     shadowColor: "#000",
     shadowOpacity: 0.24,
   },
   messageInputContainer: {
-    position: "absolute",
-    bottom: 0,
     width: Dimensions.get("screen").width - 24,
     height: 48,
     marginHorizontal: 12,
