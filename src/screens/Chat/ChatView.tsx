@@ -113,6 +113,7 @@ const ChatView = ({ route, navigation }: Props) => {
             </TouchableOpacity>
           </Blur>
         </View>
+        {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
       </View>
       {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
     </>
