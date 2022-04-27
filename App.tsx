@@ -6,7 +6,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-import { ChatListScreen } from "./src/screens/ChatList";
+import ChatScreen from "./src/screens/Chat";
 // import NearbyScreen from "./src/screens/Nearby";
 // import ProfileScreen from "./src/screens/Profile";
 
@@ -27,7 +27,7 @@ export default function App() {
             <Tab.Screen name="Profile" component={ProfileScreen} />
           </Tab.Navigator>
           */}
-          <ChatListScreen />
+          <ChatScreen />
         </NavigationContainer>
       </SafeAreaView>
     </SafeAreaProvider>

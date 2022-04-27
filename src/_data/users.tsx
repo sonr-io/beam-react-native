@@ -17,3 +17,11 @@ export const Daniel: User = {
   name: "Daniel",
   isOnline: false,
 };
+
+export const Dylan: User = {
+  id: "dylan.snr",
+  name: "Dylan",
+  isOnline: false,
+};
+
+export const users = [Thiago, Matheus, Daniel, Dylan];
