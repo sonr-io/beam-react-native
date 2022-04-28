@@ -14,14 +14,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "yarn lint-fix"
     }
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "prettier --write",
-      "git add"
-    ]
   },
   "dependencies": {
     "@expo-google-fonts/montserrat": "^0.2.2",
