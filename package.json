@@ -10,7 +10,8 @@
     "eject": "expo eject",
     "lint": "prettier --check .",
     "lint-fix": "prettier --write .",
-    "postinstall": "bash ./fix-for-web.sh"
+    "postinstall": "bash ./fix-for-web.sh",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@expo-google-fonts/montserrat": "^0.2.2",
