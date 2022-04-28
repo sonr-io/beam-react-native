@@ -12,11 +12,6 @@
     "lint-fix": "prettier --write .",
     "postinstall": "bash ./fix-for-web.sh"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint-fix"
-    }
-  },
   "dependencies": {
     "@expo-google-fonts/montserrat": "^0.2.2",
     "@expo-google-fonts/poppins": "^0.2.2",
