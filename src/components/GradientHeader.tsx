@@ -1,6 +1,6 @@
 import { Poppins_600SemiBold, useFonts } from "@expo-google-fonts/poppins";
 import React from "react";
-import { Text, View } from 'react-native';
+import { Text, View } from 'react-native'
 
 export const GradientHeader = (props: { text: string }) => {
   const [fontsLoaded] = useFonts({
