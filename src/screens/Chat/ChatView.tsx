@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   View,
@@ -64,7 +64,25 @@ const ChatView = ({ route, navigation }: Props) => {
     return <></>;
   }
 
-  const items = addSeparators(chat.messages).reverse();
+  const [items, setItems] = useState(addSeparators(chat.messages).reverse());
+  const [message, setMessage] = useState("");
+
+  const pushMessage = (messages: Item[]) => {
+    if (message.length <= 0) {
+      return messages;
+    }
+
+    messages.unshift({
+      type: "message",
+      last: true,
+      id: messages.length.toString(),
+      text: message,
+      timestamp: +new Date(),
+      sender: me,
+    });
+    setMessage("");
+    return messages;
+  };
 
   return (
     <>
@@ -107,8 +125,10 @@ const ChatView = ({ route, navigation }: Props) => {
               style={styles.messageInput}
               placeholder="New message"
               placeholderTextColor="#353945"
+              value={message}
+              onChangeText={(message) => setMessage(message)}
             />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setItems(pushMessage)}>
               <Send />
             </TouchableOpacity>
           </Blur>
