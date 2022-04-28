@@ -10,6 +10,7 @@ import { StyleSheet, View } from "react-native";
 
 import { ChatListItem } from "../../components/Chat/ChatListItem";
 import { GradientHeader } from "../../components/GradientHeader";
+import { FAB } from "../../components/FAB";
 import { chats } from "../../_data/chats";
 import { Chat } from "../../types/Chat";
 
@@ -44,6 +45,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
           />
         ))}
       </View>
+      <FAB onPress={() => navigation.navigate("New", {})} />
     </View>
   );
 };
