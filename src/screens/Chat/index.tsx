@@ -1,5 +1,8 @@
 import React from "react";
-import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack";
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from "@react-navigation/stack";
 
 import ChatList from "./ChatList";
 import ChatNew from "./ChatNew";
@@ -15,22 +18,16 @@ export type Params = {
 
 const ChatScreen = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen
-      name="List"
-      component={ChatList}
-    />
+    <Stack.Screen name="List" component={ChatList} />
     <Stack.Screen
       name="New"
       component={ChatNew}
       options={{
-        title: 'Profile',
+        title: "Profile",
         cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
       }}
     />
-    <Stack.Screen
-      name="View"
-      component={ChatView}
-    />
+    <Stack.Screen name="View" component={ChatView} />
   </Stack.Navigator>
 );
 

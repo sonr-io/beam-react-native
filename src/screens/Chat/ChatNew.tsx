@@ -1,9 +1,9 @@
-import { StackScreenProps } from '@react-navigation/stack';
-import React from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StackScreenProps } from "@react-navigation/stack";
+import React from "react";
+import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { Params } from ".";
-import { GradientHeader } from '../../components/GradientHeader';
+import { GradientHeader } from "../../components/GradientHeader";
 
 type ChatNewProps = StackScreenProps<Params, "New">;
 
@@ -12,10 +12,13 @@ const ChatNew = ({ navigation }: ChatNewProps) => {
     <View style={styles.listContainer}>
       <GradientHeader text="New Chat" />
       <TextInput style={styles.nameInput} />
-      <Button title="Start chat" onPress={() => navigation.navigate("View", { id: "1" })} />
+      <Button
+        title="Start chat"
+        onPress={() => navigation.navigate("View", { id: "1" })}
+      />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   listContainer: {
