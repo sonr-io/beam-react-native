@@ -8,7 +8,7 @@ interface Props {
   onPress: () => void;
 }
 
-const FAB: React.FC<Props> = ({ onPress }) => {
+const NewChatButton: React.FC<Props> = ({ onPress }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={onPress}>
@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { FAB };
+export { NewChatButton };

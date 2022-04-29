@@ -7,7 +7,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { Params } from '.';
 import { chats } from '../../_data/chats';
 import { ChatListItem } from '../../components/Chat/ChatListItem';
-import { FAB } from '../../components/FAB';
+import { NewChatButton } from '../../components/NewChatButton';
 import { GradientHeader } from '../../components/GradientHeader';
 
 type ChatListProps = StackScreenProps<Params, "List">;
@@ -39,7 +39,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
         />}
       />
       <View style={{flex: 1}} />
-      <FAB onPress={() => navigation.navigate("New", {})} />
+      <NewChatButton onPress={() => navigation.navigate("New", {})} />
     </View>
   );
 };
