@@ -8,6 +8,7 @@ import ChatList from "./ChatList";
 import ChatNew from "./ChatNew";
 import ChatView from "./ChatView";
 import MessageMenu from "./MessageMenu";
+import { Message } from "../../types/Chat";
 
 const Stack = createStackNavigator();
 
@@ -15,7 +16,7 @@ export type Params = {
   List: {};
   New: {};
   View: { id: string };
-  MessageMenu: {};
+  MessageMenu: { message: Message };
 };
 
 const ChatScreen = () => (
