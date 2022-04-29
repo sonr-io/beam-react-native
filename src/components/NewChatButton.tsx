@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-import NewChat from '../icons/NewChat';
+import NewChat from "../icons/NewChat";
 
 interface Props {
   onPress: () => void;
@@ -20,17 +20,17 @@ const NewChatButton: React.FC<Props> = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
     right: 25,
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     width: 56,
     height: 56,
     borderRadius: 30,
-    alignItems:'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
