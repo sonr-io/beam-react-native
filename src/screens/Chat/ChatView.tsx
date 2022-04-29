@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   View,
