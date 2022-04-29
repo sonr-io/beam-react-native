@@ -16,9 +16,9 @@ import { Chat } from "../../types/Chat";
 
 import { Params } from ".";
 
-type ChatListProps = StackScreenProps<Params, "List">;
+type Props = StackScreenProps<Params, "ChatList">;
 
-const ChatList = ({ navigation }: ChatListProps) => {
+const ChatList: React.FC<Props> = ({ navigation }) => {
   const [fontsLoaded] = useFonts({
     Montserrat_600SemiBold,
     Poppins_400Regular,
@@ -26,7 +26,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
   });
 
   const navitgateToChat = (id: string) => {
-    navigation.navigate("View", { id });
+    navigation.navigate("ChatView", { id });
   };
 
   if (!fontsLoaded) {
@@ -45,7 +45,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
           />
         ))}
       </View>
-      <FAB onPress={() => navigation.navigate("New", {})} />
+      <FAB onPress={() => navigation.navigate("ChatNew", {})} />
     </View>
   );
 };

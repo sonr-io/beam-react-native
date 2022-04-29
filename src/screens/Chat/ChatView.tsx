@@ -43,7 +43,7 @@ const snrUsernamePattern = /(.*)\.snr/;
 
 const ios = Platform.OS === "ios";
 
-type Props = StackScreenProps<Params, "View">;
+type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();

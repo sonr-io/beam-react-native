@@ -5,16 +5,16 @@ import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { Params } from ".";
 import { GradientHeader } from "../../components/GradientHeader";
 
-type ChatNewProps = StackScreenProps<Params, "New">;
+type Props = StackScreenProps<Params, "ChatNew">;
 
-const ChatNew = ({ navigation }: ChatNewProps) => {
+const ChatNew: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.listContainer}>
       <GradientHeader text="New Chat" />
       <TextInput style={styles.nameInput} />
       <Button
         title="Start chat"
-        onPress={() => navigation.navigate("View", { id: "1" })}
+        onPress={() => navigation.navigate("ChatView", { id: "1" })}
       />
     </View>
   );

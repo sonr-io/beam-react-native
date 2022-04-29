@@ -13,24 +13,24 @@ import { Message } from "../../types/Chat";
 const Stack = createStackNavigator();
 
 export type Params = {
-  List: {};
-  New: {};
-  View: { id: string };
+  ChatList: {};
+  ChatNew: {};
+  ChatView: { id: string };
   MessageMenu: { message: Message };
 };
 
 const ChatScreen = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="List" component={ChatList} />
+    <Stack.Screen name="ChatList" component={ChatList} />
     <Stack.Screen
-      name="New"
+      name="ChatNew"
       component={ChatNew}
       options={{
         title: "Profile",
         cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
       }}
     />
-    <Stack.Screen name="View" component={ChatView} />
+    <Stack.Screen name="ChatView" component={ChatView} />
     <Stack.Screen
       name="MessageMenu"
       component={MessageMenu}
