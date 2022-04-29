@@ -25,7 +25,7 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
     Poppins_500Medium,
   });
 
-  const navitgateToChat = (id: string) => {
+  const navigateToChat = (id: string) => {
     navigation.navigate("ChatView", { id });
   };
 
@@ -41,7 +41,7 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
           <ChatListItem
             key={chat.id}
             chat={chat}
-            navitgateToChat={navitgateToChat}
+            navitgateToChat={navigateToChat}
           />
         ))}
       </View>
