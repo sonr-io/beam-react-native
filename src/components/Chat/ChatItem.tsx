@@ -32,8 +32,6 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
       renderLeftActions={renderLeftActions}
       onSwipeableWillOpen={() => {
         onSwipe();
-      }}
-      onSwipeableOpen={() => {
         swipeableRef.current?.close();
       }}
     >

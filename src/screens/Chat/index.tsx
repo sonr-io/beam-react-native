@@ -36,6 +36,7 @@ const ChatScreen = () => (
       component={MessageMenu}
       options={{
         cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+        presentation: "transparentModal",
       }}
     />
   </Stack.Navigator>
