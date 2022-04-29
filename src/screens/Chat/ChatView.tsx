@@ -90,7 +90,13 @@ const ChatView = ({ route, navigation }: Props) => {
           return (
             <>
               {item.last && <View style={{ marginTop: 8 }} />}
-              <ChatItem message={item} user={me} />
+              <ChatItem
+                message={item}
+                user={me}
+                onSwipe={() => {
+                  navigation.navigate("MessageMenu", {});
+                }}
+              />
             </>
           );
         }}

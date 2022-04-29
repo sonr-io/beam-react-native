@@ -7,6 +7,7 @@ import {
 import ChatList from "./ChatList";
 import ChatNew from "./ChatNew";
 import ChatView from "./ChatView";
+import MessageMenu from "./MessageMenu";
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,7 @@ export type Params = {
   List: {};
   New: {};
   View: { id: string };
+  MessageMenu: {};
 };
 
 const ChatScreen = () => (
@@ -28,6 +30,13 @@ const ChatScreen = () => (
       }}
     />
     <Stack.Screen name="View" component={ChatView} />
+    <Stack.Screen
+      name="MessageMenu"
+      component={MessageMenu}
+      options={{
+        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+      }}
+    />
   </Stack.Navigator>
 );
 
