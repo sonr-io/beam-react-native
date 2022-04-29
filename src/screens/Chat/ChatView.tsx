@@ -24,27 +24,18 @@ import { Thiago, users } from "../../_data/users";
 import { Params } from ".";
 import { Avatar } from "../../components/Avatar/Avatar";
 
-type Item =
-  | (Message & { type: "message"; last: boolean })
-  | { id: string; type: "separator" };
+type MessageItem = Message & { last: boolean };
 
-const addSeparators = (messages: Message[]): Item[] => {
-  let lastMessageSender = messages[0].sender.id;
-  const output: Item[] = [];
+const addSeparators = (messages: Message[]): MessageItem[] => {
+  const messageItems = messages.map((m) => ({ last: true, ...m }));
 
-  for (const message of messages) {
-    if (lastMessageSender !== message.sender.id) {
-      const lastMessage = output[output.length - 1] as any;
-      lastMessage.last = true;
-      output.push({ id: `${lastMessage.id}#`, type: "separator" });
+  for (let i = 0; i < messageItems.length - 1; i++) {
+    if (messageItems[i].sender.id === messageItems[i + 1].sender.id) {
+      messageItems[i].last = false;
     }
-    output.push({ ...message, type: "message", last: false });
-    lastMessageSender = message.sender.id;
   }
 
-  (output[output.length - 1] as any).last = true;
-
-  return output;
+  return messageItems;
 };
 
 const snrUsernamePattern = /(.*)\.snr/;
@@ -67,17 +58,18 @@ const ChatView = ({ route, navigation }: Props) => {
   const [items, setItems] = useState(addSeparators(chat.messages).reverse());
   const [message, setMessage] = useState("");
 
-  const pushMessage = (messages: Item[]) => {
+  const pushMessage = (messages: MessageItem[]) => {
     if (message.length <= 0) {
       return messages;
     }
 
+    messages[0].last = me.id !== messages[0].sender.id;
+
     messages.unshift({
-      type: "message",
       last: true,
-      id: messages.length.toString(),
+      id: (messages.length + 1).toString(),
       text: message,
-      timestamp: +new Date(),
+      timestamp: new Date().getTime(),
       sender: me,
     });
     setMessage("");
@@ -95,13 +87,12 @@ const ChatView = ({ route, navigation }: Props) => {
           paddingBottom: 84,
         }}
         renderItem={({ item }) => {
-          if (item.type === "separator") {
-            return <View style={{ marginTop: 8 }} />;
-          } else if (item.type === "message") {
-            return <ChatItem message={item} user={me} />;
-          }
-
-          return <></>;
+          return (
+            <>
+              {item.last && <View style={{ marginTop: 8 }} />}
+              <ChatItem message={item} user={me} />
+            </>
+          );
         }}
         keyExtractor={(item) => item.id}
       />
