@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Platform, StyleSheet, Text } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
 import { StackScreenProps } from "@react-navigation/stack";
 
 import { Params } from ".";
@@ -21,6 +22,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           navigation.goBack();
         }}
       />
+      <TextInput style={styles.messageInput} autoFocus />
     </BlurView>
   );
 };
@@ -32,6 +34,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
+  },
+  messageInput: {
+    marginTop: 20,
   },
 });
 
