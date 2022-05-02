@@ -1,6 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { BlurView } from "expo-blur";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   View,
@@ -13,16 +12,18 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Avatar } from "../../components/Avatar/Avatar";
+import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
+
 import BackArrow from "../../icons/BackArrow";
 import Send from "../../icons/Send";
-import { Message } from "../../types/Chat";
 
+import { Message } from "../../types/Chat";
 import { chats } from "../../_data/chats";
 import { Thiago, users } from "../../_data/users";
 
 import { Params } from ".";
-import { Avatar } from "../../components/Avatar/Avatar";
 
 type MessageItem = Message & { last: boolean };
 
@@ -41,11 +42,10 @@ const addSeparators = (messages: Message[]): MessageItem[] => {
 const snrUsernamePattern = /(.*)\.snr/;
 
 const ios = Platform.OS === "ios";
-const Blur = ios ? BlurView : View;
 
-type Props = StackScreenProps<Params, "View">;
+type Props = StackScreenProps<Params, "ChatView">;
 
-const ChatView = ({ route, navigation }: Props) => {
+const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();
   const chat = chats.find((chat) => chat.id === route.params.id);
   const recipient = users.find((user) => user.id === chat?.name);
@@ -90,13 +90,19 @@ const ChatView = ({ route, navigation }: Props) => {
           return (
             <>
               {item.last && <View style={{ marginTop: 8 }} />}
-              <ChatItem message={item} user={me} />
+              <ChatItem
+                message={item}
+                user={me}
+                onSwipe={() => {
+                  navigation.navigate("MessageMenu", { message: item });
+                }}
+              />
             </>
           );
         }}
         keyExtractor={(item) => item.id}
       />
-      <Blur intensity={24} style={styles.chatHeader}>
+      <BlurView intensity={24} style={styles.chatHeader}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -108,10 +114,10 @@ const ChatView = ({ route, navigation }: Props) => {
           {(snrUsernamePattern.exec(chat.name) ?? [])[1]}
           <Text style={{ color: "#B1B5C4" }}>.snr</Text>
         </Text>
-      </Blur>
+      </BlurView>
       <View style={styles.messageInputShadow}>
         <View style={styles.messageInputContainer}>
-          <Blur intensity={24} style={styles.messageInputBlur}>
+          <BlurView intensity={24} style={styles.messageInputBlur}>
             <TextInput
               style={styles.messageInput}
               placeholder="New message"
@@ -122,7 +128,7 @@ const ChatView = ({ route, navigation }: Props) => {
             <TouchableOpacity onPress={() => setItems(pushMessage)}>
               <Send />
             </TouchableOpacity>
-          </Blur>
+          </BlurView>
         </View>
         {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
       </View>

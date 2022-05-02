@@ -14,17 +14,17 @@ import { ChatListItem } from "../../components/Chat/ChatListItem";
 import { NewChatButton } from "../../components/NewChatButton";
 import { GradientHeader } from "../../components/GradientHeader";
 
-type ChatListProps = StackScreenProps<Params, "List">;
+type Props = StackScreenProps<Params, "ChatList">;
 
-const ChatList = ({ navigation }: ChatListProps) => {
+const ChatList: React.FC<Props> = ({ navigation }) => {
   const [fontsLoaded] = useFonts({
     Montserrat_600SemiBold,
     Poppins_400Regular,
     Poppins_500Medium,
   });
 
-  const navitgateToChat = (id: string) => {
-    navigation.navigate("View", { id });
+  const navigateToChat = (id: string) => {
+    navigation.navigate("ChatView", { id });
   };
 
   if (!fontsLoaded) {
@@ -40,11 +40,11 @@ const ChatList = ({ navigation }: ChatListProps) => {
           <ChatListItem
             key={item.id}
             chat={item}
-            navitgateToChat={navitgateToChat}
+            navitgateToChat={navigateToChat}
           />
         )}
       />
-      <NewChatButton onPress={() => navigation.navigate("New", {})} />
+      <NewChatButton onPress={() => navigation.navigate("ChatNew", {})} />
     </View>
   );
 };
