@@ -6,15 +6,13 @@ import {
 } from "@expo-google-fonts/poppins";
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { StyleSheet, View } from "react-native";
-
-import { ChatListItem } from "../../components/Chat/ChatListItem";
-import { GradientHeader } from "../../components/GradientHeader";
-import { FAB } from "../../components/FAB";
-import { chats } from "../../_data/chats";
-import { Chat } from "../../types/Chat";
+import { FlatList, StyleSheet, View } from "react-native";
 
 import { Params } from ".";
+import { chats } from "../../_data/chats";
+import { ChatListItem } from "../../components/Chat/ChatListItem";
+import { NewChatButton } from "../../components/NewChatButton";
+import { GradientHeader } from "../../components/GradientHeader";
 
 type ChatListProps = StackScreenProps<Params, "List">;
 
@@ -36,16 +34,17 @@ const ChatList = ({ navigation }: ChatListProps) => {
   return (
     <View style={styles.listContainer}>
       <GradientHeader text="Messages" />
-      <View style={styles.list}>
-        {chats.map((chat: Chat) => (
+      <FlatList
+        data={chats}
+        renderItem={({ item }) => (
           <ChatListItem
-            key={chat.id}
-            chat={chat}
+            key={item.id}
+            chat={item}
             navitgateToChat={navitgateToChat}
           />
-        ))}
-      </View>
-      <FAB onPress={() => navigation.navigate("New", {})} />
+        )}
+      />
+      <NewChatButton onPress={() => navigation.navigate("New", {})} />
     </View>
   );
 };
@@ -53,7 +52,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
 const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF",
     paddingHorizontal: 20,
   },
   list: {
