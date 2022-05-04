@@ -1,7 +1,7 @@
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
-const IconUser = () => (
+const User = () => (
   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
     <Path
       fillRule="evenodd"
@@ -18,4 +18,4 @@ const IconUser = () => (
   </Svg>
 );
 
-export default IconUser;
+export default User;

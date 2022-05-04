@@ -16,8 +16,8 @@ import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
 
-import BackArrow from "../../icons/BackArrow";
-import Send from "../../icons/Send";
+import IconBackArrow from "../../icons/BackArrow";
+import IconSend from "../../icons/Send";
 
 import { Message } from "../../types/Chat";
 import { chats } from "../../_data/chats";
@@ -107,7 +107,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <BackArrow />
+          <IconBackArrow />
         </TouchableOpacity>
         <Avatar user={recipient} />
         <Text style={styles.chatTitle}>
@@ -126,9 +126,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
               value={message}
               onChangeText={(message) => setMessage(message)}
             />
+
             <View style={{ alignSelf: "flex-end" }}>
               <TouchableOpacity onPress={() => setItems(pushMessage)}>
-                <Send />
+                <IconSend />
               </TouchableOpacity>
             </View>
           </BlurView>
