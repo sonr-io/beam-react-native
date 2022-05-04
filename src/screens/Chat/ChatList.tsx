@@ -45,11 +45,7 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
         <FlatList
           data={chats}
           renderItem={({ item }) => (
-            <ChatListItem
-              key={item.id}
-              chat={item}
-              onPress={navigateToChat}
-            />
+            <ChatListItem key={item.id} chat={item} onPress={navigateToChat} />
           )}
         />
         <NewChatButton onPress={() => setNewChatVisible(true)} />
