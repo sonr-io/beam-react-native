@@ -5,7 +5,6 @@ import {
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 
-import { getTime } from "../../lib/getTime";
 import { ViewableMessage } from "../../types/Chat";
 import { User } from "../../types/User";
 import { MessageBubble } from "../MessageBubble";
@@ -18,7 +17,6 @@ interface Props {
 
 export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
   const [showTimestamp, setShowTimestamp] = React.useState(false);
-  const [timestamp, setTimestamp] = useState(0);
   const swipeableRef = React.useRef<Swipeable>(null);
 
   const renderLeftActions = () => <View style={{ width: 30 }} />;
@@ -27,7 +25,6 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
 
   return (
     <Swipeable
-      enabled={!isSender}
       ref={swipeableRef}
       friction={4}
       leftThreshold={30}
@@ -40,15 +37,15 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
       <TouchableWithoutFeedback
         style={styles.messageContainer}
         onPress={() => {
-          setTimestamp(timestamp ? 0 : message.timestamp);
           setShowTimestamp(!showTimestamp);
         }}
       >
         <MessageBubble
           text={message.text}
+          timestamp={message.timestamp}
           isIncoming={!isSender}
           isLast={message.last}
-          timestamp={timestamp}
+          showTimestamp={showTimestamp}
         />
       </TouchableWithoutFeedback>
     </Swipeable>
@@ -58,17 +55,5 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
 const styles = StyleSheet.create({
   messageContainer: {
     marginBottom: 4,
-  },
-  messageTimestamp: {
-    fontFamily: "Montserrat_600SemiBold",
-    fontSize: 10,
-    color: "#B1B5C4",
-    marginTop: 4,
-  },
-  messageTimestampOutgoing: {
-    alignSelf: "flex-end",
-  },
-  messageTimestampIncoming: {
-    alignSelf: "flex-start",
   },
 });

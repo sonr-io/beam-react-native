@@ -7,6 +7,7 @@ type Props = {
   isIncoming: boolean;
   isLast: boolean;
   timestamp: number;
+  showTimestamp: boolean;
 };
 
 export const MessageBubble = (props: Props) => {
@@ -18,7 +19,7 @@ export const MessageBubble = (props: Props) => {
 
   return props.isIncoming ? (
     <View style={[styles.bubbleContainer, styles.incoming, styleLast]}>
-      {!!props.timestamp && (
+      {props.showTimestamp && (
         <Text style={[styles.time, styles.timeIncoming]}>
           {getTime(props.timestamp)}
         </Text>
@@ -27,7 +28,7 @@ export const MessageBubble = (props: Props) => {
     </View>
   ) : (
     <View style={[styles.bubbleContainer, styles.outgoing, styleLast]}>
-      {!!props.timestamp && (
+      {props.showTimestamp && (
         <Text style={[styles.time, styles.timeOutgoing]}>
           {getTime(props.timestamp)}
         </Text>
