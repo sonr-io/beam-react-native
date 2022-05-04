@@ -1,4 +1,5 @@
 import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
+import { Outfit_700Bold } from "@expo-google-fonts/outfit";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
@@ -26,6 +27,7 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
+    Outfit_700Bold,
   });
 
   const navigateToChat = (id: string) => {
