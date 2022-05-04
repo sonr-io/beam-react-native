@@ -1,13 +1,4 @@
-import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
-import { Outfit_700Bold } from "@expo-google-fonts/outfit";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_600SemiBold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
 import { StackScreenProps } from "@react-navigation/stack";
-
 import React, { useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
@@ -22,21 +13,10 @@ type Props = StackScreenProps<Params, "ChatList">;
 
 const ChatList: React.FC<Props> = ({ navigation }) => {
   const [newChatVisible, setNewChatVisible] = useState(false);
-  const [fontsLoaded] = useFonts({
-    Montserrat_600SemiBold,
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    Outfit_700Bold,
-  });
 
   const navigateToChat = (id: string) => {
     navigation.navigate("ChatView", { id });
   };
-
-  if (!fontsLoaded) {
-    return <></>;
-  }
 
   return (
     <View style={{ flex: 1 }}>
