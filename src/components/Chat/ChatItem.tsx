@@ -46,6 +46,7 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
           text={message.text}
           isIncoming={!isSender}
           isLast={message.last}
+          timestamp={1650487006983}
         />
 
         {showTimestamp && (
