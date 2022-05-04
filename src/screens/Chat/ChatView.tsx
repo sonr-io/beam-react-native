@@ -142,7 +142,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
             style={styles.messageInput}
             multiline
             placeholder="New message"
-            placeholderTextColor="#353945"
+            placeholderTextColor="#88849C"
             value={message}
             onChangeText={(message) => setMessage(message)}
           />
@@ -202,9 +202,11 @@ const styles = StyleSheet.create({
     maxHeight: 230,
   },
   messageInput: {
-    fontFamily: "Poppins_400Regular",
+    fontFamily: "Outfit_400Regular",
     fontSize: 16,
     lineHeight: 20,
+    color: "#5E5B71",
+    height: "100%",
     flex: 1,
   },
 });

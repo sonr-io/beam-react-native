@@ -1,7 +1,11 @@
 import "react-native-gesture-handler";
 
 import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
-import { Outfit_400Regular, Outfit_700Bold } from "@expo-google-fonts/outfit";
+import {
+  Outfit_400Regular,
+  Outfit_500Medium,
+  Outfit_700Bold,
+} from "@expo-google-fonts/outfit";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
