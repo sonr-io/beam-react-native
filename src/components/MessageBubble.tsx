@@ -18,13 +18,17 @@ export const MessageBubble = (props: Props) => {
 
   return props.isIncoming ? (
     <View style={[styles.bubbleContainer, styles.incoming, styleLast]}>
-      <Text style={styles.time}>{getTime(props.timestamp)}</Text>
-      <Text style={styles.textIncoming}>{props.text}</Text>
+      <Text style={[styles.time, styles.timeIncoming]}>
+        {getTime(props.timestamp)}
+      </Text>
+      <Text style={[styles.text, styles.textIncoming]}>{props.text}</Text>
     </View>
   ) : (
     <View style={[styles.bubbleContainer, styles.outgoing, styleLast]}>
-      <Text style={styles.time}>{getTime(props.timestamp)}</Text>
-      <Text style={styles.textOutgoing}>{props.text}</Text>
+      <Text style={[styles.time, styles.timeOutgoing]}>
+        {getTime(props.timestamp)}
+      </Text>
+      <Text style={[styles.text, styles.textOutgoing]}>{props.text}</Text>
     </View>
   );
 };
@@ -51,19 +55,27 @@ const styles = StyleSheet.create({
   outgoingLast: {
     borderBottomRightRadius: 4,
   },
-  time: {
-    fontFamily: "Outfit_700Bold",
-    fontSize: 10,
-    color: "#B7B4C7",
+
+  text: {
+    fontFamily: "Outfit_400Regular",
+    fontSize: 16,
   },
   textIncoming: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 16,
     color: "#5E5B71",
   },
   textOutgoing: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 16,
-    color: "#FCFCFD",
+    color: "#FFFFFF",
+  },
+
+  time: {
+    fontFamily: "Outfit_700Bold",
+    fontSize: 10,
+    marginVertical: 4,
+  },
+  timeIncoming: {
+    color: "#B7B4C7",
+  },
+  timeOutgoing: {
+    color: "#F5F4FA",
   },
 });
