@@ -22,6 +22,7 @@ import { ChatItem } from "../../components/Chat/ChatItem";
 import IconBackArrow from "../../icons/BackArrow";
 import IconSend from "../../icons/Send";
 import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
+import { GradientTop } from "../../components/GradientTop";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
   const messageItems = messages.map((m) => ({ last: true, ...m }));
@@ -98,13 +99,26 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <>
+      <GradientTop style={styles.chatHeader}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <IconBackArrow />
+        </TouchableOpacity>
+        <Avatar user={recipient} />
+        <Text style={styles.chatTitle}>
+          {(snrUsernamePattern.exec(chat.name) ?? [])[1]}
+          <Text style={{ color: "#B1B5C4" }}>.snr</Text>
+        </Text>
+      </GradientTop>
       <FlatList
         style={styles.chatContainer}
         inverted
         data={messages}
         contentContainerStyle={{
           paddingTop: 58,
-          paddingBottom: 84,
+          paddingBottom: 20,
         }}
         renderItem={({ item }) => {
           return (
@@ -123,19 +137,6 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         }}
         keyExtractor={(item) => item.id}
       />
-      <BlurView intensity={24} style={styles.chatHeader}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <IconBackArrow />
-        </TouchableOpacity>
-        <Avatar user={recipient} />
-        <Text style={styles.chatTitle}>
-          {(snrUsernamePattern.exec(chat.name) ?? [])[1]}
-          <Text style={{ color: "#B1B5C4" }}>.snr</Text>
-        </Text>
-      </BlurView>
       <BlurView intensity={80} style={styles.messageInputBlur}>
         <View style={styles.messageInputContainer}>
           <TextInput
@@ -160,16 +161,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  chatContainer: {
-    backgroundColor: "#FFF",
-    paddingHorizontal: 24,
-  },
   chatHeader: {
-    position: "absolute",
-    top: 0,
-    width: "100%",
     height: 72,
-    backgroundColor: ios ? "rgba(255, 255, 255, 0.3)" : "#FFF",
     flexDirection: "row",
     alignItems: "center",
   },
@@ -178,9 +171,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   backButton: {
-    paddingVertical: 30,
     paddingLeft: 24,
     paddingRight: 18,
+  },
+  chatContainer: {
+    backgroundColor: "#FFF",
+    paddingHorizontal: 16,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   messageInputBlur: {
     position: "absolute",
