@@ -2,12 +2,15 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { User } from "../../types/User";
+import IconUser from "../../icons/User";
 
 export const Avatar = (props: { user: User }) => {
   return (
     <View>
       {props.user.isOnline && <View style={styles.isOnline}></View>}
-      <View style={styles.avatar} />
+      <View style={styles.avatar}>
+        <IconUser />
+      </View>
     </View>
   );
 };
@@ -20,14 +23,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#1792FF",
     position: "absolute",
     zIndex: 100,
-    left: 27,
-    top: 27,
+    bottom: 0,
+    right: 10,
+    borderColor: "#FFFFFF",
+    borderWidth: 1,
   },
   avatar: {
-    width: 40,
-    height: 40,
+    width: 45,
+    height: 45,
     borderRadius: 40,
     marginRight: 12,
-    backgroundColor: "#C4C4C4",
+    backgroundColor: "#1C1C3B",
+    paddingHorizontal: 11,
+    paddingVertical: 10,
   },
 });

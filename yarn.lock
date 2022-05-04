@@ -1066,6 +1066,11 @@
   resolved "https://registry.yarnpkg.com/@expo-google-fonts/montserrat/-/montserrat-0.2.2.tgz#1c2522b6fcacf7a3b561db2f3fd7a90a52613db1"
   integrity sha512-kpK++6mnyPPNVuZQ5ScU/YmvNsbDQGNgxwPgkmAKFrctAhfwg4KxotmmuNnn2ZaKLPtGYjP8/M8JIO3/tAm9ag==
 
+"@expo-google-fonts/outfit@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/outfit/-/outfit-0.2.2.tgz#7badcc65649ce95b175038a1422a611df2dcdcda"
+  integrity sha512-0M27jjGxc5dKmw7SC9opSWY3E2LvbYf13ZD7mU1DdfmUlB6SOP9+DIyzN24RVx2WpEkEPAN4iweUoy8xu00A4Q==
+
 "@expo-google-fonts/poppins@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@expo-google-fonts/poppins/-/poppins-0.2.2.tgz#d2a343fa69400ffbaf61ae97162791a59e215678"
