@@ -6,11 +6,11 @@ import {
 } from "react-native-gesture-handler";
 
 import { getTime } from "../../lib/getTime";
-import { Message } from "../../types/Chat";
+import { ViewableMessage } from "../../types/Chat";
 import { User } from "../../types/User";
 
 interface Props {
-  message: Message & { last: boolean };
+  message: ViewableMessage;
   user: User;
   onSwipe: () => void;
 }
