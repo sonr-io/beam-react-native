@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+
 import { getTime } from "../lib/getTime";
 
 type Props = {

@@ -1,29 +1,26 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useState } from "react";
 import {
-  FlatList,
-  View,
-  Text,
-  StyleSheet,
   Dimensions,
+  FlatList,
   Platform,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Params } from ".";
+import { chats } from "../../_data/chats";
+import { Thiago, users } from "../../_data/users";
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
-
 import IconBackArrow from "../../icons/BackArrow";
 import IconSend from "../../icons/Send";
-
 import { Message, ViewableMessage } from "../../types/Chat";
-import { chats } from "../../_data/chats";
-import { Thiago, users } from "../../_data/users";
-
-import { Params } from ".";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
   const messageItems = messages.map((m) => ({ last: true, ...m }));
