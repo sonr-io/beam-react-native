@@ -1,28 +1,36 @@
-import { StackScreenProps } from "@react-navigation/stack";
-import { BlurView } from "expo-blur";
-import React from "react";
+import { StackScreenProps } from '@react-navigation/stack';
+import { BlurView } from 'expo-blur';
+import React from 'react';
 import {
-  FlatList,
-  View,
-  Text,
-  StyleSheet,
   Dimensions,
+  FlatList,
+  NativeSyntheticEvent,
   Platform,
-} from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import KeyboardSpacer from "react-native-keyboard-spacer";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+  StyleSheet,
+  Text,
+  TextInputChangeEventData,
+  View,
+} from 'react-native';
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { OpenGraphParser } from 'react-native-opengraph-kit';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ChatItem } from "../../components/Chat/ChatItem";
-import BackArrow from "../../icons/BackArrow";
-import Send from "../../icons/Send";
-import { Message } from "../../types/Chat";
+import { Params } from '.';
+import { chats } from '../../_data/chats';
+import { Thiago, users } from '../../_data/users';
+import { Avatar } from '../../components/Avatar/Avatar';
+import { ChatItem } from '../../components/Chat/ChatItem';
+import BackArrow from '../../icons/BackArrow';
+import Send from '../../icons/Send';
+import { Message } from '../../types/Chat';
 
-import { chats } from "../../_data/chats";
-import { Thiago, users } from "../../_data/users";
-
-import { Params } from ".";
-import { Avatar } from "../../components/Avatar/Avatar";
+type PageMeta = {
+  image: string;
+  referrer: string;
+  title: string;
+  url: string;
+};
 
 type Item =
   | (Message & { type: "message"; last: boolean })
@@ -45,6 +53,23 @@ const addSeparators = (messages: Message[]): Item[] => {
   (output[output.length - 1] as any).last = true;
 
   return output;
+};
+
+const handleTextChange = (
+  event: NativeSyntheticEvent<TextInputChangeEventData>
+) => {
+  OpenGraphParser.extractMeta(event.nativeEvent.text)
+    .then((data: PageMeta[]) => {
+      const [metas] = data;
+      if (!metas) {
+        return
+      }
+      
+      console.log({ metas });
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
 };
 
 const snrUsernamePattern = /(.*)\.snr/;
@@ -107,6 +132,7 @@ const ChatView = ({ route, navigation }: Props) => {
               style={styles.messageInput}
               placeholder="New message"
               placeholderTextColor="#353945"
+              onChange={handleTextChange}
             />
             <TouchableOpacity>
               <Send />
