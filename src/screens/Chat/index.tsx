@@ -5,7 +5,6 @@ import {
 } from "@react-navigation/stack";
 
 import ChatList from "./ChatList";
-import ChatNew from "./ChatNew";
 import ChatView from "./ChatView";
 import MessageMenu from "./MessageMenu";
 import { Message } from "../../types/Chat";
@@ -22,14 +21,6 @@ export type Params = {
 const ChatScreen = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="ChatList" component={ChatList} />
-    <Stack.Screen
-      name="ChatNew"
-      component={ChatNew}
-      options={{
-        title: "Profile",
-        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-      }}
-    />
     <Stack.Screen name="ChatView" component={ChatView} />
     <Stack.Screen
       name="MessageMenu"

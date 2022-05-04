@@ -5,7 +5,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/poppins";
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 import { Params } from ".";
@@ -13,10 +13,12 @@ import { chats } from "../../_data/chats";
 import { ChatListItem } from "../../components/Chat/ChatListItem";
 import { NewChatButton } from "../../components/NewChatButton";
 import { GradientHeader } from "../../components/GradientHeader";
+import { ChatNewModal } from "./ChatNewModal";
 
 type Props = StackScreenProps<Params, "ChatList">;
 
 const ChatList: React.FC<Props> = ({ navigation }) => {
+  const [newChatVisible, setNewChatVisible] = useState(false);
   const [fontsLoaded] = useFonts({
     Montserrat_600SemiBold,
     Poppins_400Regular,
@@ -37,14 +39,15 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
       <FlatList
         data={chats}
         renderItem={({ item }) => (
-          <ChatListItem
-            key={item.id}
-            chat={item}
-            navitgateToChat={navigateToChat}
-          />
+          <ChatListItem key={item.id} chat={item} onPress={navigateToChat} />
         )}
       />
-      <NewChatButton onPress={() => navigation.navigate("ChatNew", {})} />
+      <NewChatButton onPress={() => setNewChatVisible(true)} />
+      <ChatNewModal
+        visible={newChatVisible}
+        onClose={() => setNewChatVisible(false)}
+        navigateToChat={(id) => navigation.navigate("ChatView", { id })}
+      />
     </View>
   );
 };
