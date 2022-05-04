@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
   Swipeable,
@@ -18,6 +18,7 @@ interface Props {
 
 export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
   const [showTimestamp, setShowTimestamp] = React.useState(false);
+  const [timestamp, setTimestamp] = useState(0);
   const swipeableRef = React.useRef<Swipeable>(null);
 
   const renderLeftActions = () => <View style={{ width: 30 }} />;
@@ -39,6 +40,7 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
       <TouchableWithoutFeedback
         style={styles.messageContainer}
         onPress={() => {
+          setTimestamp(timestamp ? 0 : message.timestamp);
           setShowTimestamp(!showTimestamp);
         }}
       >
@@ -46,21 +48,8 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
           text={message.text}
           isIncoming={!isSender}
           isLast={message.last}
-          timestamp={1650487006983}
+          timestamp={timestamp}
         />
-
-        {showTimestamp && (
-          <Text
-            style={[
-              styles.messageTimestamp,
-              isSender
-                ? styles.messageTimestampOutgoing
-                : styles.messageTimestampIncoming,
-            ]}
-          >
-            {getTime(message.timestamp)}
-          </Text>
-        )}
       </TouchableWithoutFeedback>
     </Swipeable>
   );

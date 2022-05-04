@@ -18,16 +18,20 @@ export const MessageBubble = (props: Props) => {
 
   return props.isIncoming ? (
     <View style={[styles.bubbleContainer, styles.incoming, styleLast]}>
-      <Text style={[styles.time, styles.timeIncoming]}>
-        {getTime(props.timestamp)}
-      </Text>
+      {!!props.timestamp && (
+        <Text style={[styles.time, styles.timeIncoming]}>
+          {getTime(props.timestamp)}
+        </Text>
+      )}
       <Text style={[styles.text, styles.textIncoming]}>{props.text}</Text>
     </View>
   ) : (
     <View style={[styles.bubbleContainer, styles.outgoing, styleLast]}>
-      <Text style={[styles.time, styles.timeOutgoing]}>
-        {getTime(props.timestamp)}
-      </Text>
+      {!!props.timestamp && (
+        <Text style={[styles.time, styles.timeOutgoing]}>
+          {getTime(props.timestamp)}
+        </Text>
+      )}
       <Text style={[styles.text, styles.textOutgoing]}>{props.text}</Text>
     </View>
   );
@@ -77,5 +81,6 @@ const styles = StyleSheet.create({
   },
   timeOutgoing: {
     color: "#F5F4FA",
+    textAlign: "right",
   },
 });
