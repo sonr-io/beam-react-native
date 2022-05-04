@@ -103,7 +103,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         inverted
         data={messages}
         contentContainerStyle={{
-          paddingTop: 72,
+          paddingTop: 58,
           paddingBottom: 84,
         }}
         renderItem={({ item }) => {
@@ -136,27 +136,24 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           <Text style={{ color: "#B1B5C4" }}>.snr</Text>
         </Text>
       </BlurView>
-      <View style={styles.messageInputShadow}>
+      <BlurView intensity={80} style={styles.messageInputBlur}>
         <View style={styles.messageInputContainer}>
-          <BlurView intensity={24} style={styles.messageInputBlur}>
-            <TextInput
-              style={styles.messageInput}
-              multiline
-              placeholder="New message"
-              placeholderTextColor="#353945"
-              value={message}
-              onChangeText={(message) => setMessage(message)}
-            />
-
-            <View style={{ alignSelf: "flex-end" }}>
-              <TouchableOpacity onPress={() => setMessages(pushMessage)}>
-                <IconSend />
-              </TouchableOpacity>
-            </View>
-          </BlurView>
+          <TextInput
+            style={styles.messageInput}
+            multiline
+            placeholder="New message"
+            placeholderTextColor="#353945"
+            value={message}
+            onChangeText={(message) => setMessage(message)}
+          />
+          <View style={{ alignSelf: "flex-end" }}>
+            <TouchableOpacity onPress={() => setMessages(pushMessage)}>
+              <IconSend />
+            </TouchableOpacity>
+          </View>
         </View>
         {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
-      </View>
+      </BlurView>
       {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
     </>
   );
@@ -185,33 +182,23 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingRight: 18,
   },
-  messageInputShadow: {
+  messageInputBlur: {
     position: "absolute",
     bottom: 0,
-    shadowOffset: { width: 2, height: 6 },
-    shadowRadius: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.24,
+    backgroundColor: ios ? "rgba(136, 132, 156, 0.1)" : "#FFF",
+    padding: 8,
   },
   messageInputContainer: {
-    width: Dimensions.get("screen").width - 24,
-    minHeight: 48,
-    marginHorizontal: 12,
-    marginBottom: 16,
-    backgroundColor: "transparent",
-    borderColor: "#1792FF",
-    borderWidth: 2,
-    borderRadius: 20,
-    overflow: "hidden",
-  },
-  messageInputBlur: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: ios ? "rgba(255, 255, 255, 0.6)" : "#FFF",
-    minHeight: 44,
+    width: Dimensions.get("screen").width - 16,
+    backgroundColor: ios ? "rgba(255, 255, 255, 0.7)" : "#FFF",
+    borderColor: "#D9D7E6",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingVertical: 4,
+    paddingRight: 4,
     paddingLeft: 16,
-    paddingRight: 8,
-    paddingBottom: 6,
   },
   messageInput: {
     fontFamily: "Poppins_400Regular",
