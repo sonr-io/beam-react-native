@@ -8,7 +8,7 @@ import { Avatar } from "../Avatar/Avatar";
 
 export const ChatListItem = (props: {
   chat: Chat;
-  navitgateToChat: (id: string) => void;
+  onPress: (id: string) => void;
 }) => {
   const { id, name, lastSeen, messages } = props.chat;
 
@@ -36,7 +36,7 @@ export const ChatListItem = (props: {
     <TouchableOpacity
       style={styles.button}
       onPress={() => {
-        props.navitgateToChat(props.chat.id);
+        props.onPress(props.chat.id);
       }}
     >
       <View style={styles.buttonContainer}>

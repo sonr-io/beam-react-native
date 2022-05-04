@@ -20,7 +20,7 @@ export const GradientHeader = (props: { text: string }) => {
           fontSize: 24,
           fontWeight: "bold",
           fontFamily: "Poppins_600SemiBold",
-          marginBottom: 20,
+          marginVertical: 20,
           lineHeight: 32,
           backgroundImage:
             "-webkit-linear-gradient(314deg, #4D74FD, #4DAEF8, #4DFDF2)",

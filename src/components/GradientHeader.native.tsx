@@ -18,12 +18,12 @@ export const GradientHeader = (props: { text: string }) => {
   return (
     <View>
       <MaskedView
-        style={{ height: 60 }}
+        style={{ height: 80 }}
         maskElement={<Text style={styles.text}>{text}</Text>}
       >
         <View>
           <LinearGradient
-            style={{ height: 60 }}
+            style={{ height: 80 }}
             colors={["#4D74FD", "#4DAEF8", "#4DFDF2"]}
             end={{ x: 0.1, y: 0.2 }}
           />
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     fontFamily: "Poppins_600SemiBold",
-    marginBottom: 20,
+    marginVertical: 20,
     lineHeight: 32,
   },
 });

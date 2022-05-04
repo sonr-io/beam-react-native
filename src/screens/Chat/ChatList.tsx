@@ -5,27 +5,28 @@ import {
   useFonts,
 } from "@expo-google-fonts/poppins";
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
-import { StyleSheet, View } from "react-native";
-
-import { ChatListItem } from "../../components/Chat/ChatListItem";
-import { GradientHeader } from "../../components/GradientHeader";
-import { chats } from "../../_data/chats";
-import { Chat } from "../../types/Chat";
+import React, { useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 
 import { Params } from ".";
+import { chats } from "../../_data/chats";
+import { ChatListItem } from "../../components/Chat/ChatListItem";
+import { NewChatButton } from "../../components/NewChatButton";
+import { GradientHeader } from "../../components/GradientHeader";
+import { ChatNewModal } from "./ChatNewModal";
 
-type ChatListProps = StackScreenProps<Params, "List">;
+type Props = StackScreenProps<Params, "ChatList">;
 
-const ChatList = ({ navigation }: ChatListProps) => {
+const ChatList: React.FC<Props> = ({ navigation }) => {
+  const [newChatVisible, setNewChatVisible] = useState(false);
   const [fontsLoaded] = useFonts({
     Montserrat_600SemiBold,
     Poppins_400Regular,
     Poppins_500Medium,
   });
 
-  const navitgateToChat = (id: string) => {
-    navigation.navigate("View", { id });
+  const navigateToChat = (id: string) => {
+    navigation.navigate("ChatView", { id });
   };
 
   if (!fontsLoaded) {
@@ -35,15 +36,18 @@ const ChatList = ({ navigation }: ChatListProps) => {
   return (
     <View style={styles.listContainer}>
       <GradientHeader text="Messages" />
-      <View style={styles.list}>
-        {chats.map((chat: Chat) => (
-          <ChatListItem
-            key={chat.id}
-            chat={chat}
-            navitgateToChat={navitgateToChat}
-          />
-        ))}
-      </View>
+      <FlatList
+        data={chats}
+        renderItem={({ item }) => (
+          <ChatListItem key={item.id} chat={item} onPress={navigateToChat} />
+        )}
+      />
+      <NewChatButton onPress={() => setNewChatVisible(true)} />
+      <ChatNewModal
+        visible={newChatVisible}
+        onClose={() => setNewChatVisible(false)}
+        navigateToChat={(id) => navigation.navigate("ChatView", { id })}
+      />
     </View>
   );
 };
@@ -51,7 +55,7 @@ const ChatList = ({ navigation }: ChatListProps) => {
 const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF",
     paddingHorizontal: 20,
   },
   list: {
