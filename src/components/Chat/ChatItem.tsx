@@ -8,6 +8,7 @@ import {
 import { getTime } from "../../lib/getTime";
 import { ViewableMessage } from "../../types/Chat";
 import { User } from "../../types/User";
+import { MessageBubble } from "../MessageBubble";
 
 interface Props {
   message: ViewableMessage;
@@ -41,22 +42,12 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
           setShowTimestamp(!showTimestamp);
         }}
       >
-        <View
-          style={[
-            styles.message,
-            isSender
-              ? [
-                  styles.messageOutgoing,
-                  message.last && styles.lastMessageOutgoing,
-                ]
-              : [
-                  styles.messageIncoming,
-                  message.last && styles.lastMessageIncoming,
-                ],
-          ]}
-        >
-          <Text style={styles.messageText}>{message.text}</Text>
-        </View>
+        <MessageBubble
+          text={message.text}
+          isIncoming={!isSender}
+          isLast={message.last}
+        />
+
         {showTimestamp && (
           <Text
             style={[
@@ -77,32 +68,6 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
 const styles = StyleSheet.create({
   messageContainer: {
     marginBottom: 4,
-  },
-  message: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  messageOutgoing: {
-    alignSelf: "flex-end",
-    backgroundColor: "#777E90",
-    marginLeft: 40,
-  },
-  messageIncoming: {
-    alignSelf: "flex-start",
-    backgroundColor: "#1792FF",
-    marginRight: 40,
-  },
-  lastMessageOutgoing: {
-    borderBottomRightRadius: 4,
-  },
-  lastMessageIncoming: {
-    borderBottomLeftRadius: 4,
-  },
-  messageText: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 16,
-    color: "#FCFCFD",
   },
   messageTimestamp: {
     fontFamily: "Montserrat_600SemiBold",
