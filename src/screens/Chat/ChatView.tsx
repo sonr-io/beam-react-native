@@ -199,10 +199,12 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingRight: 4,
     paddingLeft: 16,
+    maxHeight: 230,
   },
   messageInput: {
     fontFamily: "Poppins_400Regular",
     fontSize: 16,
+    lineHeight: 20,
     flex: 1,
   },
 });
