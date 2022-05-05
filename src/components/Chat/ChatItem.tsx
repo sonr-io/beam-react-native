@@ -48,7 +48,9 @@ export const ChatItem: React.FC<Props> = ({
         }}
       >
         {!!parentMessage && (
-          <ReplyBubble text={parentMessage.text} isIncoming={!isSender} />
+          <View style={styles.parentMessageContainer}>
+            <ReplyBubble text={parentMessage.text} isIncoming={!isSender} />
+          </View>
         )}
         <MessageBubble
           text={message.text}
@@ -64,5 +66,9 @@ export const ChatItem: React.FC<Props> = ({
 const styles = StyleSheet.create({
   messageContainer: {
     marginBottom: 4,
+  },
+  parentMessageContainer: {
+    marginBottom: -10,
+    marginHorizontal: 10,
   },
 });
