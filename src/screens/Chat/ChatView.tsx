@@ -14,15 +14,21 @@ import { OpenGraphParser } from "react-native-opengraph-kit";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
+
 import { chats } from "../../_data/chats";
 import { Thiago, users } from "../../_data/users";
+
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
-import IconBackArrow from "../../icons/BackArrow";
-import IconSend from "../../icons/Send";
-import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
 import { GradientTop } from "../../components/GradientTop";
+
+import IconBackArrow from "../../icons/BackArrow";
+import FontSize from "../../icons/FontSize";
+import Plus from "../../icons/Plus";
+import IconSend from "../../icons/Send";
+
+import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
   const messageItems = messages.map((m) => ({ last: true, ...m }));
@@ -138,6 +144,12 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         keyExtractor={(item) => item.id}
       />
       <BlurView intensity={80} style={styles.messageInputBlur}>
+        <View style={styles.messageToolbarButton}>
+          <Plus />
+        </View>
+        <View style={styles.messageToolbarButton}>
+          <FontSize />
+        </View>
         <View style={styles.messageInputContainer}>
           <TextInput
             style={styles.messageInput}
@@ -185,11 +197,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: ios ? "rgba(136, 132, 156, 0.1)" : "#FFF",
     padding: 8,
+    flexDirection: "row",
+  },
+  messageToolbarButton: {
+    alignSelf: "flex-end",
+    marginBottom: 10,
+    marginRight: 8,
   },
   messageInputContainer: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    width: Dimensions.get("screen").width - 16,
     backgroundColor: ios ? "rgba(255, 255, 255, 0.7)" : "#FFF",
     borderColor: "#D9D7E6",
     borderWidth: 1,
