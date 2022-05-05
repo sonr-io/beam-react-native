@@ -13,7 +13,9 @@ export const ReplyBubble = (props: Props) => {
 
   return (
     <View style={[styles.container, alignmentStyle]}>
-      <Text style={styles.text}>{props.text}</Text>
+      <Text style={styles.text} numberOfLines={1}>
+        {props.text}
+      </Text>
     </View>
   );
 };

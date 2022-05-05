@@ -154,6 +154,7 @@ export const chats: Chat[] = [
       },
       {
         id: "10",
+        parentId: "3",
         text: "hey",
         sender: Thiago,
         timestamp: 1650331578108,
