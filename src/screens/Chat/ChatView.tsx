@@ -1,33 +1,28 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useState } from "react";
 import {
-  FlatList,
-  View,
-  Text,
-  StyleSheet,
   Dimensions,
+  FlatList,
   Platform,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Params } from ".";
+import { chats } from "../../_data/chats";
+import { Thiago, users } from "../../_data/users";
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
-
 import IconBackArrow from "../../icons/BackArrow";
 import IconSend from "../../icons/Send";
+import { Message, ViewableMessage } from "../../types/Chat";
 
-import { Message } from "../../types/Chat";
-import { chats } from "../../_data/chats";
-import { Thiago, users } from "../../_data/users";
-
-import { Params } from ".";
-
-type MessageItem = Message & { last: boolean };
-
-const addSeparators = (messages: Message[]): MessageItem[] => {
+const toViewable = (messages: Message[]): ViewableMessage[] => {
   const messageItems = messages.map((m) => ({ last: true, ...m }));
 
   for (let i = 0; i < messageItems.length - 1; i++) {
@@ -47,18 +42,18 @@ type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();
-  const chat = chats.find((chat) => chat.id === route.params.id);
-  const recipient = users.find((user) => user.id === chat?.name);
   const me = Thiago;
 
+  const chat = chats.find((chat) => chat.id === route.params.id);
+  const recipient = users.find((user) => user.id === chat?.name);
   if (!chat || !recipient) {
     return <></>;
   }
 
-  const [items, setItems] = useState(addSeparators(chat.messages).reverse());
+  const [messages, setMessages] = useState(toViewable(chat.messages).reverse());
   const [message, setMessage] = useState("");
 
-  const pushMessage = (messages: MessageItem[]) => {
+  const pushMessage = (messages: ViewableMessage[]) => {
     if (message.length <= 0) {
       return messages;
     }
@@ -81,7 +76,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
       <FlatList
         style={styles.chatContainer}
         inverted
-        data={items}
+        data={messages}
         contentContainerStyle={{
           paddingTop: 72,
           paddingBottom: 84,
@@ -128,7 +123,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
             />
 
             <View style={{ alignSelf: "flex-end" }}>
-              <TouchableOpacity onPress={() => setItems(pushMessage)}>
+              <TouchableOpacity onPress={() => setMessages(pushMessage)}>
                 <IconSend />
               </TouchableOpacity>
             </View>

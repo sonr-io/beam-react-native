@@ -7,6 +7,8 @@ export type Message = {
   sender: User;
 };
 
+export type ViewableMessage = Message & { last: boolean };
+
 export type Chat = {
   id: string;
   name: string;
