@@ -113,10 +113,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           <IconBackArrow />
         </TouchableOpacity>
         <Avatar user={recipient} />
-        <Text style={styles.chatTitle}>
-          {(snrUsernamePattern.exec(chat.name) ?? [])[1]}
-          <Text style={{ color: "#B1B5C4" }}>.snr</Text>
-        </Text>
+        <View>
+          <Text style={styles.recipientName}>{recipient.name}</Text>
+          <Text style={styles.recipientId}>{recipient.id}</Text>
+        </View>
       </GradientTop>
       <FlatList
         style={styles.chatContainer}
@@ -145,7 +145,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
       />
       <BlurView intensity={80} style={styles.messageInputBlur}>
         <View style={styles.messageToolbarButton}>
-          <Plus />
+          <Plus fill="#5E5B71" />
         </View>
         <View style={styles.messageToolbarButton}>
           <FontSize />
@@ -178,13 +178,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  chatTitle: {
-    fontFamily: "Poppins_500Medium",
+  recipientName: {
+    fontFamily: "THICCCBOI_Bold",
+    fontSize: 20,
+    lineHeight: 24,
+    color: "#FFF",
+  },
+  recipientId: {
+    fontFamily: "THICCCBOI_Medium",
     fontSize: 16,
+    lineHeight: 20,
+    color: "rgba(255, 255, 255, 0.5)",
   },
   backButton: {
-    paddingLeft: 24,
-    paddingRight: 18,
+    paddingLeft: 16,
+    paddingRight: 8,
+    paddingVertical: 28,
   },
   chatContainer: {
     backgroundColor: "#FFF",
