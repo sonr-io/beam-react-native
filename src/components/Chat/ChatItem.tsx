@@ -5,12 +5,12 @@ import {
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 
-import { ViewableMessage } from "../../types/Chat";
+import { Message } from "../../types/Chat";
 import { User } from "../../types/User";
 import { MessageBubble } from "../MessageBubble";
 
 interface Props {
-  message: ViewableMessage;
+  message: Message;
   user: User;
   onSwipe: () => void;
 }
@@ -44,7 +44,6 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
           text={message.text}
           timestamp={message.timestamp}
           isIncoming={!isSender}
-          isLast={message.last}
           showTimestamp={showTimestamp}
         />
       </TouchableWithoutFeedback>

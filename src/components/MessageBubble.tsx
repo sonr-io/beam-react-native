@@ -6,60 +6,55 @@ import { getTime } from "../lib/getTime";
 type Props = {
   text: string;
   isIncoming: boolean;
-  isLast: boolean;
   timestamp: number;
   showTimestamp: boolean;
 };
 
 export const MessageBubble = (props: Props) => {
-  const styleLast = props.isLast
-    ? props.isIncoming
-      ? styles.incomingLast
-      : styles.outgoingLast
-    : {};
+  const bubbleStyles = [
+    styles.bubble,
+    props.isIncoming ? styles.bubbleIncoming : styles.bubbleOutgoing,
+  ];
 
-  return props.isIncoming ? (
-    <View style={[styles.bubbleContainer, styles.incoming, styleLast]}>
+  const timeStyles = [
+    styles.time,
+    props.isIncoming ? styles.timeIncoming : styles.timeOutgoing,
+  ];
+
+  const textStyles = [
+    styles.text,
+    props.isIncoming ? styles.textIncoming : styles.textOutgoing,
+  ];
+
+  return (
+    <View style={bubbleStyles}>
       {props.showTimestamp && (
-        <Text style={[styles.time, styles.timeIncoming]}>
-          {getTime(props.timestamp)}
-        </Text>
+        <Text style={timeStyles}>{getTime(props.timestamp)}</Text>
       )}
-      <Text style={[styles.text, styles.textIncoming]}>{props.text}</Text>
-    </View>
-  ) : (
-    <View style={[styles.bubbleContainer, styles.outgoing, styleLast]}>
-      {props.showTimestamp && (
-        <Text style={[styles.time, styles.timeOutgoing]}>
-          {getTime(props.timestamp)}
-        </Text>
-      )}
-      <Text style={[styles.text, styles.textOutgoing]}>{props.text}</Text>
+      <Text style={textStyles}>{props.text}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  bubbleContainer: {
+  bubble: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
   },
-  incoming: {
+  bubbleIncoming: {
     alignSelf: "flex-start",
     marginRight: 40,
     backgroundColor: "#F5F4FA",
-  },
-  incomingLast: {
     borderBottomLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
-  outgoing: {
+  bubbleOutgoing: {
     alignSelf: "flex-end",
     marginLeft: 40,
     backgroundColor: "#1792FF",
-  },
-  outgoingLast: {
     borderBottomRightRadius: 4,
+    borderTopLeftRadius: 4,
   },
 
   text: {
