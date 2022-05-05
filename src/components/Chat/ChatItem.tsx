@@ -7,15 +7,22 @@ import {
 
 import { Message } from "../../types/Chat";
 import { User } from "../../types/User";
+import { ReplyBubble } from "../ReplyBubble";
 import { MessageBubble } from "../MessageBubble";
 
 interface Props {
   message: Message;
+  parentMessage?: Message;
   user: User;
   onSwipe: () => void;
 }
 
-export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
+export const ChatItem: React.FC<Props> = ({
+  message,
+  parentMessage,
+  user,
+  onSwipe,
+}) => {
   const [showTimestamp, setShowTimestamp] = React.useState(false);
   const swipeableRef = React.useRef<Swipeable>(null);
 
@@ -40,6 +47,9 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
           setShowTimestamp(!showTimestamp);
         }}
       >
+        {!!parentMessage && (
+          <ReplyBubble text={parentMessage.text} isIncoming={!isSender} />
+        )}
         <MessageBubble
           text={message.text}
           timestamp={message.timestamp}

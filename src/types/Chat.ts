@@ -2,6 +2,7 @@ import { User } from "./User";
 
 export type Message = {
   id: string;
+  parentId?: string;
   text: string;
   timestamp: number;
   sender: User;

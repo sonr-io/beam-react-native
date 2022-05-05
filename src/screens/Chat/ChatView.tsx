@@ -91,6 +91,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     return messages;
   };
 
+  const getParentMessage = (message: Message) => {
+    return messages.find((m) => m.id === message.parentId);
+  };
+
   return (
     <>
       <FlatList
@@ -107,6 +111,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
               {item.last && <View style={{ marginTop: 8 }} />}
               <ChatItem
                 message={item}
+                parentMessage={getParentMessage(item)}
                 user={me}
                 onSwipe={() => {
                   navigation.navigate("MessageMenu", { message: item });
