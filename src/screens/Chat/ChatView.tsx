@@ -1,11 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
-  NativeSyntheticEvent,
   Platform,
-  TextInputChangeEventData,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
@@ -18,13 +19,11 @@ import { Thiago, users } from "../../_data/users";
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
-import BackArrow from "../../icons/BackArrow";
-import Send from "../../icons/Send";
-import { Message } from "../../types/Chat";
+import IconBackArrow from "../../icons/BackArrow";
+import IconSend from "../../icons/Send";
+import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
 
-type MessageItem = Message & { last: boolean };
-
-const addSeparators = (messages: Message[]): MessageItem[] => {
+const toViewable = (messages: Message[]): ViewableMessage[] => {
   const messageItems = messages.map((m) => ({ last: true, ...m }));
 
   for (let i = 0; i < messageItems.length - 1; i++) {
@@ -36,23 +35,6 @@ const addSeparators = (messages: Message[]): MessageItem[] => {
   return messageItems;
 };
 
-const handleTextChange = (
-  event: NativeSyntheticEvent<TextInputChangeEventData>
-) => {
-  OpenGraphParser.extractMeta(event.nativeEvent.text)
-    .then((data: PageMeta[]) => {
-      const [metas] = data;
-      if (!metas) {
-        return;
-      }
-
-      console.log({ metas });
-    })
-    .catch((error: any) => {
-      console.log(error);
-    });
-};
-
 const snrUsernamePattern = /(.*)\.snr/;
 
 const ios = Platform.OS === "ios";
@@ -61,18 +43,41 @@ type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();
-  const chat = chats.find((chat) => chat.id === route.params.id);
-  const recipient = users.find((user) => user.id === chat?.name);
   const me = Thiago;
 
+  const chat = chats.find((chat) => chat.id === route.params.id);
+  const recipient = users.find((user) => user.id === chat?.name);
   if (!chat || !recipient) {
     return <></>;
   }
 
-  const [items, setItems] = useState(addSeparators(chat.messages).reverse());
+  const [messages, setMessages] = useState(toViewable(chat.messages).reverse());
   const [message, setMessage] = useState("");
 
-  const pushMessage = (messages: MessageItem[]) => {
+  const handleTextChange = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>
+  ) => {};
+
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+
+    OpenGraphParser.extractMeta(message)
+      .then((data: PageMeta[]) => {
+        const [metas] = data;
+        if (!metas) {
+          return;
+        }
+
+        console.log({ metas });
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  }, [message]);
+
+  const pushMessage = (messages: ViewableMessage[]) => {
     if (message.length <= 0) {
       return messages;
     }
@@ -95,7 +100,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
       <FlatList
         style={styles.chatContainer}
         inverted
-        data={items}
+        data={messages}
         contentContainerStyle={{
           paddingTop: 72,
           paddingBottom: 84,
@@ -121,7 +126,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <BackArrow />
+          <IconBackArrow />
         </TouchableOpacity>
         <Avatar user={recipient} />
         <Text style={styles.chatTitle}>
@@ -140,9 +145,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
               value={message}
               onChangeText={(message) => setMessage(message)}
             />
+
             <View style={{ alignSelf: "flex-end" }}>
-              <TouchableOpacity onPress={() => setItems(pushMessage)}>
-                <Send />
+              <TouchableOpacity onPress={() => setMessages(pushMessage)}>
+                <IconSend />
               </TouchableOpacity>
             </View>
           </BlurView>

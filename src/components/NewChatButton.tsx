@@ -4,7 +4,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import NewChat from "../icons/NewChat";
+import IconNewChat from "../icons/NewChat";
 
 interface Props {
   onPress: () => void;
@@ -15,7 +15,7 @@ const NewChatButton: React.FC<Props> = ({ onPress }) => {
     <View style={styles.container}>
       <TouchableOpacity onPress={onPress}>
         <View style={styles.iconFrame}>
-          <NewChat />
+          <IconNewChat />
         </View>
         <MaskedView maskElement={<View style={styles.buttonFrame} />}>
           <LinearGradient

@@ -7,9 +7,18 @@ export type Message = {
   sender: User;
 };
 
+export type ViewableMessage = Message & { last: boolean };
+
 export type Chat = {
   id: string;
   name: string;
   lastSeen: number;
   messages: Message[];
+};
+
+export type PageMeta = {
+  image: string;
+  referrer: string;
+  title: string;
+  url: string;
 };

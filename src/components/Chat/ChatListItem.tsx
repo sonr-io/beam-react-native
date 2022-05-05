@@ -6,10 +6,12 @@ import { timeAgo } from "../../lib/timeAgo";
 import { Chat } from "../../types/Chat";
 import { Avatar } from "../Avatar/Avatar";
 
-export const ChatListItem = (props: {
+type Props = {
   chat: Chat;
   onPress: (id: string) => void;
-}) => {
+};
+
+export const ChatListItem = (props: Props) => {
   const { id, name, lastSeen, messages } = props.chat;
 
   if (!messages) {
@@ -82,7 +84,6 @@ const styles = StyleSheet.create({
     paddingRight: 4,
     paddingTop: 2,
   },
-
   totalUnReadMessagesText: {
     fontFamily: "Montserrat_600SemiBold",
     color: "#FFFFFF",
@@ -95,16 +96,16 @@ const styles = StyleSheet.create({
     color: "#777E90",
   },
   messageTime: {
-    fontSize: 8,
-    lineHeight: 12,
-    fontFamily: "Montserrat_600SemiBold",
+    fontSize: 12,
+    paddingTop: 6,
+    fontFamily: "Outfit_700Bold",
     alignSelf: "flex-start",
-    color: "#777E90",
+    color: "#D9D7E6",
   },
   button: {
     padding: 12,
     paddingLeft: 0,
-    marginBottom: 16,
+    marginTop: 16,
   },
   buttonContainer: {
     display: "flex",
