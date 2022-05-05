@@ -54,10 +54,6 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const [messages, setMessages] = useState(toViewable(chat.messages).reverse());
   const [message, setMessage] = useState("");
 
-  const handleTextChange = (
-    event: NativeSyntheticEvent<TextInputChangeEventData>
-  ) => {};
-
   useEffect(() => {
     if (!message) {
       return;
