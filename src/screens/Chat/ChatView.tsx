@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
+import { OpenGraphParser } from "react-native-opengraph-kit";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
@@ -20,7 +21,7 @@ import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
 import IconBackArrow from "../../icons/BackArrow";
 import IconSend from "../../icons/Send";
-import { Message, ViewableMessage } from "../../types/Chat";
+import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
   const messageItems = messages.map((m) => ({ last: true, ...m }));
@@ -52,6 +53,29 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
   const [messages, setMessages] = useState(toViewable(chat.messages).reverse());
   const [message, setMessage] = useState("");
+
+  const handleTextChange = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>
+  ) => {};
+
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+
+    OpenGraphParser.extractMeta(message)
+      .then((data: PageMeta[]) => {
+        const [metas] = data;
+        if (!metas) {
+          return;
+        }
+
+        console.log({ metas });
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  }, [message]);
 
   const pushMessage = (messages: ViewableMessage[]) => {
     if (message.length <= 0) {

@@ -15,3 +15,10 @@ export type Chat = {
   lastSeen: number;
   messages: Message[];
 };
+
+export type PageMeta = {
+  image: string;
+  referrer: string;
+  title: string;
+  url: string;
+};
