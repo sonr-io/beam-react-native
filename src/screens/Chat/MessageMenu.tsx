@@ -1,6 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import { Params } from ".";
 import { Thiago as me } from "../../_data/users";
@@ -16,12 +17,20 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <BlurView intensity={75} style={styles.container}>
-      <MessageBubble
-        text={message.text}
-        timestamp={message.timestamp}
-        isIncoming={me.id !== message.sender.id}
-        showTimestamp={true}
-      />
+      <View style={styles.touchableBackgroundContainer}>
+        <TouchableWithoutFeedback
+          onPress={() => navigation.goBack()}
+          style={styles.touchableBackground}
+        />
+      </View>
+      <View style={styles.content}>
+        <MessageBubble
+          text={message.text}
+          timestamp={message.timestamp}
+          isIncoming={me.id !== message.sender.id}
+          showTimestamp={true}
+        />
+      </View>
     </BlurView>
   );
 };
@@ -31,11 +40,24 @@ const styles = StyleSheet.create({
     backgroundColor: ios ? "#FFF0" : "#FFF",
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+  },
+  content: {
+    paddingTop: 40,
     paddingHorizontal: 20,
   },
   messageInput: {
     marginTop: 20,
+  },
+  touchableBackgroundContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+  },
+  touchableBackground: {
+    width: "100%",
+    height: "100%",
   },
 });
 
