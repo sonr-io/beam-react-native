@@ -1,13 +1,11 @@
-import React from "react";
-import { Button, Platform, StyleSheet, Text } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
 import { StackScreenProps } from "@react-navigation/stack";
+import React from "react";
+import { Platform, StyleSheet } from "react-native";
 
 import { Params } from ".";
+import { Thiago as me } from "../../_data/users";
 import BlurView from "../../components/BlurView";
 import { MessageBubble } from "../../components/MessageBubble";
-
-import { Thiago as me } from "../../_data/users";
 
 const ios = Platform.OS === "ios";
 
@@ -24,13 +22,6 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
         isIncoming={me.id !== message.sender.id}
         showTimestamp={true}
       />
-      <Button
-        title="Back"
-        onPress={() => {
-          navigation.goBack();
-        }}
-      />
-      <TextInput style={styles.messageInput} autoFocus />
     </BlurView>
   );
 };
