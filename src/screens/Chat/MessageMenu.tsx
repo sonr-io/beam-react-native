@@ -5,6 +5,9 @@ import { StackScreenProps } from "@react-navigation/stack";
 
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
+import { MessageBubble } from "../../components/MessageBubble";
+
+import { Thiago as me } from "../../_data/users";
 
 const ios = Platform.OS === "ios";
 
@@ -15,7 +18,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <BlurView intensity={75} style={styles.container}>
-      <Text>{message.text}</Text>
+      <MessageBubble
+        text={message.text}
+        timestamp={message.timestamp}
+        isIncoming={me.id !== message.sender.id}
+        showTimestamp={true}
+      />
       <Button
         title="Back"
         onPress={() => {
