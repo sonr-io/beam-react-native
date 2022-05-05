@@ -42,14 +42,30 @@ const stylesCommon = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 12,
   },
+  bubbleIncoming: {
+    alignSelf: "flex-start",
+    marginRight: 100,
+    backgroundColor: "#F5F4FA",
+    borderBottomLeftRadius: 4,
+    borderTopRightRadius: 4,
+  },
+  bubbleOutgoing: {
+    alignSelf: "flex-end",
+    marginLeft: 100,
+    backgroundColor: "#1792FF",
+    borderBottomRightRadius: 4,
+    borderTopLeftRadius: 4,
+  },
+
   text: {
-    fontFamily: "Outfit_400Regular",
+    fontFamily: "THICCCBOI_Medium",
     fontSize: 16,
+    lineHeight: 20,
   },
   time: {
-    fontFamily: "Outfit_700Bold",
+    fontFamily: "THICCCBOI_Regular",
     fontSize: 10,
-    marginVertical: 4,
+    lineHeight: 16,
   },
   reactionsContainer: {
     alignSelf: "flex-end",

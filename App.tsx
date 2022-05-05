@@ -31,6 +31,7 @@ export default function App() {
     Outfit_700Bold,
     THICCCBOI_Bold: require("./assets/fonts/THICCCBOI-Bold.ttf"),
     THICCCBOI_Medium: require("./assets/fonts/THICCCBOI-Medium.ttf"),
+    THICCCBOI_Regular: require("./assets/fonts/THICCCBOI-Regular.ttf"),
   });
 
   if (!fontsLoaded) {
