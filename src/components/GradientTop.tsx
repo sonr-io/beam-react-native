@@ -12,8 +12,10 @@ export const GradientTop: React.FC<Props> = ({ children, style }) => {
       <View style={[styles.container, style]}>{children}</View>
       <LinearGradient
         style={styles.gradientContainer}
-        colors={["#4DD6F6", "#4D74FD"]}
-        end={{ x: 0.54, y: 0.3 }}
+        colors={["#4D74FD", "#4DAEF8", "#4DFDF2"]}
+        locations={[0.0, 0.5, 1]}
+        start={{ x: 0.6, y: 1.5 }}
+        end={{ x: 0.4, y: -0.5 }}
       />
     </View>
   );
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
   },
   gradientContainer: {
     width: "100%",
-    height: 300,
+    height: 96,
     position: "absolute",
   },
 });
