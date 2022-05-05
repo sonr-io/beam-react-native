@@ -20,6 +20,7 @@ export const ReplyBubble = (props: Props) => {
   return (
     <View style={[styles.container, alignmentStyle]}>
       <Text style={[styles.sender, senderColorStyle]}>
+        <Text style={{ fontSize: 18 }}>» </Text>
         {props.selfReply ? "You" : props.senderName}
       </Text>
       <Text style={styles.text} numberOfLines={1}>
@@ -34,9 +35,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#F5F4FA",
     borderRadius: 12,
-    paddingTop: 8,
+    paddingTop: 2,
+    paddingRight: 12,
     paddingBottom: 12,
-    paddingHorizontal: 12,
+    paddingLeft: 8,
   },
   alignIncoming: {
     alignSelf: "flex-start",
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
   },
 
   sender: {
-    marginBottom: 4,
+    marginBottom: 2,
     fontFamily: "Outfit_400Regular",
     fontSize: 12,
   },
@@ -63,5 +65,6 @@ const styles = StyleSheet.create({
     fontFamily: "Outfit_400Regular",
     fontSize: 14,
     color: "#5E5B71",
+    paddingLeft: 12,
   },
 });
