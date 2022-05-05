@@ -149,7 +149,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           />
           <View style={{ alignSelf: "flex-end" }}>
             <TouchableOpacity onPress={() => setMessages(pushMessage)}>
-              <IconSend />
+              {!!message ? <IconSend /> : <View style={{ height: 32 }} />}
             </TouchableOpacity>
           </View>
         </View>
