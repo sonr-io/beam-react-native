@@ -7,8 +7,8 @@ import {
 
 import { Message } from "../../types/Chat";
 import { User } from "../../types/User";
-import { ReplyBubble } from "../ReplyBubble";
 import { MessageBubble } from "../MessageBubble";
+import { ReplyBubble } from "../ReplyBubble";
 
 interface Props {
   message: Message;
@@ -42,22 +42,22 @@ export const ChatItem: React.FC<Props> = ({
         swipeableRef.current?.close();
       }}
     >
+      {!!parentMessage && (
+        <View style={styles.parentMessageContainer}>
+          <ReplyBubble
+            text={parentMessage.text}
+            senderName={parentMessage.sender.name}
+            selfReply={selfReply}
+            isIncoming={!isSender}
+          />
+        </View>
+      )}
       <TouchableWithoutFeedback
         style={styles.messageContainer}
         onPress={() => {
           setShowTimestamp(!showTimestamp);
         }}
       >
-        {!!parentMessage && (
-          <View style={styles.parentMessageContainer}>
-            <ReplyBubble
-              text={parentMessage.text}
-              senderName={parentMessage.sender.name}
-              selfReply={selfReply}
-              isIncoming={!isSender}
-            />
-          </View>
-        )}
         <MessageBubble
           text={message.text}
           timestamp={message.timestamp}
