@@ -24,7 +24,9 @@ import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
 
 import IconBackArrow from "../../icons/BackArrow";
+import Beam from "../../icons/Beam";
 import FontSize from "../../icons/FontSize";
+import More from "../../icons/More";
 import Plus from "../../icons/Plus";
 import IconSend from "../../icons/Send";
 
@@ -117,6 +119,11 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           <Text style={styles.recipientName}>{recipient.name}</Text>
           <Text style={styles.recipientId}>{recipient.id}</Text>
         </View>
+        <View style={{ flex: 1 }} />
+        <View style={{ marginRight: 8 }}>
+          <Beam />
+        </View>
+        <More />
       </GradientTop>
       <FlatList
         style={styles.chatContainer}
@@ -177,6 +184,7 @@ const styles = StyleSheet.create({
     height: 72,
     flexDirection: "row",
     alignItems: "center",
+    paddingRight: 16,
   },
   recipientName: {
     fontFamily: "THICCCBOI_Bold",
