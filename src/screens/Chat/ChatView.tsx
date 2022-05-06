@@ -1,13 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
-import {
-  Dimensions,
-  FlatList,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { OpenGraphParser } from "react-native-opengraph-kit";
@@ -24,10 +17,10 @@ import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
 
 import IconBackArrow from "../../icons/BackArrow";
-import Beam from "../../icons/Beam";
-import FontSize from "../../icons/FontSize";
-import More from "../../icons/More";
-import Plus from "../../icons/Plus";
+import IconBeam from "../../icons/Beam";
+import IconFontSize from "../../icons/FontSize";
+import IconMore from "../../icons/More";
+import IconPlus from "../../icons/Plus";
 import IconSend from "../../icons/Send";
 
 import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
@@ -43,8 +36,6 @@ const toViewable = (messages: Message[]): ViewableMessage[] => {
 
   return messageItems;
 };
-
-const snrUsernamePattern = /(.*)\.snr/;
 
 const ios = Platform.OS === "ios";
 
@@ -121,9 +112,9 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         </View>
         <View style={{ flex: 1 }} />
         <View style={{ marginRight: 8 }}>
-          <Beam />
+          <IconBeam />
         </View>
-        <More />
+        <IconMore />
       </GradientTop>
       <FlatList
         style={styles.chatContainer}
@@ -152,10 +143,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
       />
       <BlurView intensity={80} style={styles.messageInputBlur}>
         <View style={styles.messageToolbarButton}>
-          <Plus fill="#5E5B71" />
+          <IconPlus fill="#5E5B71" />
         </View>
         <View style={styles.messageToolbarButton}>
-          <FontSize />
+          <IconFontSize />
         </View>
         <View style={styles.messageInputContainer}>
           <TextInput
