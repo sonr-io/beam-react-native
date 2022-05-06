@@ -45,7 +45,13 @@ export const chats: Chat[] = [
         timestamp: 1650487006988,
       },
       { id: "8", text: "meaning?", sender: Matheus, timestamp: 1650487006989 },
-      { id: "9", text: "really?", sender: Thiago, timestamp: 1650487006990 },
+      {
+        id: "9",
+        parentId: "8",
+        text: "really?",
+        sender: Thiago,
+        timestamp: 1650487006990,
+      },
       { id: "10", text: "help me", sender: Matheus, timestamp: 1650487006991 },
       {
         id: "11",
@@ -55,6 +61,7 @@ export const chats: Chat[] = [
       },
       {
         id: "12",
+        parentId: "11",
         text: "because one is beer with clamato and the other is like a smoothie",
         sender: Matheus,
         timestamp: 1650487006993,
@@ -147,6 +154,7 @@ export const chats: Chat[] = [
       },
       {
         id: "10",
+        parentId: "3",
         text: "hey",
         sender: Thiago,
         timestamp: 1650331578108,

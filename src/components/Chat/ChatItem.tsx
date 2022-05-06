@@ -8,20 +8,28 @@ import {
 import { Message } from "../../types/Chat";
 import { User } from "../../types/User";
 import { MessageBubble } from "../MessageBubble";
+import { ReplyBubble } from "../ReplyBubble";
 
 interface Props {
   message: Message;
+  parentMessage?: Message;
   user: User;
   onSwipe: () => void;
 }
 
-export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
+export const ChatItem: React.FC<Props> = ({
+  message,
+  parentMessage,
+  user,
+  onSwipe,
+}) => {
   const [showTimestamp, setShowTimestamp] = React.useState(false);
   const swipeableRef = React.useRef<Swipeable>(null);
 
   const renderLeftActions = () => <View style={{ width: 30 }} />;
 
   const isSender = message.sender.id === user.id;
+  const selfReply = parentMessage?.sender.id === user.id;
 
   return (
     <Swipeable
@@ -34,6 +42,16 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
         swipeableRef.current?.close();
       }}
     >
+      {!!parentMessage && (
+        <View style={styles.parentMessageContainer}>
+          <ReplyBubble
+            text={parentMessage.text}
+            senderName={parentMessage.sender.name}
+            selfReply={selfReply}
+            isIncoming={!isSender}
+          />
+        </View>
+      )}
       <TouchableWithoutFeedback
         style={styles.messageContainer}
         onPress={() => {
@@ -54,5 +72,9 @@ export const ChatItem: React.FC<Props> = ({ message, user, onSwipe }) => {
 const styles = StyleSheet.create({
   messageContainer: {
     marginBottom: 4,
+  },
+  parentMessageContainer: {
+    marginBottom: -10,
+    marginHorizontal: 10,
   },
 });
