@@ -76,14 +76,17 @@ export const chats: Chat[] = [
         text: "help me",
         sender: Matheus,
         timestamp: 1650487006991,
-        reactions: [],
+        reactions: [{ emoji: "🙅‍♀️", user: Thiago }],
       },
       {
         id: "11",
         text: "how may I guide you",
         sender: Thiago,
         timestamp: 1650487006991,
-        reactions: [{ emoji: "✌", user: Matheus }],
+        reactions: [
+          { emoji: "✌", user: Matheus },
+          { emoji: "🍉", user: Matheus },
+        ],
       },
       {
         id: "12",

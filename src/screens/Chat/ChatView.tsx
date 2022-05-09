@@ -86,6 +86,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
       text: message,
       timestamp: new Date().getTime(),
       sender: me,
+      reactions: [],
     });
     setMessage("");
     return messages;
