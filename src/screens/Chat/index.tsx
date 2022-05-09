@@ -15,7 +15,10 @@ export type Params = {
   ChatList: {};
   ChatNew: {};
   ChatView: { id: string };
-  MessageMenu: { message: Message };
+  MessageMenu: {
+    message: Message;
+    onReact: (id: string, emoji: string) => void;
+  };
 };
 
 const ChatScreen = () => (

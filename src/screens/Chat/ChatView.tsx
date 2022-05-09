@@ -1,7 +1,13 @@
 import { DateTime } from "luxon";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
-import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { OpenGraphParser } from "react-native-opengraph-kit";
@@ -116,6 +122,14 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     return messages.find((m) => m.id === message.parentId);
   };
 
+  const onReact = (id: string, emoji: string) => {
+    setMessages((messages: ViewableMessage[]) => {
+      const i = messages.findIndex((m) => m.id === id);
+      messages[i].reactions.push({ emoji, user: me });
+      return [...messages];
+    });
+  };
+
   return (
     <>
       <GradientTop style={styles.chatHeader}>
@@ -160,7 +174,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
                 parentMessage={getParentMessage(item)}
                 user={me}
                 onSwipe={() => {
-                  navigation.navigate("MessageMenu", { message: item });
+                  navigation.navigate("MessageMenu", {
+                    message: item,
+                    onReact,
+                  });
                 }}
               />
               {item.last && <View style={{ marginTop: 8 }} />}
