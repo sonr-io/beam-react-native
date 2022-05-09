@@ -8,8 +8,8 @@ import {
   View,
 } from "react-native";
 
-import Plus from "../../icons/Plus";
-import { Emoji, EmojiCategory } from "../../types/Emoji";
+import Plus from "../icons/Plus";
+import { Emoji, EmojiCategory } from "../types/Emoji";
 
 const charFromUtf16 = (utf16: string) => {
   return String.fromCodePoint(

@@ -7,7 +7,7 @@ import { Params } from ".";
 import { Thiago as me } from "../../_data/users";
 import BlurView from "../../components/BlurView";
 import { MessageBubble } from "../../components/MessageBubble";
-import { EmojiReactions } from "./EmojiReactions";
+import { EmojiReactions } from "../../components/EmojiReactions";
 
 const ios = Platform.OS === "ios";
 
