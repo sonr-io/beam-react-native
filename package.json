@@ -23,6 +23,7 @@
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/stack": "^6.2.1",
     "date-fns": "^2.28.0",
+    "emoji-datasource": "^14.0.0",
     "expo": "~44.0.0",
     "expo-blur": "~11.0.0",
     "expo-font": "~10.0.4",
