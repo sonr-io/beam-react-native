@@ -7,6 +7,7 @@ import { Params } from ".";
 import { Thiago as me } from "../../_data/users";
 import BlurView from "../../components/BlurView";
 import { MessageBubble } from "../../components/MessageBubble";
+import { EmojiReactions } from "./EmojiReactions";
 
 const ios = Platform.OS === "ios";
 
@@ -31,6 +32,11 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           showTimestamp={true}
         />
       </View>
+      <EmojiReactions
+        onSelectEmoji={(emoji) => {
+          console.log(emoji);
+        }}
+      />
     </BlurView>
   );
 };
