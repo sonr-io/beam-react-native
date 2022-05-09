@@ -12,35 +12,19 @@ type Props = {
 };
 
 export const MessageBubble = (props: Props) => {
-  const bubbleContainerStyles = props.isIncoming
-    ? styles.bubbleContainerIncoming
-    : styles.bubbleContainerOutgoing;
-
-  const bubbleStyles = [
-    styles.bubble,
-    props.isIncoming ? styles.bubbleIncoming : styles.bubbleOutgoing,
-  ];
-
-  const timeStyles = [
-    styles.time,
-    props.isIncoming ? styles.timeIncoming : styles.timeOutgoing,
-  ];
-
-  const textStyles = [
-    styles.text,
-    props.isIncoming ? styles.textIncoming : styles.textOutgoing,
-  ];
-
+  const stylesCustom = props.isIncoming ? stylesIncoming : stylesOutgoing;
   return (
-    <View style={bubbleContainerStyles}>
-      <View style={bubbleStyles}>
+    <View style={stylesCustom.container}>
+      <View style={[stylesCommon.bubble, stylesCustom.bubble]}>
         {props.showTimestamp && (
-          <Text style={timeStyles}>{getTime(props.timestamp)}</Text>
+          <Text style={[stylesCommon.time, stylesCustom.time]}>
+            {getTime(props.timestamp)}
+          </Text>
         )}
-        <Text style={textStyles}>{props.text}</Text>
+        <Text style={[stylesCommon.text, stylesCustom.text]}>{props.text}</Text>
       </View>
       {props.reactions.length > 0 && (
-        <View style={styles.reactionsContainer}>
+        <View style={stylesCommon.reactionsContainer}>
           {props.reactions.map((reaction, i) => (
             <Text key={i} style={{ fontSize: 12 }}>
               {reaction}
@@ -52,56 +36,21 @@ export const MessageBubble = (props: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  bubbleContainerIncoming: {
-    alignSelf: "flex-start",
-    marginRight: 40,
-  },
-  bubbleContainerOutgoing: {
-    alignSelf: "flex-end",
-    marginLeft: 40,
-  },
-
+const stylesCommon = StyleSheet.create({
   bubble: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
   },
-  bubbleIncoming: {
-    backgroundColor: "#F5F4FA",
-    borderBottomLeftRadius: 4,
-    borderTopRightRadius: 4,
-  },
-  bubbleOutgoing: {
-    backgroundColor: "#1792FF",
-    borderBottomRightRadius: 4,
-    borderTopLeftRadius: 4,
-  },
-
   text: {
     fontFamily: "Outfit_400Regular",
     fontSize: 16,
   },
-  textIncoming: {
-    color: "#5E5B71",
-  },
-  textOutgoing: {
-    color: "#FFFFFF",
-  },
-
   time: {
     fontFamily: "Outfit_700Bold",
     fontSize: 10,
     marginVertical: 4,
   },
-  timeIncoming: {
-    color: "#B7B4C7",
-  },
-  timeOutgoing: {
-    color: "#F5F4FA",
-    textAlign: "right",
-  },
-
   reactionsContainer: {
     alignSelf: "flex-end",
     flexDirection: "row",
@@ -120,5 +69,42 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     padding: 4,
     marginBottom: 2,
+  },
+});
+
+const stylesIncoming = StyleSheet.create({
+  container: {
+    alignSelf: "flex-start",
+    marginRight: 40,
+  },
+  bubble: {
+    backgroundColor: "#F5F4FA",
+    borderBottomLeftRadius: 4,
+    borderTopRightRadius: 4,
+  },
+  text: {
+    color: "#5E5B71",
+  },
+  time: {
+    color: "#B7B4C7",
+  },
+});
+
+const stylesOutgoing = StyleSheet.create({
+  container: {
+    alignSelf: "flex-end",
+    marginLeft: 40,
+  },
+  bubble: {
+    backgroundColor: "#1792FF",
+    borderBottomRightRadius: 4,
+    borderTopLeftRadius: 4,
+  },
+  text: {
+    color: "#FFFFFF",
+  },
+  time: {
+    color: "#F5F4FA",
+    textAlign: "right",
   },
 });
