@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
+import React, { useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
@@ -15,8 +15,15 @@ const ios = Platform.OS === "ios";
 type Props = StackScreenProps<Params, "MessageMenu">;
 
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
-  const { message } = route.params;
+  const { message, onReact } = route.params;
   const insets = useSafeAreaInsets();
+  const reactionsEmoji = message.reactions.map((r) => r.emoji);
+  const [reactions, setReactions] = useState(reactionsEmoji);
+
+  const pushEmoji = (emoji: string) => {
+    onReact(message.id, emoji);
+    setReactions((reactions) => [emoji, ...reactions]);
+  };
 
   return (
     <BlurView
@@ -35,14 +42,10 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           timestamp={message.timestamp}
           isIncoming={me.id !== message.sender.id}
           showTimestamp={true}
-          reactions={message.reactions.map((r) => r.emoji)}
+          reactions={reactions}
         />
       </View>
-      <EmojiReactions
-        onSelectEmoji={(emoji) => {
-          console.log(emoji);
-        }}
-      />
+      <EmojiReactions onSelectEmoji={(emoji) => pushEmoji(emoji)} />
     </BlurView>
   );
 };

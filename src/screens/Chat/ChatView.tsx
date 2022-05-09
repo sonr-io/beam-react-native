@@ -1,7 +1,13 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
-import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -89,6 +95,14 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   if (!chatRoom || !recipient) {
     return <></>;
   }
+  
+  const onReact = (id: string, emoji: string) => {
+    setMessages((messages: ViewableMessage[]) => {
+      const i = messages.findIndex((m) => m.id === id);
+      messages[i].reactions.push({ emoji, user: me });
+      return [...messages];
+    });
+  };
 
   return (
     <>
@@ -134,7 +148,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
                 parentMessage={getParentMessage(item)}
                 user={me}
                 onSwipe={() => {
-                  navigation.navigate("MessageMenu", { message: item });
+                  navigation.navigate("MessageMenu", {
+                    message: item,
+                    onReact,
+                  });
                 }}
               />
               {item.last && <View style={{ marginTop: 8 }} />}
