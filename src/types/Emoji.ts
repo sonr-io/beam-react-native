@@ -23,6 +23,6 @@ export type Emoji = {
 };
 
 export type EmojiCategory = {
-  symbol?: string;
+  symbol: string;
   name: string;
 };
