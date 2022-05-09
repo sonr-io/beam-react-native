@@ -14,7 +14,7 @@ export type Message = {
   reactions: Reaction[];
 };
 
-export type ViewableMessage = Message & { last: boolean };
+export type ViewableMessage = Message & { last: boolean; showDate: boolean };
 
 export type Chat = {
   id: string;

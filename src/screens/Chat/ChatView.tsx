@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
@@ -23,15 +24,27 @@ import IconMore from "../../icons/More";
 import IconPlus from "../../icons/Plus";
 import IconSend from "../../icons/Send";
 
+import { getDay } from "../../lib/getDay";
+
 import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
-  const messageItems = messages.map((m) => ({ last: true, ...m }));
+  const messageItems: ViewableMessage[] = messages.map((m) => ({
+    last: true,
+    showDate: true,
+    ...m,
+  }));
 
   for (let i = 0; i < messageItems.length - 1; i++) {
-    if (messageItems[i].sender.id === messageItems[i + 1].sender.id) {
-      messageItems[i].last = false;
-    }
+    messageItems[i].last =
+      messageItems[i].sender.id !== messageItems[i + 1].sender.id;
+
+    const currentMessageTime = DateTime.fromMillis(messageItems[i].timestamp);
+    const nextMessageTime = DateTime.fromMillis(messageItems[i + 1].timestamp);
+    messageItems[i + 1].showDate = !currentMessageTime.hasSame(
+      nextMessageTime,
+      "day"
+    );
   }
 
   return messageItems;
@@ -78,13 +91,20 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
       return messages;
     }
 
-    messages[0].last = me.id !== messages[0].sender.id;
+    const lastMessage = messages[0];
+    lastMessage.last = me.id !== lastMessage.sender.id;
+
+    const timestamp = new Date().getTime();
+    const messageTime = DateTime.fromMillis(timestamp);
+    const lastMessageTime = DateTime.fromMillis(lastMessage.timestamp);
+    const showDate = !messageTime.hasSame(lastMessageTime, "day");
 
     messages.unshift({
       last: true,
+      showDate,
       id: (messages.length + 1).toString(),
       text: message,
-      timestamp: new Date().getTime(),
+      timestamp,
       sender: me,
       reactions: [],
     });
@@ -122,12 +142,19 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         data={messages}
         contentContainerStyle={{
           paddingTop: 58,
-          paddingBottom: 20,
         }}
         renderItem={({ item }) => {
           return (
-            <>
-              {item.last && <View style={{ marginTop: 8 }} />}
+            <View>
+              {item.showDate && (
+                <View style={styles.dateSeparatorContainer}>
+                  <View style={styles.line} />
+                  <Text style={styles.dateSeparator}>
+                    {getDay(item.timestamp)}
+                  </Text>
+                  <View style={styles.line} />
+                </View>
+              )}
               <ChatItem
                 message={item}
                 parentMessage={getParentMessage(item)}
@@ -136,7 +163,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
                   navigation.navigate("MessageMenu", { message: item });
                 }}
               />
-            </>
+              {item.last && <View style={{ marginTop: 8 }} />}
+            </View>
           );
         }}
         keyExtractor={(item) => item.id}
@@ -199,6 +227,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
+  },
+  dateSeparatorContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 16,
+  },
+  dateSeparator: {
+    fontFamily: "THICCCBOI_Regular",
+    fontSize: 12,
+    lineHeight: 16,
+    color: "#B1B5B3",
+    marginHorizontal: 8,
+  },
+  line: {
+    flex: 1,
+    borderBottomWidth: 0.5,
+    borderColor: "#B1B5B3",
   },
   messageInputBlur: {
     position: "absolute",

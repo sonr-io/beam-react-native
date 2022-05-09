@@ -30,6 +30,7 @@
     "expo-linear-gradient": "~11.0.3",
     "expo-status-bar": "~1.2.0",
     "expo-updates": "~0.11.6",
+    "luxon": "^2.3.2",
     "merge": "2.1.1",
     "node-fetch": "2.6.7",
     "nth-check": "2.0.1",
@@ -47,6 +48,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@types/luxon": "^2.3.2",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "@types/react-native-keyboard-spacer": "^0.4.2",
