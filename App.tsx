@@ -1,12 +1,14 @@
 import "react-native-gesture-handler";
+import "intl";
+import "intl/locale-data/jsonp/en";
 
+import { useFonts } from "expo-font";
 import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
 import { Outfit_400Regular, Outfit_700Bold } from "@expo-google-fonts/outfit";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
-  useFonts,
 } from "@expo-google-fonts/poppins";
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
@@ -29,6 +31,9 @@ export default function App() {
     Poppins_600SemiBold,
     Outfit_400Regular,
     Outfit_700Bold,
+    THICCCBOI_Bold: require("./assets/fonts/THICCCBOI-Bold.ttf"),
+    THICCCBOI_Medium: require("./assets/fonts/THICCCBOI-Medium.ttf"),
+    THICCCBOI_Regular: require("./assets/fonts/THICCCBOI-Regular.ttf"),
   });
 
   if (!fontsLoaded) {

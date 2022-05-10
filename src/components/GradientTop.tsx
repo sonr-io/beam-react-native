@@ -1,19 +1,21 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
-type Props = {
-  children: React.ReactNode;
-};
+interface Props {
+  style?: StyleProp<ViewStyle>;
+}
 
-export const GradientTop = (props: Props) => {
+export const GradientTop: React.FC<Props> = ({ children, style }) => {
   return (
     <View>
-      <View style={styles.container}>{props.children}</View>
+      <View style={[styles.container, style]}>{children}</View>
       <LinearGradient
         style={styles.gradientContainer}
-        colors={["#4DD6F6", "#4D74FD"]}
-        end={{ x: 0.54, y: 0.3 }}
+        colors={["#4D74FD", "#4DAEF8", "#4DFDF2"]}
+        locations={[0.0, 0.5, 1]}
+        start={{ x: 0.6, y: 1.5 }}
+        end={{ x: 0.4, y: -0.5 }}
       />
     </View>
   );
@@ -23,16 +25,9 @@ const styles = StyleSheet.create({
   container: {
     zIndex: 100,
   },
-  headerFrame: {
-    width: "100%",
-    height: 300,
-    backgroundColor: "white",
-    position: "absolute",
-    top: 0,
-  },
   gradientContainer: {
     width: "100%",
-    height: 300,
+    height: 96,
     position: "absolute",
   },
 });
