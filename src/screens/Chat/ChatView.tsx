@@ -24,7 +24,7 @@ import IconMore from "../../icons/More";
 import IconPlus from "../../icons/Plus";
 import IconSend from "../../icons/Send";
 
-import { getDay } from "../../lib/getDay";
+import { getFormattedDay } from "../../lib/getFormattedDay";
 
 import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
 
@@ -150,7 +150,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
                 <View style={styles.dateSeparatorContainer}>
                   <View style={styles.line} />
                   <Text style={styles.dateSeparator}>
-                    {getDay(item.timestamp)}
+                    {getFormattedDay(item.timestamp)}
                   </Text>
                   <View style={styles.line} />
                 </View>

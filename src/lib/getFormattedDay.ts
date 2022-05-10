@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-export const getDay = (timestamp: number) => {
+export const getFormattedDay = (timestamp: number) => {
   const time = DateTime.fromMillis(timestamp);
   const now = DateTime.now();
   const yesterday = DateTime.now().minus({ days: 1 });
