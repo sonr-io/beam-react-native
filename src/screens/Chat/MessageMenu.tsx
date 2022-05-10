@@ -30,6 +30,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           timestamp={message.timestamp}
           isIncoming={me.id !== message.sender.id}
           showTimestamp={true}
+          reactions={message.reactions.map((r) => r.emoji)}
         />
       </View>
       <EmojiReactions
