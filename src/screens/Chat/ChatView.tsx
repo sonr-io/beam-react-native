@@ -169,30 +169,32 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         }}
         keyExtractor={(item) => item.id}
       />
-      <BlurView intensity={80} style={styles.messageInputBlur}>
-        <View style={styles.messageToolbarButton}>
-          <IconPlus fill="#5E5B71" />
-        </View>
-        <View style={styles.messageToolbarButton}>
-          <IconFontSize />
-        </View>
-        <View style={styles.messageInputContainer}>
-          <TextInput
-            style={styles.messageInput}
-            multiline
-            placeholder="New message"
-            placeholderTextColor="#88849C"
-            value={message}
-            onChangeText={(message) => setMessage(message)}
-          />
-          <View style={{ alignSelf: "flex-end" }}>
-            <TouchableOpacity onPress={() => setMessages(pushMessage)}>
-              {!!message ? <IconSend /> : <View style={{ height: 32 }} />}
-            </TouchableOpacity>
+      <View style={styles.messageInputOuterContainer}>
+        <BlurView intensity={80} style={styles.messageInputBlur}>
+          <View style={styles.messageToolbarButton}>
+            <IconPlus fill="#5E5B71" />
           </View>
-        </View>
+          <View style={styles.messageToolbarButton}>
+            <IconFontSize />
+          </View>
+          <View style={styles.messageInputContainer}>
+            <TextInput
+              style={styles.messageInput}
+              multiline
+              placeholder="New message"
+              placeholderTextColor="#88849C"
+              value={message}
+              onChangeText={(message) => setMessage(message)}
+            />
+            <View style={{ alignSelf: "flex-end" }}>
+              <TouchableOpacity onPress={() => setMessages(pushMessage)}>
+                {!!message ? <IconSend /> : <View style={{ height: 32 }} />}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BlurView>
         {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
-      </BlurView>
+      </View>
       {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
     </>
   );
@@ -200,9 +202,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   chatHeader: {
-    height: 72,
     flexDirection: "row",
     alignItems: "center",
+    paddingTop: 4,
+    paddingBottom: 16,
     paddingRight: 16,
   },
   recipientName: {
@@ -220,7 +223,7 @@ const styles = StyleSheet.create({
   backButton: {
     paddingLeft: 16,
     paddingRight: 8,
-    paddingVertical: 28,
+    paddingVertical: 8,
   },
   chatContainer: {
     backgroundColor: "#FFF",
@@ -245,9 +248,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: "#B1B5B3",
   },
-  messageInputBlur: {
+  messageInputOuterContainer: {
     position: "absolute",
     bottom: 0,
+    width: "100%",
+  },
+  messageInputBlur: {
     backgroundColor: ios ? "rgba(136, 132, 156, 0.1)" : "#FFF",
     padding: 8,
     flexDirection: "row",

@@ -8,6 +8,7 @@ import { Thiago as me } from "../../_data/users";
 import BlurView from "../../components/BlurView";
 import { MessageBubble } from "../../components/MessageBubble";
 import { EmojiReactions } from "../../components/EmojiReactions";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const ios = Platform.OS === "ios";
 
@@ -15,9 +16,13 @@ type Props = StackScreenProps<Params, "MessageMenu">;
 
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message } = route.params;
+  const insets = useSafeAreaInsets();
 
   return (
-    <BlurView intensity={75} style={styles.container}>
+    <BlurView
+      intensity={75}
+      style={[styles.container, { paddingTop: insets.top }]}
+    >
       <View style={styles.touchableBackgroundContainer}>
         <TouchableWithoutFeedback
           onPress={() => navigation.goBack()}
