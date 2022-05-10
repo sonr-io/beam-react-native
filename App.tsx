@@ -1,8 +1,7 @@
-import "react-native-gesture-handler";
 import "intl";
 import "intl/locale-data/jsonp/en";
+import "react-native-gesture-handler";
 
-import { useFonts } from "expo-font";
 import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
 import { Outfit_400Regular, Outfit_700Bold } from "@expo-google-fonts/outfit";
 import {
@@ -11,14 +10,18 @@ import {
   Poppins_600SemiBold,
 } from "@expo-google-fonts/poppins";
 import { NavigationContainer } from "@react-navigation/native";
-import React from "react";
+import { useFonts } from "expo-font";
+import React, { useEffect, useState } from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
+import { Thiago } from "./src/_data/users";
+import { UserContext } from "./src/contexts/UserContext";
 import ChatScreen from "./src/screens/Chat";
+import { User } from "./src/types/User";
 
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import NearbyScreen from "./src/screens/Nearby";
@@ -39,14 +42,18 @@ export default function App() {
     THICCCBOI_Regular: require("./assets/fonts/THICCCBOI-Regular.ttf"),
   });
 
+  const [user, setUser] = useState<User>(Thiago);
+
   if (!fontsLoaded) {
     return <></>;
   }
 
   return (
-    <SafeAreaProvider>
-      <NavigationComponents />
-    </SafeAreaProvider>
+    <UserContext.Provider value={{ user, setUser }}>
+      <SafeAreaProvider>
+        <NavigationComponents />
+      </SafeAreaProvider>
+    </UserContext.Provider>
   );
 }
 
