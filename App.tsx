@@ -1,4 +1,6 @@
 import "react-native-gesture-handler";
+import "intl";
+import "intl/locale-data/jsonp/en";
 
 import { useFonts } from "expo-font";
 import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
