@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Rect, Stop } from "react-native-svg";
 
 interface Props {
@@ -8,8 +9,10 @@ interface Props {
 }
 
 const NewChatButton: React.FC<Props> = ({ onPress }) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginBottom: insets.bottom }]}>
       <TouchableOpacity onPress={onPress}>
         <ButtonImage />
       </TouchableOpacity>
