@@ -1,32 +1,28 @@
-import { DateTime } from "luxon";
 import { StackScreenProps } from "@react-navigation/stack";
+import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
-import { OpenGraphParser } from "react-native-opengraph-kit";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
-
-import { chats } from "../../_data/chats";
-import { Thiago, users } from "../../_data/users";
-
+import { users } from "../../_data/users";
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
-
+import { useChatContext } from "../../contexts/ChatContext";
+import { useUserContext } from "../../contexts/UserContext";
 import IconBackArrow from "../../icons/BackArrow";
 import IconBeam from "../../icons/Beam";
 import IconFontSize from "../../icons/FontSize";
 import IconMore from "../../icons/More";
 import IconPlus from "../../icons/Plus";
 import IconSend from "../../icons/Send";
-
 import { getFormattedDay } from "../../lib/getFormattedDay";
-
-import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
+import { Chat, Message, ViewableMessage } from "../../types/Chat";
+import { User } from "../../types/User";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
   const messageItems: ViewableMessage[] = messages.map((m) => ({
@@ -55,66 +51,44 @@ const ios = Platform.OS === "ios";
 type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
+  const { user: me } = useUserContext();
+  const { chats, addMessage } = useChatContext();
+
+  const [chatRoom, setChatRoom] = useState<Chat>();
+  const [recipient, setRecipient] = useState<User>();
+
   const insets = useSafeAreaInsets();
-  const me = Thiago;
+  const chatId = route.params.id;
 
-  const chat = chats.find((chat) => chat.id === route.params.id);
-  const recipient = users.find((user) => user.id === chat?.name);
-  if (!chat || !recipient) {
-    return <></>;
-  }
-
-  const [messages, setMessages] = useState(toViewable(chat.messages).reverse());
+  const [messages, setMessages] = useState<ViewableMessage[]>([]);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!message) {
+    if (!chatId || !chats || !chats.length) {
+      return;
+    }
+    const chat = chats.find((chat) => chat.id === chatId);
+    if (!chat) {
       return;
     }
 
-    OpenGraphParser.extractMeta(message)
-      .then((data: PageMeta[]) => {
-        const [metas] = data;
-        if (!metas) {
-          return;
-        }
+    setChatRoom(chat);
+    setRecipient(users.find((user) => user.id === chat.name));
+    setMessages(toViewable(chat.messages).reverse());
+  }, [chats, chatId]);
 
-        console.log({ metas });
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  }, [message]);
-
-  const pushMessage = (messages: ViewableMessage[]) => {
-    if (message.length <= 0) {
-      return messages;
-    }
-
-    const lastMessage = messages[0];
-    lastMessage.last = me.id !== lastMessage.sender.id;
-
-    const timestamp = new Date().getTime();
-    const messageTime = DateTime.fromMillis(timestamp);
-    const lastMessageTime = DateTime.fromMillis(lastMessage.timestamp);
-    const showDate = !messageTime.hasSame(lastMessageTime, "day");
-
-    messages.unshift({
-      last: true,
-      showDate,
-      id: (messages.length + 1).toString(),
-      text: message,
-      timestamp,
-      sender: me,
-      reactions: [],
-    });
+  const addNewMessage = () => {
+    addMessage(chatId, message);
     setMessage("");
-    return messages;
   };
 
   const getParentMessage = (message: Message) => {
     return messages.find((m) => m.id === message.parentId);
   };
+
+  if (!chatRoom || !recipient) {
+    return <></>;
+  }
 
   return (
     <>
@@ -187,7 +161,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
               onChangeText={(message) => setMessage(message)}
             />
             <View style={{ alignSelf: "flex-end" }}>
-              <TouchableOpacity onPress={() => setMessages(pushMessage)}>
+              <TouchableOpacity onPress={() => addNewMessage()}>
                 {!!message ? <IconSend /> : <View style={{ height: 32 }} />}
               </TouchableOpacity>
             </View>

@@ -1,7 +1,7 @@
 import { Chat } from "../types/Chat";
 import { Daniel, Dylan, Matheus, Thiago } from "./users";
 
-export const chats: Chat[] = [
+export const fakeChats: Chat[] = [
   {
     id: "1",
     name: Matheus.id,
