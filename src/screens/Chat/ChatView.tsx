@@ -1,5 +1,5 @@
-import { DateTime } from "luxon";
 import { StackScreenProps } from "@react-navigation/stack";
+import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -8,24 +8,20 @@ import { OpenGraphParser } from "react-native-opengraph-kit";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
-
 import { chats } from "../../_data/chats";
-import { Thiago, users } from "../../_data/users";
-
+import { users } from "../../_data/users";
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
-
+import { useUserContext } from "../../contexts/UserContext";
 import IconBackArrow from "../../icons/BackArrow";
 import IconBeam from "../../icons/Beam";
 import IconFontSize from "../../icons/FontSize";
 import IconMore from "../../icons/More";
 import IconPlus from "../../icons/Plus";
 import IconSend from "../../icons/Send";
-
 import { getFormattedDay } from "../../lib/getFormattedDay";
-
 import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
@@ -55,8 +51,9 @@ const ios = Platform.OS === "ios";
 type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
+  const { user: me } = useUserContext();
+
   const insets = useSafeAreaInsets();
-  const me = Thiago;
 
   const chat = chats.find((chat) => chat.id === route.params.id);
   const recipient = users.find((user) => user.id === chat?.name);
