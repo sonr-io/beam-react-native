@@ -12,8 +12,11 @@ import {
 } from "@expo-google-fonts/poppins";
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 import ChatScreen from "./src/screens/Chat";
 
@@ -42,24 +45,32 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <NavigationContainer>
-          {/*
-          <Tab.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="Chat"
-          >
-            <Tab.Screen name="Nearby" component={NearbyScreen} />
-            <Tab.Screen name="Chat" component={ChatListScreen} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
-          </Tab.Navigator>
-          */}
-          <ChatScreen />
-        </NavigationContainer>
-      </SafeAreaView>
+      <NavigationComponents />
     </SafeAreaProvider>
   );
 }
+
+const NavigationComponents = () => {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View style={[styles.container, { marginBottom: insets.bottom }]}>
+      <NavigationContainer>
+        {/*
+        <Tab.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="Chat"
+        >
+          <Tab.Screen name="Nearby" component={NearbyScreen} />
+          <Tab.Screen name="Chat" component={ChatListScreen} />
+          <Tab.Screen name="Profile" component={ProfileScreen} />
+        </Tab.Navigator>
+        */}
+        <ChatScreen />
+      </NavigationContainer>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

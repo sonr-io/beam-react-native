@@ -200,9 +200,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   chatHeader: {
-    height: 72,
     flexDirection: "row",
     alignItems: "center",
+    paddingTop: 4,
+    paddingBottom: 16,
     paddingRight: 16,
   },
   recipientName: {
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   backButton: {
     paddingLeft: 16,
     paddingRight: 8,
-    paddingVertical: 28,
+    paddingVertical: 8,
   },
   chatContainer: {
     backgroundColor: "#FFF",
