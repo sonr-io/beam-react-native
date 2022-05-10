@@ -1,27 +1,33 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { DeviceEventEmitter, Platform, StyleSheet, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
 import { Thiago as me } from "../../_data/users";
 import BlurView from "../../components/BlurView";
-import { MessageBubble } from "../../components/MessageBubble";
 import { EmojiReactions } from "../../components/EmojiReactions";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MessageBubble } from "../../components/MessageBubble";
 
 const ios = Platform.OS === "ios";
 
 type Props = StackScreenProps<Params, "MessageMenu">;
 
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
-  const { message, onReact } = route.params;
+  const { message } = route.params;
   const insets = useSafeAreaInsets();
   const reactionsEmoji = message.reactions.map((r) => r.emoji);
   const [reactions, setReactions] = useState(reactionsEmoji);
 
+  useEffect(() => {
+    return () => {
+      DeviceEventEmitter.removeAllListeners("onReact");
+    };
+  }, []);
+
   const pushEmoji = (emoji: string) => {
-    onReact(message.id, emoji);
+    DeviceEventEmitter.emit("onReact", { id: message.id, emoji });
     setReactions((reactions) => [emoji, ...reactions]);
   };
 

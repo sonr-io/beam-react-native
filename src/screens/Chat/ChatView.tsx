@@ -1,7 +1,8 @@
-import { DateTime } from "luxon";
 import { StackScreenProps } from "@react-navigation/stack";
+import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import {
+  DeviceEventEmitter,
   FlatList,
   Platform,
   StyleSheet,
@@ -14,24 +15,19 @@ import { OpenGraphParser } from "react-native-opengraph-kit";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
-
 import { chats } from "../../_data/chats";
-import { Thiago, users } from "../../_data/users";
-
+import { Thiago as me, users } from "../../_data/users";
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
-
 import IconBackArrow from "../../icons/BackArrow";
 import IconBeam from "../../icons/Beam";
 import IconFontSize from "../../icons/FontSize";
 import IconMore from "../../icons/More";
 import IconPlus from "../../icons/Plus";
 import IconSend from "../../icons/Send";
-
 import { getFormattedDay } from "../../lib/getFormattedDay";
-
 import { Message, PageMeta, ViewableMessage } from "../../types/Chat";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
@@ -62,7 +58,6 @@ type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();
-  const me = Thiago;
 
   const chat = chats.find((chat) => chat.id === route.params.id);
   const recipient = users.find((user) => user.id === chat?.name);
@@ -122,7 +117,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     return messages.find((m) => m.id === message.parentId);
   };
 
-  const onReact = (id: string, emoji: string) => {
+  const onReact = ({ id, emoji }: { id: string; emoji: string }) => {
     setMessages((messages: ViewableMessage[]) => {
       const i = messages.findIndex((m) => m.id === id);
       messages[i].reactions.push({ emoji, user: me });
@@ -174,9 +169,11 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
                 parentMessage={getParentMessage(item)}
                 user={me}
                 onSwipe={() => {
+                  DeviceEventEmitter.addListener("onReact", (data) =>
+                    onReact(data)
+                  );
                   navigation.navigate("MessageMenu", {
                     message: item,
-                    onReact,
                   });
                 }}
               />
