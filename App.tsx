@@ -18,9 +18,12 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
+import { fakeChats } from "./src/_data/chats";
 import { Thiago } from "./src/_data/users";
+import { ChatContext } from "./src/contexts/ChatContext";
 import { UserContext } from "./src/contexts/UserContext";
 import ChatScreen from "./src/screens/Chat";
+import { Chat } from "./src/types/Chat";
 import { User } from "./src/types/User";
 
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -43,6 +46,34 @@ export default function App() {
   });
 
   const [user, setUser] = useState<User>(Thiago);
+  const [chats, setChats] = useState<Chat[]>(fakeChats);
+
+  const addMessage = (chatId: string, message: string) => {
+    setChats(
+      chats.map((chat) => {
+        if (chat.id === chatId) {
+          const { messages } = chat;
+
+          const timestamp = new Date().getTime();
+          messages.push({
+            id: (messages.length + 1).toString(),
+            text: message,
+            timestamp,
+            sender: user,
+            reactions: [],
+          });
+        }
+
+        return chat;
+      })
+    );
+  };
+
+  const addReaction = (
+    chatId: string,
+    messageId: string,
+    reaction: string
+  ) => {};
 
   if (!fontsLoaded) {
     return <></>;
@@ -50,9 +81,13 @@ export default function App() {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      <SafeAreaProvider>
-        <NavigationComponents />
-      </SafeAreaProvider>
+      <ChatContext.Provider
+        value={{ chats, setChats, addMessage, addReaction }}
+      >
+        <SafeAreaProvider>
+          <NavigationComponents />
+        </SafeAreaProvider>
+      </ChatContext.Provider>
     </UserContext.Provider>
   );
 }

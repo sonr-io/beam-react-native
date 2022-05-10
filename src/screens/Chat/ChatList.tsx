@@ -3,15 +3,17 @@ import React, { useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { Params } from ".";
-import { chats } from "../../_data/chats";
 import { ChatListItem } from "../../components/Chat/ChatListItem";
 import { GradientTop } from "../../components/GradientTop";
 import { NewChatButton } from "../../components/NewChatButton";
+import { useChatContext } from "../../contexts/ChatContext";
 import { ChatNewModal } from "./ChatNewModal";
 
 type Props = StackScreenProps<Params, "ChatList">;
 
 const ChatList: React.FC<Props> = ({ navigation }) => {
+  const { chats } = useChatContext();
+
   const [newChatVisible, setNewChatVisible] = useState(false);
 
   const navigateToChat = (id: string) => {
