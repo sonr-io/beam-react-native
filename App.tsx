@@ -12,7 +12,7 @@ import {
 } from "@expo-google-fonts/poppins";
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StatusBar, StyleSheet, View } from "react-native";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -56,6 +56,11 @@ const NavigationComponents = () => {
   return (
     <View style={[styles.container, { marginBottom: insets.bottom }]}>
       <NavigationContainer>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor={"transparent"}
+          translucent
+        />
         {/*
         <Tab.Navigator
           screenOptions={{ headerShown: false }}
