@@ -17,7 +17,6 @@ export type Params = {
   ChatView: { id: string };
   MessageMenu: {
     message: Message;
-    onReact: (id: string, emoji: string) => void;
   };
 };
 

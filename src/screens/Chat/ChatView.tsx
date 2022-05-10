@@ -2,6 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import {
+  DeviceEventEmitter,
   FlatList,
   Platform,
   StyleSheet,
@@ -13,7 +14,7 @@ import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
-import { users } from "../../_data/users";
+import { Thiago as me, users } from "../../_data/users";
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
@@ -59,11 +60,11 @@ type Props = StackScreenProps<Params, "ChatView">;
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { user: me } = useUserContext();
   const { chats, addMessage } = useChatContext();
+  const insets = useSafeAreaInsets();
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
 
-  const insets = useSafeAreaInsets();
   const chatId = route.params.id;
 
   const [messages, setMessages] = useState<ViewableMessage[]>([]);
@@ -95,8 +96,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   if (!chatRoom || !recipient) {
     return <></>;
   }
-  
-  const onReact = (id: string, emoji: string) => {
+
+  const onReact = ({ id, emoji }: { id: string; emoji: string }) => {
     setMessages((messages: ViewableMessage[]) => {
       const i = messages.findIndex((m) => m.id === id);
       messages[i].reactions.push({ emoji, user: me });
@@ -148,9 +149,11 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
                 parentMessage={getParentMessage(item)}
                 user={me}
                 onSwipe={() => {
+                  DeviceEventEmitter.addListener("onReact", (data) =>
+                    onReact(data)
+                  );
                   navigation.navigate("MessageMenu", {
                     message: item,
-                    onReact,
                   });
                 }}
               />
