@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -45,6 +45,19 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
         />
       </View>
       <EmojiReactions onSelectEmoji={(emoji) => pushEmoji(emoji)} />
+      <View style={styles.menuContainer}>
+        <BlurView>
+          <TouchableOpacity style={styles.menuButton}>
+            <Text style={styles.menuButtonText}>Reply</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuButton}>
+            <Text style={styles.menuButtonText}>Forward</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuButton}>
+            <Text style={styles.menuButtonText}>Copy</Text>
+          </TouchableOpacity>
+        </BlurView>
+      </View>
     </BlurView>
   );
 };
@@ -72,6 +85,26 @@ const styles = StyleSheet.create({
   touchableBackground: {
     width: "100%",
     height: "100%",
+  },
+
+  menuContainer: {
+    width: 300,
+    overflow: "hidden",
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 4,
+    borderBottomLeftRadius: 12,
+  },
+  menuButton: {
+    borderTopWidth: 1,
+    borderTopColor: "#88849C20",
+    marginHorizontal: 15,
+    paddingVertical: 15,
+  },
+  menuButtonText: {
+    color: "#88849C",
+    fontFamily: "THICCCBOI_Bold",
+    fontSize: 16,
   },
 });
 
