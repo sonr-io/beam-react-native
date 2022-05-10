@@ -178,12 +178,8 @@ export const EmojiReactions = ({ onSelectEmoji }: EmojiReactionsProps) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginLeft: 40,
-    marginRight: 40,
-    marginTop: 40,
     alignSelf: "center",
     padding: 5,
-    backgroundColor: "#ffffff99",
     borderTopRightRadius: 12,
     borderTopLeftRadius: 4,
   },

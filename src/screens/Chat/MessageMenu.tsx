@@ -44,9 +44,9 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           reactions={message.reactions.map((r) => r.emoji)}
         />
       </View>
-      <EmojiReactions onSelectEmoji={(emoji) => pushEmoji(emoji)} />
       <View style={styles.menuContainer}>
         <BlurView>
+          <EmojiReactions onSelectEmoji={(emoji) => pushEmoji(emoji)} />
           <TouchableOpacity style={styles.menuButton}>
             <Text style={styles.menuButtonText}>Reply</Text>
           </TouchableOpacity>
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
 
   menuContainer: {
     width: 300,
+    marginTop: 40,
     overflow: "hidden",
     borderTopLeftRadius: 4,
     borderTopRightRadius: 12,
