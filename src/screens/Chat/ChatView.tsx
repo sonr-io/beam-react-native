@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { DateTime } from "luxon";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
@@ -14,6 +14,8 @@ import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
+
+import IconArrowDown from "../../icons/ArrowDown";
 import IconBackArrow from "../../icons/BackArrow";
 import IconBeam from "../../icons/Beam";
 import IconFontSize from "../../icons/FontSize";
@@ -48,6 +50,8 @@ const toViewable = (messages: Message[]): ViewableMessage[] => {
 
 const ios = Platform.OS === "ios";
 
+const FLATLIST_BOTTOM_OFFSET = 58;
+
 type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
@@ -62,6 +66,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
   const [messages, setMessages] = useState<ViewableMessage[]>([]);
   const [message, setMessage] = useState("");
+  const [showScrollDown, setShowScrollDown] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     if (!chatId || !chats || !chats.length) {
@@ -80,6 +86,14 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const addNewMessage = () => {
     addMessage(chatId, message);
     setMessage("");
+    scrollToBottom();
+  };
+
+  const scrollToBottom = () => {
+    flatListRef.current?.scrollToIndex({
+      index: 0,
+      viewOffset: FLATLIST_BOTTOM_OFFSET,
+    });
   };
 
   const getParentMessage = (message: Message) => {
@@ -111,11 +125,16 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         <IconMore />
       </GradientTop>
       <FlatList
+        ref={flatListRef}
         style={styles.chatContainer}
         inverted
         data={messages}
         contentContainerStyle={{
-          paddingTop: 58,
+          paddingTop: FLATLIST_BOTTOM_OFFSET,
+        }}
+        onScroll={(event) => {
+          const { y: yOffset } = event.nativeEvent.contentOffset;
+          setShowScrollDown(yOffset > 100);
         }}
         renderItem={({ item }) => {
           return (
@@ -143,6 +162,16 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         }}
         keyExtractor={(item) => item.id}
       />
+      {showScrollDown && (
+        <View style={styles.scrollDownButtonContainer}>
+          <TouchableOpacity
+            style={styles.scrollDownButton}
+            onPress={scrollToBottom}
+          >
+            <IconArrowDown />
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={styles.messageInputOuterContainer}>
         <BlurView intensity={80} style={styles.messageInputBlur}>
           <View style={styles.messageToolbarButton}>
@@ -221,6 +250,22 @@ const styles = StyleSheet.create({
     flex: 1,
     borderBottomWidth: 0.5,
     borderColor: "#B1B5B3",
+  },
+  scrollDownButtonContainer: {
+    position: "absolute",
+    right: 8,
+    bottom: FLATLIST_BOTTOM_OFFSET + 8,
+    zIndex: 100,
+  },
+  scrollDownButton: {
+    backgroundColor: "#046DE8",
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#FFF",
+    alignItems: "center",
+    justifyContent: "center",
   },
   messageInputOuterContainer: {
     position: "absolute",
