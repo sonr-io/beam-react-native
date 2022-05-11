@@ -1,20 +1,38 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { Platform, StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+} from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
 import { EmojiReactions } from "../../components/EmojiReactions";
+import IconPlus from "../../icons/Plus";
 import { MessageBubble } from "../../components/MessageBubble";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
 
 const ios = Platform.OS === "ios";
 
-type Props = StackScreenProps<Params, "MessageMenu">;
+type ReactionProps = {
+  emoji: string;
+  onPress: (emoji: string) => void;
+};
+const EmojiReaction = ({ emoji, onPress }: ReactionProps) => {
+  return (
+    <TouchableOpacity style={styles.emojiButton} onPress={() => onPress(emoji)}>
+      <Text style={styles.emojiDisplay}>{emoji}</Text>
+    </TouchableOpacity>
+  );
+};
 
+type Props = StackScreenProps<Params, "MessageMenu">;
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
@@ -44,9 +62,20 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           reactions={message.reactions.map((r) => r.emoji)}
         />
       </View>
+
       <View style={styles.menuContainer}>
         <BlurView>
-          <EmojiReactions onSelectEmoji={(emoji) => pushEmoji(emoji)} />
+          <View style={styles.emojiPreset}>
+            <EmojiReaction emoji="👍" onPress={(e) => pushEmoji(e)} />
+            <EmojiReaction emoji="✅" onPress={(e) => pushEmoji(e)} />
+            <EmojiReaction emoji="❤" onPress={(e) => pushEmoji(e)} />
+            <View style={{ flex: 1 }} />
+
+            <TouchableOpacity>
+              <IconPlus />
+            </TouchableOpacity>
+          </View>
+          {/* <EmojiReactions onSelectEmoji={(emoji) => pushEmoji(emoji)} /> */}
           <TouchableOpacity style={styles.menuButton}>
             <Text style={styles.menuButtonText}>Reply</Text>
           </TouchableOpacity>
@@ -95,6 +124,18 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     borderBottomRightRadius: 4,
     borderBottomLeftRadius: 12,
+  },
+  emojiPreset: {
+    flexDirection: "row",
+    width: "100%",
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+  },
+  emojiButton: {
+    padding: 5,
+  },
+  emojiDisplay: {
+    fontSize: 20,
   },
   menuButton: {
     borderTopWidth: 1,
