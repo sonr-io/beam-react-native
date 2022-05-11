@@ -7,7 +7,6 @@ import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
-import { Thiago as me, users } from "../../_data/users";
 import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
@@ -51,7 +50,7 @@ const ios = Platform.OS === "ios";
 type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
-  const { user: me } = useUserContext();
+  const { user } = useUserContext();
   const { chats, addMessage } = useChatContext();
   const insets = useSafeAreaInsets();
 
@@ -73,7 +72,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     }
 
     setChatRoom(chat);
-    setRecipient(users.find((user) => user.id === chat.name));
+    setRecipient(chat.user);
     setMessages(toViewable(chat.messages).reverse());
   }, [chats, chatId]);
 
@@ -132,7 +131,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
               <ChatItem
                 message={item}
                 parentMessage={getParentMessage(item)}
-                user={me}
+                user={user}
                 onSwipe={() => {
                   navigation.navigate("MessageMenu", {
                     chatId,

@@ -5,11 +5,11 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
-import { Thiago as me } from "../../_data/users";
 import BlurView from "../../components/BlurView";
 import { EmojiReactions } from "../../components/EmojiReactions";
 import { MessageBubble } from "../../components/MessageBubble";
 import { useChatContext } from "../../contexts/ChatContext";
+import { useUserContext } from "../../contexts/UserContext";
 
 const ios = Platform.OS === "ios";
 
@@ -18,6 +18,7 @@ type Props = StackScreenProps<Params, "MessageMenu">;
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
+  const { user: me } = useUserContext();
   const { addReaction } = useChatContext();
   const pushEmoji = (emoji: string) => {
     addReaction(chatId, message.id, emoji);

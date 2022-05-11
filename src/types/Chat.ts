@@ -19,6 +19,7 @@ export type ViewableMessage = Message & { last: boolean; showDate: boolean };
 export type Chat = {
   id: string;
   name: string;
+  user: User;
   lastSeen: number;
   messages: Message[];
 };

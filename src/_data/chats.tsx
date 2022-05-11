@@ -5,6 +5,7 @@ export const fakeChats: Chat[] = [
   {
     id: "1",
     name: Matheus.id,
+    user: Matheus,
     lastSeen: 1650487006093,
     messages: [
       {
@@ -101,6 +102,7 @@ export const fakeChats: Chat[] = [
   {
     id: "2",
     name: Daniel.id,
+    user: Daniel,
     lastSeen: 1650331578014,
     messages: [
       {
@@ -129,6 +131,7 @@ export const fakeChats: Chat[] = [
   {
     id: "3",
     name: Dylan.id,
+    user: Dylan,
     lastSeen: 1650331578099,
     messages: [
       {
