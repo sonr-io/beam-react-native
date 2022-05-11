@@ -49,31 +49,37 @@ export default function App() {
   const [chats, setChats] = useState<Chat[]>(fakeChats);
 
   const addMessage = (chatId: string, message: string) => {
-    setChats(
+    setChats((chats) =>
       chats.map((chat) => {
-        if (chat.id === chatId) {
-          const { messages } = chat;
-
-          const timestamp = new Date().getTime();
-          messages.push({
-            id: (messages.length + 1).toString(),
-            text: message,
-            timestamp,
-            sender: user,
-            reactions: [],
-          });
+        if (chat.id !== chatId) {
+          return chat;
         }
 
+        chat.messages.push({
+          id: (chat.messages.length + 1).toString(),
+          text: message,
+          timestamp: new Date().getTime(),
+          sender: user,
+          reactions: [],
+        });
         return chat;
       })
     );
   };
 
-  const addReaction = (
-    chatId: string,
-    messageId: string,
-    reaction: string
-  ) => {};
+  const addReaction = (chatId: string, messageId: string, emoji: string) => {
+    setChats((chats) =>
+      chats.map((chat) => {
+        if (chat.id !== chatId) {
+          return chat;
+        }
+
+        const i = chat.messages.findIndex((m) => m.id === messageId);
+        chat.messages[i].reactions.push({ emoji, user });
+        return chat;
+      })
+    );
+  };
 
   if (!fontsLoaded) {
     return <></>;

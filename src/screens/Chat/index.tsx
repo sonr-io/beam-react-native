@@ -16,6 +16,7 @@ export type Params = {
   ChatNew: {};
   ChatView: { id: string };
   MessageMenu: {
+    chatId: string;
     message: Message;
   };
 };
