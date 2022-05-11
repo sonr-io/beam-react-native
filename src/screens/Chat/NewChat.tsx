@@ -14,7 +14,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Params } from ".";
 
 import BlurView from "../../components/BlurView";
-import { GradientHeader } from "../../components/GradientHeader";
 
 const ios = Platform.OS === "ios";
 
@@ -29,9 +28,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       <View style={styles.modalContainer}>
         <BlurView intensity={100} style={styles.blur}>
           <View style={styles.headerWithButton}>
-            <View style={styles.title}>
-              <GradientHeader text="New Chat" />
-            </View>
+            <Text style={styles.title}>New Message</Text>
             <TouchableOpacity
               style={styles.headerButton}
               onPress={() => {
