@@ -11,12 +11,8 @@ import {
 } from "@expo-google-fonts/poppins";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
 
 import { fakeChats } from "./src/_data/chats";
 import { Thiago } from "./src/_data/users";
@@ -86,30 +82,18 @@ export default function App() {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      <ChatContext.Provider
-        value={{ chats, setChats, addMessage, addReaction }}
-      >
-        <SafeAreaProvider>
-          <NavigationComponents />
-        </SafeAreaProvider>
-      </ChatContext.Provider>
-    </UserContext.Provider>
-  );
-}
-
-const NavigationComponents = () => {
-  const insets = useSafeAreaInsets();
-
-  return (
-    <View style={[styles.container, { marginBottom: insets.bottom }]}>
-      <NavigationContainer>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor={"transparent"}
-          translucent
-        />
-        {/*
+    <View style={styles.container}>
+      <UserContext.Provider value={{ user, setUser }}>
+        <ChatContext.Provider
+          value={{ chats, setChats, addMessage, addReaction }}
+        >
+          <NavigationContainer>
+            <StatusBar
+              barStyle="light-content"
+              backgroundColor={"transparent"}
+              translucent
+            />
+            {/*
         <Tab.Navigator
           screenOptions={{ headerShown: false }}
           initialRouteName="Chat"
@@ -119,11 +103,13 @@ const NavigationComponents = () => {
           <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
         */}
-        <ChatScreen />
-      </NavigationContainer>
+            <ChatScreen />
+          </NavigationContainer>
+        </ChatContext.Provider>
+      </UserContext.Provider>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

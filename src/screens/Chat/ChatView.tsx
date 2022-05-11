@@ -49,18 +49,17 @@ const toViewable = (messages: Message[]): ViewableMessage[] => {
 
 const ios = Platform.OS === "ios";
 
-const FLATLIST_BOTTOM_OFFSET = 58;
-
 type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { user } = useUserContext();
   const { chats, addMessage } = useChatContext();
-  const insets = useSafeAreaInsets();
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
 
+  const insets = useSafeAreaInsets();
+  const FLATLIST_BOTTOM_OFFSET = 58 + insets.bottom;
   const chatId = route.params.id;
 
   const [messages, setMessages] = useState<ViewableMessage[]>([]);
@@ -131,6 +130,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         contentContainerStyle={{
           paddingTop: FLATLIST_BOTTOM_OFFSET,
         }}
+        // workaround to position the scrollbar correctly
+        scrollIndicatorInsets={{ right: 1 }}
         onScroll={(event) => {
           const { y: yOffset } = event.nativeEvent.contentOffset;
           setShowScrollDown(yOffset > 100);
@@ -165,7 +166,12 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         keyExtractor={(item) => item.id}
       />
       {showScrollDown && (
-        <View style={styles.scrollDownButtonContainer}>
+        <View
+          style={[
+            styles.scrollDownButtonContainer,
+            { marginBottom: FLATLIST_BOTTOM_OFFSET },
+          ]}
+        >
           <TouchableOpacity
             style={styles.scrollDownButton}
             onPress={scrollToBottom}
@@ -175,7 +181,13 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         </View>
       )}
       <View style={styles.messageInputOuterContainer}>
-        <BlurView intensity={80} style={styles.messageInputBlur}>
+        <BlurView
+          intensity={80}
+          style={[
+            styles.messageInputBlur,
+            { paddingBottom: insets.bottom + 8 },
+          ]}
+        >
           <View style={styles.messageToolbarButton}>
             <IconPlus fill="#5E5B71" />
           </View>
@@ -256,7 +268,7 @@ const styles = StyleSheet.create({
   scrollDownButtonContainer: {
     position: "absolute",
     right: 8,
-    bottom: FLATLIST_BOTTOM_OFFSET + 8,
+    bottom: 8,
     zIndex: 100,
   },
   scrollDownButton: {
