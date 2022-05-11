@@ -9,11 +9,17 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
 
+import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
+
+import { useChatContext } from "../../contexts/ChatContext";
+
+import { users } from "../../_data/users";
 
 const ios = Platform.OS === "ios";
 
@@ -21,6 +27,7 @@ type Props = StackScreenProps<Params, "NewChat">;
 
 const NewChat: React.FC<Props> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const { chats } = useChatContext();
 
   return (
     <>
@@ -48,12 +55,29 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
               <Text style={styles.snrLabel}>.snr</Text>
             </View>
           </View>
-          <Button
-            title="Start chat"
-            onPress={() => {
-              navigation.goBack();
-              navigation.navigate("ChatView", { id: "1" });
-            }}
+          <FlatList
+            style={styles.userList}
+            data={users}
+            renderItem={({ item: user }) => (
+              <TouchableOpacity
+                style={styles.userListItem}
+                onPress={() => {
+                  const chat = chats.find((chat) => chat.name === user.id);
+                  if (chat) {
+                    navigation.goBack();
+                    navigation.navigate("ChatView", { id: chat.id });
+                  }
+                }}
+              >
+                <Avatar user={user} />
+                <View>
+                  <Text style={styles.userName}>{user.name}</Text>
+                  <Text style={styles.userId}>{user.id}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            ListHeaderComponent={<Text style={styles.recentLabel}>Recent</Text>}
+            ItemSeparatorComponent={() => <View style={{ marginTop: 16 }} />}
           />
         </BlurView>
       </View>
@@ -126,6 +150,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "THICCCBOI_Medium",
     color: "#B7B4C7",
+  },
+  userList: {
+    marginTop: 24,
+  },
+  recentLabel: {
+    fontSize: 20,
+    fontFamily: "THICCCBOI_ExtraBold",
+    color: "#B7B4C7",
+    marginBottom: 16,
+  },
+  userListItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  userName: {
+    fontSize: 20,
+    fontFamily: "THICCCBOI_Bold",
+    color: "#1D1A27",
+  },
+  userId: {
+    fontSize: 18,
+    fontFamily: "THICCCBOI_Medium",
+    color: "#88849C",
   },
 });
 
