@@ -11,9 +11,8 @@ import {
 } from "@expo-google-fonts/poppins";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { fakeChats } from "./src/_data/chats";
 import { Thiago } from "./src/_data/users";
