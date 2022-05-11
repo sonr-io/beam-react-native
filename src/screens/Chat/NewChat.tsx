@@ -30,15 +30,24 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
           <View style={styles.headerWithButton}>
             <Text style={styles.title}>New Message</Text>
             <TouchableOpacity
-              style={styles.headerButton}
               onPress={() => {
                 navigation.goBack();
               }}
             >
-              <Text style={{ fontSize: 24 }}>×</Text>
+              <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
           </View>
-          <TextInput style={styles.nameInput} />
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>To:</Text>
+            <View style={styles.inputInnerContainer}>
+              <TextInput
+                style={styles.nameInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+              <Text style={styles.snrLabel}>.snr</Text>
+            </View>
+          </View>
           <Button
             title="Start chat"
             onPress={() => {
@@ -66,30 +75,57 @@ const styles = StyleSheet.create({
   },
   blur: {
     flex: 1,
-    padding: 20,
-    paddingTop: 50,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
+    padding: 16,
+    paddingTop: 24,
   },
   headerWithButton: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 24,
   },
   title: {
     flex: 1,
+    fontSize: 28,
+    lineHeight: 36,
+    fontFamily: "THICCCBOI_ExtraBold",
+    color: "#5E5B71",
   },
-  headerButton: {
-    padding: 20,
-    marginBottom: 10,
+  cancelText: {
+    fontSize: 14,
+    lineHeight: 16,
+    fontFamily: "THICCCBOI_ExtraBold",
+    color: "#88849C",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontFamily: "THICCCBOI_Medium",
+    color: "#5E5B71",
+    marginRight: 8,
+  },
+  inputInnerContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#B7B4C7",
+    borderRadius: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
   nameInput: {
-    borderColor: "#B1B5C3",
-    borderWidth: 2,
-    borderRadius: 12,
-    fontFamily: "Poppins_400Regular",
-    fontSize: 14,
-    height: 48,
-    paddingHorizontal: 16,
+    fontSize: 16,
+    fontFamily: "THICCCBOI_Medium",
+    color: "#5E5B71",
+  },
+  snrLabel: {
+    fontSize: 16,
+    fontFamily: "THICCCBOI_Medium",
+    color: "#B7B4C7",
   },
 });
 

@@ -36,6 +36,7 @@ export default function App() {
     Poppins_600SemiBold,
     Outfit_400Regular,
     Outfit_700Bold,
+    THICCCBOI_ExtraBold: require("./assets/fonts/THICCCBOI-ExtraBold.ttf"),
     THICCCBOI_Bold: require("./assets/fonts/THICCCBOI-Bold.ttf"),
     THICCCBOI_Medium: require("./assets/fonts/THICCCBOI-Medium.ttf"),
     THICCCBOI_Regular: require("./assets/fonts/THICCCBOI-Regular.ttf"),
