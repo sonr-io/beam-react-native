@@ -7,7 +7,6 @@ import { ChatListItem } from "../../components/Chat/ChatListItem";
 import { GradientTop } from "../../components/GradientTop";
 import { NewChatButton } from "../../components/NewChatButton";
 import { useChatContext } from "../../contexts/ChatContext";
-import { ChatNewModal } from "./ChatNewModal";
 
 type Props = StackScreenProps<Params, "ChatList">;
 
@@ -32,11 +31,10 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
             <ChatListItem key={item.id} chat={item} onPress={navigateToChat} />
           )}
         />
-        <NewChatButton onPress={() => setNewChatVisible(true)} />
-        <ChatNewModal
-          visible={newChatVisible}
-          onClose={() => setNewChatVisible(false)}
-          navigateToChat={(id) => navigation.navigate("ChatView", { id })}
+        <NewChatButton
+          onPress={() => {
+            navigation.navigate("NewChat", {});
+          }}
         />
       </View>
     </View>
