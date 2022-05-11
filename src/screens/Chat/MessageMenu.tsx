@@ -2,21 +2,27 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
-import { Thiago as me } from "../../_data/users";
 import BlurView from "../../components/BlurView";
-import { MessageBubble } from "../../components/MessageBubble";
 import { EmojiReactions } from "../../components/EmojiReactions";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MessageBubble } from "../../components/MessageBubble";
+import { useChatContext } from "../../contexts/ChatContext";
+import { useUserContext } from "../../contexts/UserContext";
 
 const ios = Platform.OS === "ios";
 
 type Props = StackScreenProps<Params, "MessageMenu">;
 
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
-  const { message } = route.params;
+  const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
+  const { user } = useUserContext();
+  const { addReaction } = useChatContext();
+  const pushEmoji = (emoji: string) => {
+    addReaction(chatId, message.id, emoji);
+  };
 
   return (
     <BlurView
@@ -33,16 +39,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
         <MessageBubble
           text={message.text}
           timestamp={message.timestamp}
-          isIncoming={me.id !== message.sender.id}
+          isIncoming={user.id !== message.sender.id}
           showTimestamp={true}
           reactions={message.reactions.map((r) => r.emoji)}
         />
       </View>
-      <EmojiReactions
-        onSelectEmoji={(emoji) => {
-          console.log(emoji);
-        }}
-      />
+      <EmojiReactions onSelectEmoji={(emoji) => pushEmoji(emoji)} />
     </BlurView>
   );
 };

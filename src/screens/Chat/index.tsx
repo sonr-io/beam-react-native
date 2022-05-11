@@ -15,7 +15,10 @@ export type Params = {
   ChatList: {};
   ChatNew: {};
   ChatView: { id: string };
-  MessageMenu: { message: Message };
+  MessageMenu: {
+    chatId: string;
+    message: Message;
+  };
 };
 
 const ChatScreen = () => (

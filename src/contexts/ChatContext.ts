@@ -6,7 +6,7 @@ export type ChatContextType = {
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
   addMessage: (chatId: string, message: string) => void;
-  addReaction: (chatId: string, messageId: string, reaction: string) => void;
+  addReaction: (chatId: string, messageId: string, emoji: string) => void;
 };
 
 export const ChatContext = createContext<ChatContextType>({
