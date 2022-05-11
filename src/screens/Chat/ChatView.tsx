@@ -86,6 +86,14 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const addNewMessage = () => {
     addMessage(chatId, message);
     setMessage("");
+    scrollToBottom();
+  };
+
+  const scrollToBottom = () => {
+    flatListRef.current?.scrollToIndex({
+      index: 0,
+      viewOffset: FLATLIST_BOTTOM_OFFSET,
+    });
   };
 
   const getParentMessage = (message: Message) => {
@@ -158,12 +166,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.scrollDownButtonContainer}>
           <TouchableOpacity
             style={styles.scrollDownButton}
-            onPress={() => {
-              flatListRef.current?.scrollToIndex({
-                index: 0,
-                viewOffset: FLATLIST_BOTTOM_OFFSET,
-              });
-            }}
+            onPress={scrollToBottom}
           >
             <IconArrowDown />
           </TouchableOpacity>
