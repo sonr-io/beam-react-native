@@ -7,6 +7,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -28,6 +29,7 @@ type Props = StackScreenProps<Params, "NewChat">;
 const NewChat: React.FC<Props> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { chats } = useChatContext();
+  const inputRef = React.useRef<TextInput>(null);
 
   return (
     <>
@@ -46,14 +48,21 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
           </View>
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>To:</Text>
-            <View style={styles.inputInnerContainer}>
-              <TextInput
-                style={styles.nameInput}
-                autoCorrect={false}
-                autoCapitalize="none"
-              />
-              <Text style={styles.snrLabel}>.snr</Text>
-            </View>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                inputRef.current?.focus();
+              }}
+            >
+              <View style={styles.inputInnerContainer}>
+                <TextInput
+                  ref={inputRef}
+                  style={styles.nameInput}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                />
+                <Text style={styles.snrLabel}>.snr</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
           <FlatList
             style={styles.userList}
