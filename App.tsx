@@ -75,7 +75,7 @@ export default function App() {
         }
 
         const i = chat.messages.findIndex((m) => m.id === messageId);
-        chat.messages[i].reactions.push({ emoji, user });
+        chat.messages[i].reactions.unshift({ emoji, user });
         return chat;
       })
     );
