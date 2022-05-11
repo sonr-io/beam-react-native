@@ -29,6 +29,12 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { chats } = useChatContext();
   const inputRef = React.useRef<TextInput>(null);
+  const [userList, setUserList] = React.useState(users);
+
+  const filterList = (input: string) => {
+    const filteredList = users.filter((user) => user.id.startsWith(input));
+    setUserList(filteredList);
+  };
 
   return (
     <>
@@ -58,6 +64,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
                   style={styles.nameInput}
                   autoCorrect={false}
                   autoCapitalize="none"
+                  onChangeText={filterList}
                 />
                 <Text style={styles.snrLabel}>.snr</Text>
               </View>
@@ -65,7 +72,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
           </View>
           <FlatList
             style={styles.userList}
-            data={users}
+            data={userList}
             renderItem={({ item: user }) => (
               <TouchableOpacity
                 style={styles.userListItem}
