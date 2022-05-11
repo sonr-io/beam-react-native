@@ -130,6 +130,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         contentContainerStyle={{
           paddingTop: FLATLIST_BOTTOM_OFFSET,
         }}
+        // workaround to position the scrollbar correctly
+        scrollIndicatorInsets={{ right: 1 }}
         onScroll={(event) => {
           const { y: yOffset } = event.nativeEvent.contentOffset;
           setShowScrollDown(yOffset > 100);
