@@ -19,15 +19,16 @@ import BlurView from "../../components/BlurView";
 
 import { useChatContext } from "../../contexts/ChatContext";
 
-import { users } from "../../_data/users";
-
 const ios = Platform.OS === "ios";
 
 type Props = StackScreenProps<Params, "NewChat">;
 
 const NewChat: React.FC<Props> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+
   const { chats, setChats } = useChatContext();
+  const users = chats.map((chat) => chat.user);
+
   const inputRef = React.useRef<TextInput>(null);
   const [userList, setUserList] = React.useState(users);
   const [inputValue, setInputValue] = React.useState("");
