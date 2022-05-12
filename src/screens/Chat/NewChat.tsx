@@ -27,13 +27,38 @@ type Props = StackScreenProps<Params, "NewChat">;
 
 const NewChat: React.FC<Props> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
-  const { chats } = useChatContext();
+  const { chats, setChats } = useChatContext();
   const inputRef = React.useRef<TextInput>(null);
   const [userList, setUserList] = React.useState(users);
+  const [inputValue, setInputValue] = React.useState("");
 
   const filterList = (input: string) => {
+    setInputValue(input);
     const filteredList = users.filter((user) => user.id.startsWith(input));
     setUserList(filteredList);
+  };
+
+  const navigateToChat = (id: string) => {
+    navigation.goBack();
+    navigation.navigate("ChatView", { id });
+  };
+
+  const openNewChat = () => {
+    const chatId = `${chats.length + 1}`;
+    const snrId = `${inputValue}.snr`;
+    chats.push({
+      id: chatId,
+      lastSeen: 0,
+      messages: [],
+      name: snrId,
+      user: {
+        id: snrId,
+        isOnline: false,
+        name: inputValue,
+      },
+    });
+    setChats(chats);
+    navigateToChat(chatId);
   };
 
   return (
@@ -67,6 +92,9 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
                   onChangeText={filterList}
                 />
                 <Text style={styles.snrLabel}>.snr</Text>
+                <TouchableOpacity onPress={openNewChat}>
+                  <Text>Go</Text>
+                </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -79,8 +107,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
                 onPress={() => {
                   const chat = chats.find((chat) => chat.name === user.id);
                   if (chat) {
-                    navigation.goBack();
-                    navigation.navigate("ChatView", { id: chat.id });
+                    navigateToChat(chat.id);
                   }
                 }}
               >
@@ -162,6 +189,7 @@ const styles = StyleSheet.create({
     color: "#5E5B71",
   },
   snrLabel: {
+    flex: 1,
     fontSize: 16,
     fontFamily: "THICCCBOI_Medium",
     color: "#B7B4C7",
