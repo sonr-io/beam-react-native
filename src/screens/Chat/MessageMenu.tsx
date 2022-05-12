@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
+import React, { useState } from "react";
 import {
   Platform,
   StyleSheet,
@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
-import { EmojiReactions } from "../../components/EmojiReactions";
+import { EmojiSelector } from "../../components/EmojiSelector";
 import IconPlus from "../../icons/Plus";
 import { MessageBubble } from "../../components/MessageBubble";
 import { useChatContext } from "../../contexts/ChatContext";
@@ -38,6 +38,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
   const { addReaction } = useChatContext();
+  const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const pushEmoji = (emoji: string) => {
     addReaction(chatId, message.id, emoji);
   };
@@ -71,20 +72,30 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
             <EmojiReaction emoji="❤" onPress={(e) => pushEmoji(e)} />
             <View style={{ flex: 1 }} />
 
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowEmojiSelector(!showEmojiSelector)}
+            >
               <IconPlus />
             </TouchableOpacity>
           </View>
-          {/* <EmojiReactions onSelectEmoji={(emoji) => pushEmoji(emoji)} /> */}
-          <TouchableOpacity style={styles.menuButton}>
-            <Text style={styles.menuButtonText}>Reply</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuButton}>
-            <Text style={styles.menuButtonText}>Forward</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuButton}>
-            <Text style={styles.menuButtonText}>Copy</Text>
-          </TouchableOpacity>
+
+          {showEmojiSelector && (
+            <EmojiSelector onSelectEmoji={(e) => pushEmoji(e)} />
+          )}
+
+          {!showEmojiSelector && (
+            <>
+              <TouchableOpacity style={styles.menuButton}>
+                <Text style={styles.menuButtonText}>Reply</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuButton}>
+                <Text style={styles.menuButtonText}>Forward</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuButton}>
+                <Text style={styles.menuButtonText}>Copy</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </BlurView>
       </View>
     </BlurView>
