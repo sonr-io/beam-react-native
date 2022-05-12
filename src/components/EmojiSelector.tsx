@@ -8,7 +8,15 @@ import {
   View,
 } from "react-native";
 
-import Plus from "../icons/Plus";
+import EmojiCategoryActivities from "../icons/EmojiCategoryActivities";
+import EmojiCategoryAnimals from "../icons/EmojiCategoryAnimals";
+import EmojiCategoryFlags from "../icons/EmojiCategoryFlags";
+import EmojiCategoryFood from "../icons/EmojiCategoryFood";
+import EmojiCategoryHistory from "../icons/EmojiCategoryHistory";
+import EmojiCategoryObjects from "../icons/EmojiCategoryObjects";
+import EmojiCategoryPlaces from "../icons/EmojiCategoryPlaces";
+import EmojiCategorySmile from "../icons/EmojiCategorySmile";
+import EmojiCategorySymbols from "../icons/EmojiCategorySymbols";
 import { Emoji, EmojiCategory } from "../types/Emoji";
 
 const charFromUtf16 = (utf16: string) => {
@@ -19,8 +27,39 @@ const charFromUtf16 = (utf16: string) => {
 
 const charFromEmojiObject = (emoji: Emoji) => charFromUtf16(emoji.unified);
 
-type EmojiItemProps = { emoji: Emoji; onSelectEmoji: (emoji: Emoji) => void };
+type EmojiCategoryIconProps = { category: EmojiCategory; active: boolean };
+const EmojiCategoryIcon = ({ category, active }: EmojiCategoryIconProps) => {
+  switch (category) {
+    case "History":
+      return <EmojiCategoryHistory />;
 
+    case "Smileys & People":
+      return <EmojiCategorySmile />;
+
+    case "Animals & Nature":
+      return <EmojiCategoryAnimals />;
+
+    case "Food & Drink":
+      return <EmojiCategoryFood />;
+
+    case "Activities":
+      return <EmojiCategoryActivities />;
+
+    case "Travel & Places":
+      return <EmojiCategoryPlaces />;
+
+    case "Objects":
+      return <EmojiCategoryObjects />;
+
+    case "Symbols":
+      return <EmojiCategorySymbols />;
+
+    case "Flags":
+      return <EmojiCategoryFlags />;
+  }
+};
+
+type EmojiItemProps = { emoji: Emoji; onSelectEmoji: (emoji: Emoji) => void };
 const EmojiItem = ({ emoji, onSelectEmoji }: EmojiItemProps) => (
   <TouchableOpacity
     onPress={() => {
@@ -36,51 +75,23 @@ const EmojiItem = ({ emoji, onSelectEmoji }: EmojiItemProps) => (
 type EmojiSelectorProps = { onSelectEmoji: (emoji: string) => void };
 
 export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
-  const emojiCategorySmile: EmojiCategory = {
-    symbol: "😀",
-    name: "Smileys & Emotion",
-  };
+  const emojiCategories: EmojiCategory[] = [
+    "History",
+    "Smileys & People",
+    "Animals & Nature",
+    "Food & Drink",
+    "Activities",
+    "Travel & Places",
+    "Objects",
+    "Symbols",
+    "Flags",
+  ];
 
   const [emojis, setEmojis] = useState<Emoji[]>([]);
   const [selectedCategory, setSelectedCategory] =
-    useState<EmojiCategory>(emojiCategorySmile);
+    useState<EmojiCategory>("History");
 
   const validEmojis = emoji.filter((e) => !e["obsoleted_by"]);
-  const categories: EmojiCategory[] = [
-    emojiCategorySmile,
-    {
-      symbol: "🧑",
-      name: "People & Body",
-    },
-    {
-      symbol: "🦄",
-      name: "Animals & Nature",
-    },
-    {
-      symbol: "🍔",
-      name: "Food & Drink",
-    },
-    {
-      symbol: "⚾️",
-      name: "Activities",
-    },
-    {
-      symbol: "✈️",
-      name: "Travel & Places",
-    },
-    {
-      symbol: "💡",
-      name: "Objects",
-    },
-    {
-      symbol: "🔣",
-      name: "Symbols",
-    },
-    {
-      symbol: "🏳️‍🌈",
-      name: "Flags",
-    },
-  ];
 
   const defaultReactions = [
     "GRINNING FACE",
@@ -97,7 +108,7 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
 
   useEffect(() => {
     const emojisFromCurrentCategory = validEmojis.filter(
-      (e) => e.category === selectedCategory.name
+      (e) => e.category === selectedCategory
     );
     setEmojis(emojisFromCurrentCategory as Emoji[]);
   }, [selectedCategory]);
@@ -106,26 +117,26 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
     <View style={styles.wrapper}>
       <>
         <View style={[styles.container, styles.categories]}>
-          {categories.map((category) => {
+          {emojiCategories.map((category) => {
+            const active = selectedCategory === category;
+
             return (
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedCategory(category);
-                }}
-                key={category.name}
-                activeOpacity={0.5}
+              <View
                 style={[
-                  styles.emojiItem,
-                  ,
-                  category.name === selectedCategory.name
-                    ? styles.selectedCategory
-                    : null,
+                  styles.emojiCategoryItem,
+                  active ? styles.emojiCategoryItemSelected : null,
                 ]}
               >
-                <Text style={styles.emojiCategoryItemText}>
-                  {category.symbol}
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedCategory(category);
+                  }}
+                  key={category}
+                  activeOpacity={0.5}
+                >
+                  <EmojiCategoryIcon category={category} active={active} />
+                </TouchableOpacity>
+              </View>
             );
           })}
         </View>
@@ -183,5 +194,17 @@ const styles = StyleSheet.create({
   emojiCategoryItemText: {
     color: "#FFFFFF",
     fontSize: 30,
+  },
+  emojiCategoryItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 35,
+    width: 35,
+    borderRadius: 35,
+    backgroundColor: "transparent",
+  },
+  emojiCategoryItemSelected: {
+    backgroundColor: "#88849C",
   },
 });

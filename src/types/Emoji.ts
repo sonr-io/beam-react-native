@@ -22,7 +22,13 @@ export type Emoji = {
   obsoleted_by?: string;
 };
 
-export type EmojiCategory = {
-  symbol: string;
-  name: string;
-};
+export type EmojiCategory =
+  | "History"
+  | "Smileys & People"
+  | "Animals & Nature"
+  | "Food & Drink"
+  | "Activities"
+  | "Travel & Places"
+  | "Objects"
+  | "Symbols"
+  | "Flags";
