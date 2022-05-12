@@ -32,9 +32,11 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
   const inputRef = React.useRef<TextInput>(null);
   const [userList, setUserList] = React.useState(users);
   const [inputValue, setInputValue] = React.useState("");
+  const [error, setError] = React.useState(false);
 
-  const filterList = (input: string) => {
+  const onInputChange = (input: string) => {
     setInputValue(input);
+    setError(false);
     const filteredList = users.filter((user) => user.id.startsWith(input));
     setUserList(filteredList);
   };
@@ -46,6 +48,11 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
 
   const onPressGo = () => {
     const snrId = `${inputValue}.snr`;
+
+    if (snrId === "mark.snr") {
+      return setError(true);
+    }
+
     const chat = chats.find((chat) => chat.name === snrId);
 
     if (chat) {
@@ -90,13 +97,18 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
                 inputRef.current?.focus();
               }}
             >
-              <View style={styles.inputInnerContainer}>
+              <View
+                style={[
+                  styles.inputInnerContainer,
+                  error && { borderColor: "#FF2866" },
+                ]}
+              >
                 <TextInput
                   ref={inputRef}
                   style={styles.nameInput}
                   autoCorrect={false}
                   autoCapitalize="none"
-                  onChangeText={filterList}
+                  onChangeText={onInputChange}
                 />
                 <Text style={styles.snrLabel}>.snr</Text>
                 <TouchableOpacity onPress={onPressGo}>
@@ -105,6 +117,9 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
               </View>
             </TouchableWithoutFeedback>
           </View>
+          {error && (
+            <Text style={styles.errorMessage}>Invalid .snr domain</Text>
+          )}
           <FlatList
             style={styles.userList}
             data={userList}
@@ -125,7 +140,13 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
                 </View>
               </TouchableOpacity>
             )}
-            ListHeaderComponent={<Text style={styles.recentLabel}>Recent</Text>}
+            ListHeaderComponent={
+              userList.length > 0 ? (
+                <Text style={styles.recentLabel}>Recent</Text>
+              ) : (
+                <></>
+              )
+            }
             ItemSeparatorComponent={() => <View style={{ marginTop: 16 }} />}
           />
         </BlurView>
@@ -200,6 +221,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "THICCCBOI_Medium",
     color: "#B7B4C7",
+  },
+  errorMessage: {
+    fontSize: 14,
+    fontFamily: "THICCCBOI_Medium",
+    color: "#FF2866",
+    marginTop: 4,
+    marginLeft: 30,
   },
   userList: {
     marginTop: 24,
