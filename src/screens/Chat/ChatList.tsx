@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { Params } from ".";
@@ -7,14 +7,11 @@ import { ChatListItem } from "../../components/Chat/ChatListItem";
 import { GradientTop } from "../../components/GradientTop";
 import { NewChatButton } from "../../components/NewChatButton";
 import { useChatContext } from "../../contexts/ChatContext";
-import { ChatNewModal } from "./ChatNewModal";
 
 type Props = StackScreenProps<Params, "ChatList">;
 
 const ChatList: React.FC<Props> = ({ navigation }) => {
   const { chats } = useChatContext();
-
-  const [newChatVisible, setNewChatVisible] = useState(false);
 
   const navigateToChat = (id: string) => {
     navigation.navigate("ChatView", { id });
@@ -32,11 +29,10 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
             <ChatListItem key={item.id} chat={item} onPress={navigateToChat} />
           )}
         />
-        <NewChatButton onPress={() => setNewChatVisible(true)} />
-        <ChatNewModal
-          visible={newChatVisible}
-          onClose={() => setNewChatVisible(false)}
-          navigateToChat={(id) => navigation.navigate("ChatView", { id })}
+        <NewChatButton
+          onPress={() => {
+            navigation.navigate("NewChat", {});
+          }}
         />
       </View>
     </View>

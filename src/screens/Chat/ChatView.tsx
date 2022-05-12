@@ -88,10 +88,12 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const scrollToBottom = () => {
-    flatListRef.current?.scrollToIndex({
-      index: 0,
-      viewOffset: FLATLIST_BOTTOM_OFFSET,
-    });
+    if (messages.length > 0) {
+      flatListRef.current?.scrollToIndex({
+        index: 0,
+        viewOffset: FLATLIST_BOTTOM_OFFSET,
+      });
+    }
   };
 
   const getParentMessage = (message: Message) => {
