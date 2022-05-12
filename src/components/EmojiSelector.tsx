@@ -31,31 +31,31 @@ type EmojiCategoryIconProps = { category: EmojiCategory; active: boolean };
 const EmojiCategoryIcon = ({ category, active }: EmojiCategoryIconProps) => {
   switch (category) {
     case "History":
-      return <EmojiCategoryHistory />;
+      return <EmojiCategoryHistory active={active} />;
 
     case "Smileys & People":
-      return <EmojiCategorySmile />;
+      return <EmojiCategorySmile active={active} />;
 
     case "Animals & Nature":
-      return <EmojiCategoryAnimals />;
+      return <EmojiCategoryAnimals active={active} />;
 
     case "Food & Drink":
-      return <EmojiCategoryFood />;
+      return <EmojiCategoryFood active={active} />;
 
     case "Activities":
-      return <EmojiCategoryActivities />;
+      return <EmojiCategoryActivities active={active} />;
 
     case "Travel & Places":
-      return <EmojiCategoryPlaces />;
+      return <EmojiCategoryPlaces active={active} />;
 
     case "Objects":
-      return <EmojiCategoryObjects />;
+      return <EmojiCategoryObjects active={active} />;
 
     case "Symbols":
-      return <EmojiCategorySymbols />;
+      return <EmojiCategorySymbols active={active} />;
 
     case "Flags":
-      return <EmojiCategoryFlags />;
+      return <EmojiCategoryFlags active={active} />;
   }
 };
 
@@ -122,6 +122,7 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
 
             return (
               <View
+                key={category}
                 style={[
                   styles.emojiCategoryItem,
                   active ? styles.emojiCategoryItemSelected : null,
@@ -131,7 +132,6 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
                   onPress={() => {
                     setSelectedCategory(category);
                   }}
-                  key={category}
                   activeOpacity={0.5}
                 >
                   <EmojiCategoryIcon category={category} active={active} />
@@ -199,8 +199,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    height: 35,
-    width: 35,
+    height: 32,
+    width: 30,
     borderRadius: 35,
     backgroundColor: "transparent",
   },
