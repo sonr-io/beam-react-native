@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { Params } from ".";
@@ -12,8 +12,6 @@ type Props = StackScreenProps<Params, "ChatList">;
 
 const ChatList: React.FC<Props> = ({ navigation }) => {
   const { chats } = useChatContext();
-
-  const [newChatVisible, setNewChatVisible] = useState(false);
 
   const navigateToChat = (id: string) => {
     navigation.navigate("ChatView", { id });
