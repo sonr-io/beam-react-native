@@ -44,22 +44,28 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
     navigation.navigate("ChatView", { id });
   };
 
-  const openNewChat = () => {
-    const chatId = `${chats.length + 1}`;
+  const onPressGo = () => {
     const snrId = `${inputValue}.snr`;
-    chats.push({
-      id: chatId,
-      lastSeen: 0,
-      messages: [],
-      name: snrId,
-      user: {
-        id: snrId,
-        isOnline: false,
-        name: inputValue,
-      },
-    });
-    setChats(chats);
-    navigateToChat(chatId);
+    const chat = chats.find((chat) => chat.name === snrId);
+
+    if (chat) {
+      navigateToChat(chat.id);
+    } else {
+      const chatId = `${chats.length + 1}`;
+      chats.push({
+        id: chatId,
+        lastSeen: 0,
+        messages: [],
+        name: snrId,
+        user: {
+          id: snrId,
+          isOnline: false,
+          name: inputValue,
+        },
+      });
+      setChats(chats);
+      navigateToChat(chatId);
+    }
   };
 
   return (
@@ -93,7 +99,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
                   onChangeText={filterList}
                 />
                 <Text style={styles.snrLabel}>.snr</Text>
-                <TouchableOpacity onPress={openNewChat}>
+                <TouchableOpacity onPress={onPressGo}>
                   <Text>Go</Text>
                 </TouchableOpacity>
               </View>
