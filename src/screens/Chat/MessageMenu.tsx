@@ -70,10 +70,14 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
             <EmojiReaction emoji="👍" onPress={(e) => pushEmoji(e)} />
             <EmojiReaction emoji="✅" onPress={(e) => pushEmoji(e)} />
             <EmojiReaction emoji="❤" onPress={(e) => pushEmoji(e)} />
-            <View style={{ flex: 1 }} />
+            <EmojiReaction emoji="☕" onPress={(e) => pushEmoji(e)} />
+            <EmojiReaction emoji="📅" onPress={(e) => pushEmoji(e)} />
+            <EmojiReaction emoji="💥" onPress={(e) => pushEmoji(e)} />
+            <EmojiReaction emoji="😎" onPress={(e) => pushEmoji(e)} />
 
             <TouchableOpacity
               onPress={() => setShowEmojiSelector(!showEmojiSelector)}
+              style={styles.emojiShowSelector}
             >
               <IconPlus />
             </TouchableOpacity>
@@ -142,8 +146,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 15,
   },
+  emojiShowSelector: {
+    flex: 1,
+    alignItems: "flex-end",
+    paddingTop: 4,
+    paddingRight: 4,
+  },
   emojiButton: {
-    padding: 5,
+    padding: 4,
   },
   emojiDisplay: {
     fontSize: 20,
