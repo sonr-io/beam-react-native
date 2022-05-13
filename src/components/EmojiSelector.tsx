@@ -116,6 +116,20 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
   return (
     <View style={styles.wrapper}>
       <>
+        <View style={styles.emojiList}>
+          <FlatList
+            data={emojis}
+            renderItem={({ item }) => (
+              <EmojiItem
+                key={item.unified}
+                emoji={item}
+                onSelectEmoji={handleSelectEmoji}
+              />
+            )}
+            keyExtractor={(_, index) => index.toString()}
+            numColumns={8}
+          />
+        </View>
         <View style={[styles.container, styles.categories]}>
           {emojiCategories.map((category) => {
             const active = selectedCategory === category;
@@ -139,20 +153,6 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
               </View>
             );
           })}
-        </View>
-        <View style={styles.emojiList}>
-          <FlatList
-            data={emojis}
-            renderItem={({ item }) => (
-              <EmojiItem
-                key={item.unified}
-                emoji={item}
-                onSelectEmoji={handleSelectEmoji}
-              />
-            )}
-            keyExtractor={(_, index) => index.toString()}
-            numColumns={8}
-          />
         </View>
       </>
     </View>
