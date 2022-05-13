@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Platform, StyleSheet, View } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { Platform, StyleSheet, TextInput, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -11,8 +11,11 @@ import BlurView from "./BlurView";
 
 const ios = Platform.OS === "ios";
 
-type Props = { onSubmit: (message: string) => void };
-export const MessageInput = ({ onSubmit }: Props) => {
+type Props = {
+  onSubmit: (message: string) => void;
+  inputRef?: React.RefObject<TextInput>;
+};
+export const MessageInput = ({ onSubmit, inputRef }: Props) => {
   const [message, setMessage] = useState("");
   const insets = useSafeAreaInsets();
 
@@ -35,6 +38,7 @@ export const MessageInput = ({ onSubmit }: Props) => {
         </View>
         <View style={styles.messageInputContainer}>
           <TextInput
+            ref={inputRef}
             style={styles.messageInput}
             multiline
             placeholder="New message"

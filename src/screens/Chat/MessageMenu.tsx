@@ -1,11 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Platform,
   StyleSheet,
   TouchableOpacity,
   View,
   Text,
+  TextInput,
 } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -48,6 +49,8 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
     addMessage(chatId, text, message.id);
     navigation.goBack();
   };
+
+  const inputRef = useRef<TextInput>(null);
 
   return (
     <BlurView
@@ -95,7 +98,10 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
           {!showEmojiSelector && (
             <>
-              <TouchableOpacity style={styles.menuButton}>
+              <TouchableOpacity
+                style={styles.menuButton}
+                onPress={() => inputRef.current?.focus()}
+              >
                 <Text style={styles.menuButtonText}>Reply</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuButton}>
@@ -109,7 +115,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
         </BlurView>
       </View>
 
-      <MessageInput onSubmit={(msg) => pushMessage(msg)} />
+      <MessageInput onSubmit={(msg) => pushMessage(msg)} inputRef={inputRef} />
       {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
     </BlurView>
   );
