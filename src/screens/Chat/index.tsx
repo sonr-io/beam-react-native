@@ -28,7 +28,10 @@ export type Params = {
     chatId: string;
     message: Message;
   };
-  ForwardMenu: {};
+  ForwardMenu: {
+    text: string;
+    from: string;
+  };
 };
 
 const ChatScreen = () => (

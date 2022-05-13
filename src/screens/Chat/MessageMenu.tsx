@@ -70,7 +70,10 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
   const onForward = () => {
     navigation.goBack();
-    navigation.navigate("ForwardMenu", {});
+    navigation.navigate("ForwardMenu", {
+      text: message.text,
+      from: message.sender.id,
+    });
   };
 
   return (
