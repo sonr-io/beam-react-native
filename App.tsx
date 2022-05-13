@@ -72,7 +72,14 @@ export default function App() {
         }
 
         const i = chat.messages.findIndex((m) => m.id === messageId);
-        chat.messages[i].reactions.unshift({ emoji, user });
+        const reactionIndex = chat.messages[i].reactions.findIndex(
+          (e) => e.user.id === user.id && e.emoji === emoji
+        );
+        if (reactionIndex >= 0) {
+          chat.messages[i].reactions.splice(reactionIndex, 1);
+        } else {
+          chat.messages[i].reactions.unshift({ emoji, user });
+        }
         return chat;
       })
     );
