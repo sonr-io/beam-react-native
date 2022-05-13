@@ -50,6 +50,8 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
       name: e.name,
       unified: e.unified,
       category: e.category,
+      subcategory: e.subcategory,
+      sort_order: e.sort_order,
     }));
 
   const filterEmojisByCategory = (category: EmojiCategory): Emoji[] => {
@@ -62,9 +64,9 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
       return emojisHistory;
     }
 
-    return validEmojis.filter((e) =>
-      categoryLookup.includes(e.category)
-    ) as Emoji[];
+    return validEmojis
+      .filter((e) => categoryLookup.includes(e.category))
+      .sort((a, b) => a.sort_order - b.sort_order) as Emoji[];
   };
 
   const addEmojiToHistory = async (emoji: Emoji) => {
