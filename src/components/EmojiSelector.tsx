@@ -36,7 +36,7 @@ const EmojiItem = ({ emoji, onSelectEmoji }: EmojiItemProps) => (
 type EmojiSelectorProps = { onSelectEmoji: (emoji: string) => void };
 
 export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
-  const storageKey = "EmojisHistory";
+  const storageKey = "Beam_EmojisHistory";
 
   const [emojis, setEmojis] = useState<Emoji[]>([]);
   const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
@@ -44,7 +44,13 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
   const [selectedCategory, setSelectedCategory] =
     useState<EmojiCategory>("History");
 
-  const validEmojis = emoji.filter((e) => !e["obsoleted_by"]);
+  const validEmojis: Emoji[] = emoji
+    .filter((e) => !e["obsoleted_by"])
+    .map((e) => ({
+      name: e.name,
+      unified: e.unified,
+      category: e.category,
+    }));
 
   const filterEmojisByCategory = (category: EmojiCategory): Emoji[] => {
     const categoryLookup =
@@ -88,15 +94,6 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
     setEmojisHistory(JSON.parse(history));
     setEmojis(JSON.parse(history));
   };
-
-  const defaultReactions = [
-    "GRINNING FACE",
-    "GRINNING FACE WITH STAR EYES",
-    "WHITE UP POINTING INDEX",
-    "ANGRY FACE",
-    "FROWNING FACE WITH OPEN MOUTH",
-    "EXTRATERRESTRIAL ALIEN",
-  ];
 
   const handleSelectEmoji = (emoji: Emoji) => {
     onSelectEmoji(charFromEmojiObject(emoji));
