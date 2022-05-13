@@ -1,23 +1,16 @@
 import emoji from "emoji-datasource";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
-import EmojiCategoryActivities from "../icons/EmojiCategoryActivities";
-import EmojiCategoryAnimals from "../icons/EmojiCategoryAnimals";
-import EmojiCategoryFlags from "../icons/EmojiCategoryFlags";
-import EmojiCategoryFood from "../icons/EmojiCategoryFood";
-import EmojiCategoryHistory from "../icons/EmojiCategoryHistory";
-import EmojiCategoryObjects from "../icons/EmojiCategoryObjects";
-import EmojiCategoryPlaces from "../icons/EmojiCategoryPlaces";
-import EmojiCategorySmile from "../icons/EmojiCategorySmile";
-import EmojiCategorySymbols from "../icons/EmojiCategorySymbols";
 import { Emoji, EmojiCategory } from "../types/Emoji";
+import { emojiCategories, EmojiCategoryIcon } from "./EmojiCategoryIcon";
 
 const charFromUtf16 = (utf16: string) => {
   return String.fromCodePoint(
@@ -26,38 +19,6 @@ const charFromUtf16 = (utf16: string) => {
 };
 
 const charFromEmojiObject = (emoji: Emoji) => charFromUtf16(emoji.unified);
-
-type EmojiCategoryIconProps = { category: EmojiCategory; active: boolean };
-const EmojiCategoryIcon = ({ category, active }: EmojiCategoryIconProps) => {
-  switch (category) {
-    case "History":
-      return <EmojiCategoryHistory active={active} />;
-
-    case "Smileys & People":
-      return <EmojiCategorySmile active={active} />;
-
-    case "Animals & Nature":
-      return <EmojiCategoryAnimals active={active} />;
-
-    case "Food & Drink":
-      return <EmojiCategoryFood active={active} />;
-
-    case "Activities":
-      return <EmojiCategoryActivities active={active} />;
-
-    case "Travel & Places":
-      return <EmojiCategoryPlaces active={active} />;
-
-    case "Objects":
-      return <EmojiCategoryObjects active={active} />;
-
-    case "Symbols":
-      return <EmojiCategorySymbols active={active} />;
-
-    case "Flags":
-      return <EmojiCategoryFlags active={active} />;
-  }
-};
 
 type EmojiItemProps = { emoji: Emoji; onSelectEmoji: (emoji: Emoji) => void };
 const EmojiItem = ({ emoji, onSelectEmoji }: EmojiItemProps) => (
@@ -75,23 +36,23 @@ const EmojiItem = ({ emoji, onSelectEmoji }: EmojiItemProps) => (
 type EmojiSelectorProps = { onSelectEmoji: (emoji: string) => void };
 
 export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
-  const emojiCategories: EmojiCategory[] = [
-    "History",
-    "Smileys & People",
-    "Animals & Nature",
-    "Food & Drink",
-    "Activities",
-    "Travel & Places",
-    "Objects",
-    "Symbols",
-    "Flags",
-  ];
-
   const [emojis, setEmojis] = useState<Emoji[]>([]);
+  const scrollViewRef = useRef<ScrollView>(null);
   const [selectedCategory, setSelectedCategory] =
     useState<EmojiCategory>("History");
 
   const validEmojis = emoji.filter((e) => !e["obsoleted_by"]);
+
+  const filterEmojisByCategory = (category: EmojiCategory): Emoji[] => {
+    const categoryLookup =
+      category === "Smileys & People"
+        ? ["Smileys & Emotion", "People & Body"]
+        : [category];
+
+    return validEmojis.filter((e) =>
+      categoryLookup.includes(e.category)
+    ) as Emoji[];
+  };
 
   const defaultReactions = [
     "GRINNING FACE",
@@ -107,28 +68,35 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
   };
 
   useEffect(() => {
-    const emojisFromCurrentCategory = validEmojis.filter(
-      (e) => e.category === selectedCategory
-    );
-    setEmojis(emojisFromCurrentCategory as Emoji[]);
+    if (!selectedCategory) {
+      return;
+    }
+    const filteredEmojis = filterEmojisByCategory(selectedCategory);
+    setEmojis(filteredEmojis);
+
+    if (!scrollViewRef) {
+      return;
+    }
+    scrollViewRef.current?.scrollTo({ x: 0, animated: true });
   }, [selectedCategory]);
 
   return (
     <View style={styles.wrapper}>
       <>
-        <View style={styles.emojiList}>
-          <FlatList
-            data={emojis}
-            renderItem={({ item }) => (
-              <EmojiItem
-                key={item.unified}
-                emoji={item}
-                onSelectEmoji={handleSelectEmoji}
-              />
-            )}
-            keyExtractor={(_, index) => index.toString()}
-            numColumns={8}
-          />
+        <View style={styles.emojiContainer}>
+          <ScrollView horizontal pagingEnabled ref={scrollViewRef}>
+            <View style={styles.emojisScrollViewContainer}>
+              {emojis.map((emoji) => {
+                return (
+                  <EmojiItem
+                    key={emoji.unified}
+                    emoji={emoji}
+                    onSelectEmoji={handleSelectEmoji}
+                  />
+                );
+              })}
+            </View>
+          </ScrollView>
         </View>
         <View style={[styles.container, styles.categories]}>
           {emojiCategories.map((category) => {
@@ -171,21 +139,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
   },
+  emojisScrollViewContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
   categories: {
-    marginTop: 15,
+    marginTop: 5,
     marginBottom: 10,
   },
   selectedCategory: {
     borderBottomColor: "#88849C",
     borderBottomWidth: 2,
   },
-  emojiList: {
-    height: 300,
+  emojiContainer: {
+    height: 280,
+    paddingLeft: 5,
+    paddingRight: 5,
   },
   emojiItem: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    margin: 5,
   },
   emojiItemText: {
     color: "#FFFFFF",
