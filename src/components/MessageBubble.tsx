@@ -83,7 +83,7 @@ const stylesCommon = StyleSheet.create({
     lineHeight: 20,
   },
   time: {
-    fontFamily: "THICCCBOI_Regular",
+    fontFamily: "THICCCBOI_ExtraBold",
     fontSize: 10,
     lineHeight: 16,
   },
@@ -154,7 +154,7 @@ const stylesOutgoing = StyleSheet.create({
     color: "#FFFFFF",
   },
   time: {
-    color: "#F5F4FA",
+    color: "#FFF8",
     textAlign: "right",
   },
   forward: {
