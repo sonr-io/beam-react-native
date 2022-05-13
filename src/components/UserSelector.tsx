@@ -15,7 +15,7 @@ import { useChatContext } from "../contexts/ChatContext";
 import { User } from "../types/User";
 
 interface Props {
-  onPressGo: (value: string) => void;
+  onPressGo?: (value: string) => void;
   onUserSelected: (user: User) => void;
 }
 
@@ -58,17 +58,19 @@ const UserSelector: React.FC<Props> = ({ onPressGo, onUserSelected }) => {
               onChangeText={onInputChange}
             />
             <Text style={styles.snrLabel}>.snr</Text>
-            <TouchableOpacity
-              onPress={() => {
-                try {
-                  onPressGo(inputValue);
-                } catch {
-                  setError(true);
-                }
-              }}
-            >
-              <Text>Go</Text>
-            </TouchableOpacity>
+            {onPressGo && (
+              <TouchableOpacity
+                onPress={() => {
+                  try {
+                    onPressGo(inputValue);
+                  } catch {
+                    setError(true);
+                  }
+                }}
+              >
+                <Text>Go</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </TouchableWithoutFeedback>
       </View>

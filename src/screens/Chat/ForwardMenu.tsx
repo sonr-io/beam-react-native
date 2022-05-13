@@ -29,7 +29,7 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
         navigation.goBack();
       }}
     >
-      <UserSelector onPressGo={() => {}} onUserSelected={onUserSelected} />
+      <UserSelector onUserSelected={onUserSelected} />
     </TransparentModal>
   );
 };
