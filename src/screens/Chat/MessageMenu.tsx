@@ -17,6 +17,8 @@ import IconPlus from "../../icons/Plus";
 import { MessageBubble } from "../../components/MessageBubble";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
+import { MessageInput } from "../../components/MessageInput";
+import KeyboardSpacer from "react-native-keyboard-spacer";
 
 const ios = Platform.OS === "ios";
 
@@ -37,10 +39,14 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
-  const { addReaction } = useChatContext();
+  const { addReaction, addMessage } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const pushEmoji = (emoji: string) => {
     addReaction(chatId, message.id, emoji);
+  };
+  const pushMessage = (text: string) => {
+    addMessage(chatId, text, message.id);
+    navigation.goBack();
   };
 
   return (
@@ -102,6 +108,9 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           )}
         </BlurView>
       </View>
+
+      <MessageInput onSubmit={(msg) => pushMessage(msg)} />
+      {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
     </BlurView>
   );
 };
