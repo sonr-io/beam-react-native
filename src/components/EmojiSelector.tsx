@@ -1,7 +1,7 @@
 import emoji from "emoji-datasource";
 import React, { useEffect, useRef, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -36,7 +36,10 @@ const EmojiItem = ({ emoji, onSelectEmoji }: EmojiItemProps) => (
 type EmojiSelectorProps = { onSelectEmoji: (emoji: string) => void };
 
 export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
+  const storageKey = "EmojisHistory";
+
   const [emojis, setEmojis] = useState<Emoji[]>([]);
+  const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
   const scrollViewRef = useRef<ScrollView>(null);
   const [selectedCategory, setSelectedCategory] =
     useState<EmojiCategory>("History");
@@ -49,9 +52,41 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
         ? ["Smileys & Emotion", "People & Body"]
         : [category];
 
+    if (category === "History") {
+      return emojisHistory;
+    }
+
     return validEmojis.filter((e) =>
       categoryLookup.includes(e.category)
     ) as Emoji[];
+  };
+
+  const addEmojiToHistory = async (emoji: Emoji) => {
+    const history = await AsyncStorage.getItem(storageKey);
+    let value = [];
+    if (!history) {
+      value.push(Object.assign({}, emoji, { count: 1 }));
+    } else {
+      const json = JSON.parse(history);
+      if (json.filter((e: Emoji) => e.unified === emoji.unified).length > 0) {
+        value = json;
+      } else {
+        value = [Object.assign({}, emoji, { count: 1 }), ...json];
+      }
+    }
+
+    AsyncStorage.setItem(storageKey, JSON.stringify(value));
+    setEmojisHistory(value);
+  };
+
+  const loadEmojisHistory = async () => {
+    const history = await AsyncStorage.getItem(storageKey);
+    if (!history) {
+      return;
+    }
+
+    setEmojisHistory(JSON.parse(history));
+    setEmojis(JSON.parse(history));
   };
 
   const defaultReactions = [
@@ -65,6 +100,7 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
 
   const handleSelectEmoji = (emoji: Emoji) => {
     onSelectEmoji(charFromEmojiObject(emoji));
+    addEmojiToHistory(emoji);
   };
 
   useEffect(() => {
@@ -80,11 +116,15 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
     scrollViewRef.current?.scrollTo({ x: 0, animated: true });
   }, [selectedCategory]);
 
+  useEffect(() => {
+    loadEmojisHistory();
+  }, []);
+
   return (
     <View style={styles.wrapper}>
       <>
         <View style={styles.emojiContainer}>
-          <ScrollView horizontal pagingEnabled ref={scrollViewRef}>
+          <ScrollView horizontal ref={scrollViewRef}>
             <View style={styles.emojisScrollViewContainer}>
               {emojis.map((emoji) => {
                 return (
