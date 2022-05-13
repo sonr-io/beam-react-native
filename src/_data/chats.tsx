@@ -154,6 +154,7 @@ export const fakeChats: Chat[] = [
         sender: Thiago,
         timestamp: 1650331578102,
         reactions: [],
+        forwardedFrom: "daniel.snr",
       },
       {
         id: "4",
@@ -168,6 +169,7 @@ export const fakeChats: Chat[] = [
         sender: Dylan,
         timestamp: 1650331578104,
         reactions: [],
+        forwardedFrom: "daniel.snr",
       },
       {
         id: "6",
@@ -218,6 +220,7 @@ export const fakeChats: Chat[] = [
         sender: Thiago,
         timestamp: 1652107921225,
         reactions: [],
+        forwardedFrom: "matheus.snr",
       },
     ],
   },
