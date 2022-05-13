@@ -12,6 +12,7 @@ export type Message = {
   timestamp: number;
   sender: User;
   reactions: Reaction[];
+  forwardedFrom?: string;
 };
 
 export type ViewableMessage = Message & { last: boolean; showDate: boolean };
