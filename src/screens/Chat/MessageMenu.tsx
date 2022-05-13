@@ -27,7 +27,21 @@ import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
 
+type ReactionProps = {
+  emoji: string;
+  onPress: (emoji: string) => void;
+};
+
+const EmojiReaction = ({ emoji, onPress }: ReactionProps) => {
+  return (
+    <TouchableOpacity style={styles.emojiButton} onPress={() => onPress(emoji)}>
+      <Text style={styles.emojiDisplay}>{emoji}</Text>
+    </TouchableOpacity>
+  );
+};
+
 type Props = StackScreenProps<Params, "MessageMenu">;
+
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
@@ -40,7 +54,11 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const pushMessage = (text: string) => {
-    addMessage(chatId, text, message.id);
+    addMessage({
+      chatId,
+      message: text,
+      parentId: message.id,
+    });
     navigation.goBack();
   };
 
@@ -49,6 +67,11 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const inputRef = useRef<TextInput>(null);
+
+  const onForward = () => {
+    navigation.goBack();
+    navigation.navigate("ForwardMenu", {});
+  };
 
   return (
     <BlurView
@@ -92,7 +115,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
                 <Text style={styles.menuButtonText}>Reply</Text>
                 <IconReply />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.menuButton}>
+              <TouchableOpacity style={styles.menuButton} onPress={onForward}>
                 <Text style={styles.menuButtonText}>Forward</Text>
                 <IconForward />
               </TouchableOpacity>

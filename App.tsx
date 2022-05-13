@@ -39,7 +39,17 @@ export default function App() {
   const [user, setUser] = useState<User>(Thiago);
   const [chats, setChats] = useState<Chat[]>(fakeChats);
 
-  const addMessage = (chatId: string, message: string, parentId?: string) => {
+  const addMessage = ({
+    chatId,
+    message,
+    parentId,
+    forwardedFrom,
+  }: {
+    chatId: string;
+    message: string;
+    parentId?: string;
+    forwardedFrom?: string;
+  }) => {
     setChats((chats) =>
       chats.map((chat) => {
         if (chat.id !== chatId) {
@@ -53,6 +63,7 @@ export default function App() {
           sender: user,
           reactions: [],
           parentId,
+          forwardedFrom,
         });
         return chat;
       })

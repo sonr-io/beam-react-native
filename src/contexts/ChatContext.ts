@@ -6,7 +6,12 @@ import { Emoji } from "../types/Emoji";
 export type ChatContextType = {
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
-  addMessage: (chatId: string, message: string, parentId?: string) => void;
+  addMessage: (params: {
+    chatId: string;
+    message: string;
+    parentId?: string;
+    forwardedFrom?: string;
+  }) => void;
   addReaction: (chatId: string, messageId: string, emoji: Emoji) => void;
 };
 
