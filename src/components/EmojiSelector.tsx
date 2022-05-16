@@ -119,19 +119,53 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
     loadEmojisHistory();
   }, []);
 
+  const emojisGrid = (): Emoji[][] => {
+    const totalEmojis = emojis.length;
+    const minColumnsPerRow = 7;
+    if (totalEmojis < minColumnsPerRow) {
+      return new Array(emojis);
+    }
+
+    let currentRow = 0;
+    const maxNumberOfRows = 7;
+    const grid: Emoji[][] = [];
+    const maxColumnsPerRow = Math.ceil(totalEmojis / maxNumberOfRows);
+    const columnsPerRow =
+      maxColumnsPerRow < minColumnsPerRow ? minColumnsPerRow : maxColumnsPerRow;
+
+    emojis.forEach((e) => {
+      if (!grid[currentRow]) {
+        grid[currentRow] = [];
+      }
+      grid[currentRow].push(e);
+
+      if (grid[currentRow].length + 1 > columnsPerRow) {
+        currentRow++;
+      }
+    });
+
+    return grid;
+  };
+
   return (
     <View style={styles.wrapper}>
       <>
         <View style={styles.emojiContainer}>
           <ScrollView horizontal ref={scrollViewRef}>
-            <View style={styles.emojisScrollViewContainer}>
-              {emojis.map((emoji) => {
+            <View>
+              {emojisGrid().map((grid: Emoji[]) => {
                 return (
-                  <EmojiItem
-                    key={emoji.unified}
-                    emoji={emoji}
-                    onSelectEmoji={handleSelectEmoji}
-                  />
+                  <View style={[styles.emojisScrollViewContainer]}>
+                    {grid.map((emoji) => {
+                      return (
+                        <EmojiItem
+                          key={emoji.unified}
+                          emoji={emoji}
+                          onSelectEmoji={handleSelectEmoji}
+                        />
+                      );
+                    })}
+                  </View>
                 );
               })}
             </View>
@@ -180,7 +214,7 @@ const styles = StyleSheet.create({
   },
   emojisScrollViewContainer: {
     display: "flex",
-    flexWrap: "wrap",
+    flexDirection: "row",
   },
   categories: {
     marginTop: 5,
