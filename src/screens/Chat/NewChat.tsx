@@ -112,7 +112,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
                 />
                 <Text style={styles.snrLabel}>.snr</Text>
                 <TouchableOpacity onPress={onPressGo}>
-                  <Text>Go</Text>
+                  <Text style={{ color: "#5E5B71" }}>Go</Text>
                 </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>
