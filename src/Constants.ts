@@ -1,4 +1,4 @@
-export const StorageKeyForEmojis = "6_Beam_EmojisHistory";
+export const StorageKeyForEmojis = "Storage_Beam_EmojisHistory";
 export const DefaultEmojisNames = [
   "THUMBS UP SIGN",
   "HEAVY CHECK MARK",
