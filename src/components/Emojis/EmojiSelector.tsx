@@ -7,17 +7,16 @@ import { useEmojiHistoryContext } from "../../contexts/EmojiHistoryContext";
 import { Emoji, EmojiCategory } from "../../types/Emoji";
 import { emojiCategories, EmojiCategoryIcon } from "./EmojiCategoryIcon";
 import { EmojiCategoryView } from "./EmojiCategoryView";
-import { charFromEmojiObject } from "./EmojiItem";
 
 type ScrollableTabViewProps = {
   activeTab: number;
   goToPage: (page: number) => void;
 };
 
-type EmojiSelectorProps = { onSelectEmoji: (emoji: string) => void };
+type EmojiSelectorProps = { onSelectEmoji: (emoji: Emoji) => void };
 
 export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
-  const { emojisHistory, addEmojiToHistory } = useEmojiHistoryContext();
+  const { emojisHistory } = useEmojiHistoryContext();
   const [emojis, setEmojis] = useState<Emoji[]>([]);
 
   const validEmojis: Emoji[] = emoji
@@ -47,11 +46,6 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
     },
     [emojis]
   );
-
-  const handleSelectEmoji = (emoji: Emoji) => {
-    onSelectEmoji(charFromEmojiObject(emoji));
-    addEmojiToHistory(emoji);
-  };
 
   useEffect(() => {
     if (!emojisHistory || !emojisHistory.length) {
@@ -101,7 +95,7 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
             <EmojiCategoryView
               key={`category-${index}`}
               emojis={filterEmojisByCategory(category)}
-              onSelectEmoji={handleSelectEmoji}
+              onSelectEmoji={onSelectEmoji}
             />
           );
         })}

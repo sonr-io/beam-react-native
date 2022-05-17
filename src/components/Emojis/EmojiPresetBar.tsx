@@ -4,10 +4,10 @@ import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useEmojiHistoryContext } from "../../contexts/EmojiHistoryContext";
 import IconPlus from "../../icons/Plus";
 import { Emoji } from "../../types/Emoji";
-import { charFromEmojiObject, EmojiItem } from "./EmojiItem";
+import { EmojiItem } from "./EmojiItem";
 
 type EmojiPresetBarProps = {
-  onSelectEmoji: (emoji: string) => void;
+  onSelectEmoji: (emoji: Emoji) => void;
   handleShowEmojiSelector: () => void;
 };
 
@@ -15,7 +15,7 @@ export const EmojiPresetBar = ({
   onSelectEmoji,
   handleShowEmojiSelector,
 }: EmojiPresetBarProps) => {
-  const { emojisHistory, addEmojiToHistory } = useEmojiHistoryContext();
+  const { emojisHistory } = useEmojiHistoryContext();
   const [emojis, setEmojis] = useState<Emoji[]>([]);
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
 
@@ -54,11 +54,6 @@ export const EmojiPresetBar = ({
     return <></>;
   }
 
-  const handleSelectEmoji = (emoji: Emoji) => {
-    onSelectEmoji(charFromEmojiObject(emoji));
-    addEmojiToHistory(emoji);
-  };
-
   return (
     <View style={styles.wrapper}>
       {emojis.map((emoji) => {
@@ -66,7 +61,7 @@ export const EmojiPresetBar = ({
           <EmojiItem
             key={emoji.unified}
             emoji={emoji}
-            onSelectEmoji={handleSelectEmoji}
+            onSelectEmoji={onSelectEmoji}
           />
         );
       })}

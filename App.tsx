@@ -18,6 +18,7 @@ import { StatusBar, StyleSheet, View } from "react-native";
 
 import { fakeChats } from "./src/_data/chats";
 import { Thiago } from "./src/_data/users";
+import { charFromEmojiObject } from "./src/components/Emojis/EmojiItem";
 import { DefaultEmojisNames, StorageKeyForEmojis } from "./src/Constants";
 import { ChatContext } from "./src/contexts/ChatContext";
 import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
@@ -71,21 +72,22 @@ export default function App() {
     );
   };
 
-  const addReaction = (chatId: string, messageId: string, emoji: string) => {
+  const addReaction = (chatId: string, messageId: string, emoji: Emoji) => {
     setChats((chats) =>
       chats.map((chat) => {
         if (chat.id !== chatId) {
           return chat;
         }
-
+        updateEmojisHistory(emoji);
+        const emojiChar = charFromEmojiObject(emoji);
         const i = chat.messages.findIndex((m) => m.id === messageId);
         const reactionIndex = chat.messages[i].reactions.findIndex(
-          (e) => e.user.id === user.id && e.emoji === emoji
+          (e) => e.user.id === user.id && e.emoji === emojiChar
         );
         if (reactionIndex >= 0) {
           chat.messages[i].reactions.splice(reactionIndex, 1);
         } else {
-          chat.messages[i].reactions.unshift({ emoji, user });
+          chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
         }
         return chat;
       })

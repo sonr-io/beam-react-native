@@ -23,6 +23,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import IconCopy from "../../icons/Copy";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
+import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
 
@@ -33,9 +34,11 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { user } = useUserContext();
   const { addReaction, addMessage } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
-  const pushEmoji = (emoji: string) => {
+
+  const pushEmoji = (emoji: Emoji) => {
     addReaction(chatId, message.id, emoji);
   };
+
   const pushMessage = (text: string) => {
     addMessage(chatId, text, message.id);
     navigation.goBack();
@@ -68,16 +71,14 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
         <BlurView>
           <View>
             <EmojiPresetBar
-              onSelectEmoji={(e) => pushEmoji(e)}
+              onSelectEmoji={pushEmoji}
               handleShowEmojiSelector={() => {
                 setShowEmojiSelector(!showEmojiSelector);
               }}
             />
           </View>
 
-          {showEmojiSelector && (
-            <EmojiSelector onSelectEmoji={(e) => pushEmoji(e)} />
-          )}
+          {showEmojiSelector && <EmojiSelector onSelectEmoji={pushEmoji} />}
 
           {!showEmojiSelector && (
             <>
