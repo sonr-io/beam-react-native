@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  Button,
 } from "react-native";
 
 import { Avatar } from "./Avatar/Avatar";
@@ -17,9 +18,16 @@ import { User } from "../types/User";
 interface Props {
   onPressGo?: (value: string) => void;
   onUserSelected: (user: User) => void;
+  markedUsers?: Set<string>;
+  onSend?: () => void;
 }
 
-const UserSelector: React.FC<Props> = ({ onPressGo, onUserSelected }) => {
+const UserSelector: React.FC<Props> = ({
+  onPressGo,
+  onUserSelected,
+  markedUsers,
+  onSend,
+}) => {
   const { chats } = useChatContext();
   const users = chats.map((chat) => chat.user);
 
@@ -90,6 +98,7 @@ const UserSelector: React.FC<Props> = ({ onPressGo, onUserSelected }) => {
               <Text style={styles.userName}>{user.name}</Text>
               <Text style={styles.userId}>{user.id}</Text>
             </View>
+            {markedUsers?.has(user.id) && <Text>marked</Text>}
           </TouchableOpacity>
         )}
         ListHeaderComponent={
@@ -101,6 +110,7 @@ const UserSelector: React.FC<Props> = ({ onPressGo, onUserSelected }) => {
         }
         ItemSeparatorComponent={() => <View style={{ marginTop: 16 }} />}
       />
+      {onSend && <Button title="Send" onPress={onSend} />}
     </>
   );
 };

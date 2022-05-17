@@ -13,13 +13,27 @@ import { User } from "../../types/User";
 type Props = StackScreenProps<Params, "ForwardMenu">;
 
 const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
-  const { chats } = useChatContext();
+  const { from, text } = route.params;
+  const { chats, addMessage } = useChatContext();
+  const [markedUsers, setMarkedUsers] = React.useState(new Set<string>());
 
   const onUserSelected = (user: User) => {
-    const chat = chats.find((chat) => chat.name === user.id);
-    if (chat) {
-      navigation.navigate("ChatView", { id: chat.id, forward: route.params });
+    if (markedUsers.has(user.id)) {
+      markedUsers.delete(user.id);
+    } else {
+      markedUsers.add(user.id);
     }
+    setMarkedUsers(new Set(markedUsers));
+  };
+
+  const onSend = () => {
+    for (const id of markedUsers.values()) {
+      const chat = chats.find((chat) => chat.name === id);
+      if (chat) {
+        addMessage({ chatId: chat?.id, message: text, forwardedFrom: from });
+      }
+    }
+    navigation.navigate("ChatList", {});
   };
 
   return (
@@ -29,7 +43,11 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
         navigation.goBack();
       }}
     >
-      <UserSelector onUserSelected={onUserSelected} />
+      <UserSelector
+        onUserSelected={onUserSelected}
+        markedUsers={markedUsers}
+        onSend={onSend}
+      />
     </TransparentModal>
   );
 };
