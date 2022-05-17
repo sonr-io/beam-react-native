@@ -26,6 +26,11 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
     setMarkedUsers(new Set(markedUsers));
   };
 
+  const onUnmarkUser = (id: string) => {
+    markedUsers.delete(id);
+    setMarkedUsers(new Set(markedUsers));
+  };
+
   const onSend = () => {
     for (const id of markedUsers.values()) {
       const chat = chats.find((chat) => chat.name === id);
@@ -46,6 +51,7 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
       <UserSelector
         onUserSelected={onUserSelected}
         markedUsers={markedUsers}
+        onUnmarkUser={onUnmarkUser}
         onSend={onSend}
       />
     </TransparentModal>

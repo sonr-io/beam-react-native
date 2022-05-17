@@ -13,13 +13,17 @@ import {
 import { Avatar } from "./Avatar/Avatar";
 
 import { useChatContext } from "../contexts/ChatContext";
+
 import IconCheckCircle from "../icons/CheckCircle";
+import IconClose from "../icons/Close";
+
 import { User } from "../types/User";
 
 interface Props {
   onPressGo?: (value: string) => void;
   onUserSelected: (user: User) => void;
   markedUsers?: Set<string>;
+  onUnmarkUser?: (id: string) => void;
   onSend?: () => void;
 }
 
@@ -27,6 +31,7 @@ const UserSelector: React.FC<Props> = ({
   onPressGo,
   onUserSelected,
   markedUsers,
+  onUnmarkUser,
   onSend,
 }) => {
   const { chats } = useChatContext();
@@ -88,6 +93,9 @@ const UserSelector: React.FC<Props> = ({
         {[...(markedUsers?.values() ?? [])].map((id) => (
           <View style={styles.selectedUserContainer} key={id}>
             <Text style={styles.selectedUser}>{id}</Text>
+            <TouchableOpacity onPress={() => onUnmarkUser && onUnmarkUser(id)}>
+              <IconClose />
+            </TouchableOpacity>
           </View>
         ))}
       </View>
@@ -169,6 +177,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   selectedUserContainer: {
+    flexDirection: "row",
     backgroundColor: "#1792FF",
     paddingHorizontal: 12,
     paddingVertical: 4,
@@ -180,6 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "THICCCBOI_Medium",
     color: "#F5F4FA",
+    marginRight: 8,
   },
   userList: {
     marginTop: 24,
