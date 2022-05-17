@@ -84,6 +84,13 @@ const UserSelector: React.FC<Props> = ({
         </TouchableWithoutFeedback>
       </View>
       {error && <Text style={styles.errorMessage}>Invalid .snr domain</Text>}
+      <View style={styles.selectedUsers}>
+        {[...(markedUsers?.values() ?? [])].map((id) => (
+          <View style={styles.selectedUserContainer} key={id}>
+            <Text style={styles.selectedUser}>{id}</Text>
+          </View>
+        ))}
+      </View>
       <FlatList
         style={styles.userList}
         data={userList}
@@ -155,6 +162,24 @@ const styles = StyleSheet.create({
     color: "#FF2866",
     marginTop: 4,
     marginLeft: 30,
+  },
+  selectedUsers: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    flexWrap: "wrap",
+  },
+  selectedUserContainer: {
+    backgroundColor: "#1792FF",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginLeft: 8,
+    marginTop: 8,
+  },
+  selectedUser: {
+    fontSize: 14,
+    fontFamily: "THICCCBOI_Medium",
+    color: "#F5F4FA",
   },
   userList: {
     marginTop: 24,
