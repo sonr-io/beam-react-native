@@ -41,9 +41,9 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 24,
+    fontSize: 34,
     fontWeight: "bold",
-    fontFamily: "Poppins_600SemiBold",
+    fontFamily: "THICCCBOI_ExtraBold",
     color: "#FFFFFF",
     paddingHorizontal: 16,
     marginTop: 4,
