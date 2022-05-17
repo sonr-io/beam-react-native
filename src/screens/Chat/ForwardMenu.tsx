@@ -31,14 +31,29 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
     setMarkedUsers(new Set(markedUsers));
   };
 
-  const onSend = () => {
-    for (const id of markedUsers.values()) {
-      const chat = chats.find((chat) => chat.name === id);
-      if (chat) {
-        addMessage({ chatId: chat?.id, message: text, forwardedFrom: from });
-      }
+  const forwardMessage = (to: string, text: string, from: string) => {
+    const chat = chats.find((chat) => chat.name === to);
+    if (chat) {
+      addMessage({
+        chatId: chat.id,
+        message: text,
+        forwardedFrom: from,
+      });
+      return chat.id;
     }
-    navigation.navigate("ChatList", {});
+  };
+
+  const onSend = () => {
+    if (markedUsers.size === 1) {
+      const { value: id } = markedUsers.values().next();
+      const chatId = forwardMessage(id, text, from) ?? "";
+      navigation.navigate("ChatView", { id: chatId });
+    } else {
+      for (const id of markedUsers.values()) {
+        forwardMessage(id, text, from);
+      }
+      navigation.navigate("ChatList", {});
+    }
   };
 
   return (
