@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 
-import { Emoji, EmojiCategory } from "../types/Emoji";
-import { emojiCategories, EmojiCategoryIcon } from "./Emojis/EmojiCategoryIcon";
-import { EmojiCategoryView } from "./Emojis/EmojiCategoryView";
-import { charFromEmojiObject } from "./Emojis/EmojiItem";
+import { Emoji, EmojiCategory } from "../../types/Emoji";
+import { emojiCategories, EmojiCategoryIcon } from "./EmojiCategoryIcon";
+import { EmojiCategoryView } from "./EmojiCategoryView";
+import { charFromEmojiObject } from "./EmojiItem";
 
 type ScrollableTabViewProps = {
   activeTab: number;

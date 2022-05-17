@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
-import { EmojiSelector } from "../../components/EmojiSelector";
+import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
 import IconPlus from "../../icons/Plus";
 import { MessageBubble } from "../../components/MessageBubble";
 import { useChatContext } from "../../contexts/ChatContext";
@@ -24,6 +24,7 @@ type ReactionProps = {
   emoji: string;
   onPress: (emoji: string) => void;
 };
+
 const EmojiReaction = ({ emoji, onPress }: ReactionProps) => {
   return (
     <TouchableOpacity style={styles.emojiButton} onPress={() => onPress(emoji)}>
