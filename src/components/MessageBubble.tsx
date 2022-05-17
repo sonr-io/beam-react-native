@@ -3,12 +3,15 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { getTime } from "../lib/getTime";
 
+import IconForwarded from "../icons/Forwarded";
+
 type Props = {
   text: string;
   isIncoming: boolean;
   timestamp: number;
   showTimestamp: boolean;
   reactions: string[];
+  forwardedFrom?: string;
 };
 
 export const MessageBubble = (props: Props) => {
@@ -20,6 +23,14 @@ export const MessageBubble = (props: Props) => {
           <Text style={[stylesCommon.time, stylesCustom.time]}>
             {getTime(props.timestamp)}
           </Text>
+        )}
+        {props.forwardedFrom && (
+          <View style={stylesCommon.forwardContainer}>
+            <IconForwarded fill={props.isIncoming ? "#B7B4C7" : "#FFF8"} />
+            <Text style={[stylesCustom.forward, stylesCommon.forward]}>
+              Forwarded from {props.forwardedFrom}
+            </Text>
+          </View>
         )}
         <Text style={[stylesCommon.text, stylesCustom.text]}>{props.text}</Text>
       </View>
@@ -72,10 +83,21 @@ const stylesCommon = StyleSheet.create({
     lineHeight: 20,
   },
   time: {
-    fontFamily: "THICCCBOI_Regular",
+    fontFamily: "THICCCBOI_ExtraBold",
     fontSize: 10,
     lineHeight: 16,
   },
+
+  forwardContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  forward: {
+    fontSize: 10,
+    fontFamily: "THICCCBOI_ExtraBold",
+    marginLeft: 2,
+  },
+
   reactionsContainer: {
     alignSelf: "flex-end",
     flexDirection: "row",
@@ -113,6 +135,9 @@ const stylesIncoming = StyleSheet.create({
   time: {
     color: "#B7B4C7",
   },
+  forward: {
+    color: "#B7B4C7",
+  },
 });
 
 const stylesOutgoing = StyleSheet.create({
@@ -129,7 +154,10 @@ const stylesOutgoing = StyleSheet.create({
     color: "#FFFFFF",
   },
   time: {
-    color: "#F5F4FA",
+    color: "#FFF8",
     textAlign: "right",
+  },
+  forward: {
+    color: "#FFF8",
   },
 });

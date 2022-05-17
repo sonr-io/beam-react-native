@@ -51,7 +51,7 @@ export default function App() {
   const [user, setUser] = useState<User>(Thiago);
   const [chats, setChats] = useState<Chat[]>(fakeChats);
 
-  const addMessage = (chatId: string, message: string) => {
+  const addMessage = (chatId: string, message: string, parentId?: string) => {
     setChats((chats) =>
       chats.map((chat) => {
         if (chat.id !== chatId) {
@@ -64,6 +64,7 @@ export default function App() {
           timestamp: new Date().getTime(),
           sender: user,
           reactions: [],
+          parentId,
         });
         return chat;
       })
