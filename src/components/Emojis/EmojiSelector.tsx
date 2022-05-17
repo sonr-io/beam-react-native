@@ -1,5 +1,5 @@
 import emoji from "emoji-datasource";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 
@@ -29,23 +29,20 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
       sort_order: e.sort_order,
     }));
 
-  const filterEmojisByCategory = useCallback(
-    (category: EmojiCategory) => {
-      const categoryLookup =
-        category === "Smileys & People"
-          ? ["Smileys & Emotion", "People & Body"]
-          : [category];
+  const filterEmojisByCategory = (category: EmojiCategory) => {
+    const categoryLookup =
+      category === "Smileys & People"
+        ? ["Smileys & Emotion", "People & Body"]
+        : [category];
 
-      if (category === "History") {
-        return emojisHistory;
-      }
+    if (category === "History") {
+      return emojisHistory;
+    }
 
-      return validEmojis
-        .filter((e) => categoryLookup.includes(e.category))
-        .sort((a, b) => a.sort_order - b.sort_order) as Emoji[];
-    },
-    [emojis]
-  );
+    return validEmojis
+      .filter((e) => categoryLookup.includes(e.category))
+      .sort((a, b) => a.sort_order - b.sort_order) as Emoji[];
+  };
 
   useEffect(() => {
     if (!emojisHistory || !emojisHistory.length) {
