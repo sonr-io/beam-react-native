@@ -1,11 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useState } from "react";
 import {
+  Animated,
   Platform,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
 } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,10 +14,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
 import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
-import IconPlus from "../../icons/Plus";
 import { MessageBubble } from "../../components/MessageBubble";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
+import IconPlus from "../../icons/Plus";
 
 const ios = Platform.OS === "ios";
 
@@ -42,6 +43,26 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const pushEmoji = (emoji: string) => {
     addReaction(chatId, message.id, emoji);
+  };
+
+  const animationOfEmojisToggleButton = new Animated.Value(
+    showEmojiSelector ? 0 : 1
+  );
+
+  Animated.timing(animationOfEmojisToggleButton, {
+    toValue: showEmojiSelector ? 1 : 0,
+    duration: 100,
+    useNativeDriver: true,
+  }).start();
+
+  const rotateEmojisToggleButtonInterpolate =
+    animationOfEmojisToggleButton.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["0deg", "45deg"],
+    });
+
+  const animatedStylesForEmojisToggleButton = {
+    transform: [{ rotate: rotateEmojisToggleButtonInterpolate }],
   };
 
   return (
@@ -80,7 +101,9 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
               onPress={() => setShowEmojiSelector(!showEmojiSelector)}
               style={styles.emojiShowSelector}
             >
-              <IconPlus />
+              <Animated.View style={animatedStylesForEmojisToggleButton}>
+                <IconPlus />
+              </Animated.View>
             </TouchableOpacity>
           </View>
 
