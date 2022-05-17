@@ -6,7 +6,9 @@ import { Emoji } from "../../types/Emoji";
 import { EmojiItem } from "./EmojiItem";
 
 // TODO:
-// handle the warning: Calling `getNode()` on the ref of an Animated component is no longer necessary. You can now directly use the ref instead. This method will be removed in a future release., ReactNativeFiberHostComponent
+// handle the warning: Calling `getNode()` on the ref of an Animated component is no longer necessary.
+// You can now directly use the ref instead. This method will be removed in a future release., ReactNativeFiberHostComponent
+// this message is comming from the ScrollableTabView
 LogBox.ignoreLogs(["Calling `getNode()`"]);
 
 type ScrollableTabViewProps = { activeTab: number };
@@ -56,6 +58,7 @@ export const EmojiCategoryView = ({
   return (
     <View style={styles.wapper}>
       <ScrollableTabView
+        prerenderingSiblingsNumber={1}
         initialPage={subPage}
         renderTabBar={({ activeTab }: ScrollableTabViewProps) => {
           return (

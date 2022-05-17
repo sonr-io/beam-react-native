@@ -59,6 +59,7 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
       <ScrollableTabView
         initialPage={0}
         tabBarPosition="bottom"
+        prerenderingSiblingsNumber={1}
         renderTabBar={(props: ScrollableTabViewProps) => {
           const { activeTab, goToPage } = props;
 
