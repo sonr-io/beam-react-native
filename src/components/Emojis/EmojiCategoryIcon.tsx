@@ -1,15 +1,15 @@
 import React from "react";
 
-import EmojiCategoryActivities from "../icons/EmojiCategoryActivities";
-import EmojiCategoryAnimals from "../icons/EmojiCategoryAnimals";
-import EmojiCategoryFlags from "../icons/EmojiCategoryFlags";
-import EmojiCategoryFood from "../icons/EmojiCategoryFood";
-import EmojiCategoryHistory from "../icons/EmojiCategoryHistory";
-import EmojiCategoryObjects from "../icons/EmojiCategoryObjects";
-import EmojiCategoryPlaces from "../icons/EmojiCategoryPlaces";
-import EmojiCategorySmile from "../icons/EmojiCategorySmile";
-import EmojiCategorySymbols from "../icons/EmojiCategorySymbols";
-import { EmojiCategory } from "../types/Emoji";
+import EmojiCategoryActivities from "../../icons/EmojiCategoryActivities";
+import EmojiCategoryAnimals from "../../icons/EmojiCategoryAnimals";
+import EmojiCategoryFlags from "../../icons/EmojiCategoryFlags";
+import EmojiCategoryFood from "../../icons/EmojiCategoryFood";
+import EmojiCategoryHistory from "../../icons/EmojiCategoryHistory";
+import EmojiCategoryObjects from "../../icons/EmojiCategoryObjects";
+import EmojiCategoryPlaces from "../../icons/EmojiCategoryPlaces";
+import EmojiCategorySmile from "../../icons/EmojiCategorySmile";
+import EmojiCategorySymbols from "../../icons/EmojiCategorySymbols";
+import { EmojiCategory } from "../../types/Emoji";
 
 export const emojiCategories: EmojiCategory[] = [
   "History",

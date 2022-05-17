@@ -1,48 +1,22 @@
-import emoji from "emoji-datasource";
-import React, { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import emoji from "emoji-datasource";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import ScrollableTabView from "react-native-scrollable-tab-view";
 
 import { Emoji, EmojiCategory } from "../types/Emoji";
-import { emojiCategories, EmojiCategoryIcon } from "./EmojiCategoryIcon";
+import { emojiCategories, EmojiCategoryIcon } from "./Emojis/EmojiCategoryIcon";
+import { EmojiCategoryView } from "./Emojis/EmojiCategoryView";
+import { charFromEmojiObject } from "./Emojis/EmojiItem";
 
-const charFromUtf16 = (utf16: string) => {
-  return String.fromCodePoint(
-    ...utf16.split("-").map((code) => Number(`0x${code}`))
-  );
+type ScrollableTabViewProps = {
+  activeTab: number;
+  goToPage: (page: number) => void;
 };
-
-const charFromEmojiObject = (emoji: Emoji) => charFromUtf16(emoji.unified);
-
-type EmojiItemProps = { emoji: Emoji; onSelectEmoji: (emoji: Emoji) => void };
-const EmojiItem = ({ emoji, onSelectEmoji }: EmojiItemProps) => (
-  <TouchableOpacity
-    onPress={() => {
-      onSelectEmoji(emoji);
-    }}
-    activeOpacity={0.5}
-    style={styles.emojiItem}
-  >
-    <Text style={styles.emojiItemText}>{charFromEmojiObject(emoji)}</Text>
-  </TouchableOpacity>
-);
-
 type EmojiSelectorProps = { onSelectEmoji: (emoji: string) => void };
-
 export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
   const storageKey = "Beam_EmojisHistory";
-
-  const [emojis, setEmojis] = useState<Emoji[]>([]);
   const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
-  const scrollViewRef = useRef<ScrollView>(null);
-  const [selectedCategory, setSelectedCategory] =
-    useState<EmojiCategory>("History");
 
   const validEmojis: Emoji[] = emoji
     .filter((e) => !e["obsoleted_by"])
@@ -94,7 +68,6 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
     }
 
     setEmojisHistory(JSON.parse(history));
-    setEmojis(JSON.parse(history));
   };
 
   const handleSelectEmoji = (emoji: Emoji) => {
@@ -103,99 +76,55 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
   };
 
   useEffect(() => {
-    if (!selectedCategory) {
-      return;
-    }
-    const filteredEmojis = filterEmojisByCategory(selectedCategory);
-    setEmojis(filteredEmojis);
-
-    if (!scrollViewRef) {
-      return;
-    }
-    scrollViewRef.current?.scrollTo({ x: 0, animated: true });
-  }, [selectedCategory]);
-
-  useEffect(() => {
     loadEmojisHistory();
   }, []);
 
-  const emojisGrid = (): Emoji[][] => {
-    const totalEmojis = emojis.length;
-    const minColumnsPerRow = 7;
-    if (totalEmojis < minColumnsPerRow) {
-      return new Array(emojis);
-    }
-
-    let currentRow = 0;
-    const maxNumberOfRows = 7;
-    const grid: Emoji[][] = [];
-    const maxColumnsPerRow = Math.ceil(totalEmojis / maxNumberOfRows);
-    const columnsPerRow =
-      maxColumnsPerRow < minColumnsPerRow ? minColumnsPerRow : maxColumnsPerRow;
-
-    emojis.forEach((e) => {
-      if (!grid[currentRow]) {
-        grid[currentRow] = [];
-      }
-      grid[currentRow].push(e);
-
-      if (grid[currentRow].length + 1 > columnsPerRow) {
-        currentRow++;
-      }
-    });
-
-    return grid;
-  };
-
   return (
     <View style={styles.wrapper}>
-      <>
-        <View style={styles.emojiContainer}>
-          <ScrollView horizontal ref={scrollViewRef}>
-            <View>
-              {emojisGrid().map((grid: Emoji[]) => {
+      <ScrollableTabView
+        initialPage={0}
+        tabBarPosition="bottom"
+        renderTabBar={(props: ScrollableTabViewProps) => {
+          const { activeTab, goToPage } = props;
+
+          return (
+            <View style={[styles.container, styles.categories]}>
+              {emojiCategories.map((category, index) => {
+                const active = activeTab === index;
+
                 return (
-                  <View style={[styles.emojisScrollViewContainer]}>
-                    {grid.map((emoji) => {
-                      return (
-                        <EmojiItem
-                          key={emoji.unified}
-                          emoji={emoji}
-                          onSelectEmoji={handleSelectEmoji}
-                        />
-                      );
-                    })}
+                  <View
+                    key={category}
+                    style={[
+                      styles.emojiCategoryBarItem,
+                      active ? styles.emojiCategoryBarItemSelected : null,
+                    ]}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        goToPage(index);
+                      }}
+                      activeOpacity={0.5}
+                    >
+                      <EmojiCategoryIcon category={category} active={active} />
+                    </TouchableOpacity>
                   </View>
                 );
               })}
             </View>
-          </ScrollView>
-        </View>
-        <View style={[styles.container, styles.categories]}>
-          {emojiCategories.map((category) => {
-            const active = selectedCategory === category;
-
-            return (
-              <View
-                key={category}
-                style={[
-                  styles.emojiCategoryItem,
-                  active ? styles.emojiCategoryItemSelected : null,
-                ]}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedCategory(category);
-                  }}
-                  activeOpacity={0.5}
-                >
-                  <EmojiCategoryIcon category={category} active={active} />
-                </TouchableOpacity>
-              </View>
-            );
-          })}
-        </View>
-      </>
+          );
+        }}
+      >
+        {emojiCategories.map((category, index) => {
+          return (
+            <EmojiCategoryView
+              key={`category-${index}`}
+              emojis={filterEmojisByCategory(category)}
+              onSelectEmoji={handleSelectEmoji}
+            />
+          );
+        })}
+      </ScrollableTabView>
     </View>
   );
 };
@@ -206,43 +135,20 @@ const styles = StyleSheet.create({
     padding: 5,
     borderTopRightRadius: 12,
     borderTopLeftRadius: 4,
+    height: 330,
+    overflow: "visible",
   },
   container: {
     display: "flex",
     flexDirection: "row",
     width: "100%",
   },
-  emojisScrollViewContainer: {
-    display: "flex",
-    flexDirection: "row",
-  },
   categories: {
-    marginTop: 5,
+    marginTop: 10,
+    paddingVertical: 5,
     marginBottom: 10,
   },
-  selectedCategory: {
-    borderBottomColor: "#88849C",
-    borderBottomWidth: 2,
-  },
-  emojiContainer: {
-    height: 280,
-    paddingLeft: 5,
-    paddingRight: 5,
-  },
-  emojiItem: {
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 5,
-  },
-  emojiItemText: {
-    color: "#FFFFFF",
-    fontSize: 24,
-  },
-  emojiCategoryItemText: {
-    color: "#FFFFFF",
-    fontSize: 30,
-  },
-  emojiCategoryItem: {
+  emojiCategoryBarItem: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -251,7 +157,7 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     backgroundColor: "transparent",
   },
-  emojiCategoryItemSelected: {
+  emojiCategoryBarItemSelected: {
     backgroundColor: "#88849C",
   },
 });
