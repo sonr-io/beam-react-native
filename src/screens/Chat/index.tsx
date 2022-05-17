@@ -17,13 +17,7 @@ const Stack = createStackNavigator();
 export type Params = {
   ChatList: {};
   NewChat: {};
-  ChatView: {
-    id: string;
-    forward?: {
-      text: string;
-      from: string;
-    };
-  };
+  ChatView: { id: string };
   MessageMenu: {
     chatId: string;
     message: Message;

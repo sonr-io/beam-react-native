@@ -60,7 +60,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
   const insets = useSafeAreaInsets();
   const FLATLIST_BOTTOM_OFFSET = 58 + insets.bottom;
-  const { id: chatId, forward } = route.params;
+  const { id: chatId } = route.params;
 
   useEffect(() => {
     if (!chatId || !chats || !chats.length) {
@@ -75,16 +75,6 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     setRecipient(chat.user);
     setMessages(toViewable(chat.messages).reverse());
   }, [chats, chatId]);
-
-  useEffect(() => {
-    if (forward) {
-      addMessage({
-        chatId,
-        message: forward.text,
-        forwardedFrom: forward.from,
-      });
-    }
-  }, [route]);
 
   const pushMessage = (message: string) => {
     addMessage({ chatId, message });
