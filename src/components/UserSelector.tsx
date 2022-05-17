@@ -13,6 +13,7 @@ import {
 import { Avatar } from "./Avatar/Avatar";
 
 import { useChatContext } from "../contexts/ChatContext";
+import IconCheckCircle from "../icons/CheckCircle";
 import { User } from "../types/User";
 
 interface Props {
@@ -98,7 +99,8 @@ const UserSelector: React.FC<Props> = ({
               <Text style={styles.userName}>{user.name}</Text>
               <Text style={styles.userId}>{user.id}</Text>
             </View>
-            {markedUsers?.has(user.id) && <Text>marked</Text>}
+            <View style={{ flex: 1 }} />
+            {markedUsers?.has(user.id) && <IconCheckCircle />}
           </TouchableOpacity>
         )}
         ListHeaderComponent={
