@@ -2,25 +2,21 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { DateTime } from "luxon";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
 import { Avatar } from "../../components/Avatar/Avatar";
-import BlurView from "../../components/BlurView";
 import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
+import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
-
 import IconArrowDown from "../../icons/ArrowDown";
 import IconBackArrow from "../../icons/BackArrow";
 import IconBeam from "../../icons/Beam";
-import IconFontSize from "../../icons/FontSize";
 import IconMore from "../../icons/More";
-import IconPlus from "../../icons/Plus";
-import IconSend from "../../icons/Send";
 import { getFormattedDay } from "../../lib/getFormattedDay";
 import { Chat, Message, ViewableMessage } from "../../types/Chat";
 import { User } from "../../types/User";
@@ -57,15 +53,14 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
+  const [messages, setMessages] = useState<ViewableMessage[]>([]);
+  const [showScrollDown, setShowScrollDown] = useState(false);
+
+  const flatListRef = useRef<FlatList>(null);
 
   const insets = useSafeAreaInsets();
   const FLATLIST_BOTTOM_OFFSET = 58 + insets.bottom;
   const chatId = route.params.id;
-
-  const [messages, setMessages] = useState<ViewableMessage[]>([]);
-  const [message, setMessage] = useState("");
-  const [showScrollDown, setShowScrollDown] = useState(false);
-  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     if (!chatId || !chats || !chats.length) {
@@ -81,9 +76,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     setMessages(toViewable(chat.messages).reverse());
   }, [chats, chatId]);
 
-  const addNewMessage = () => {
+  const pushMessage = (message: string) => {
     addMessage(chatId, message);
-    setMessage("");
     scrollToBottom();
   };
 
@@ -182,38 +176,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           </TouchableOpacity>
         </View>
       )}
-      <View style={styles.messageInputOuterContainer}>
-        <BlurView
-          intensity={80}
-          style={[
-            styles.messageInputBlur,
-            { paddingBottom: insets.bottom + 8 },
-          ]}
-        >
-          <View style={styles.messageToolbarButton}>
-            <IconPlus fill="#5E5B71" />
-          </View>
-          <View style={styles.messageToolbarButton}>
-            <IconFontSize />
-          </View>
-          <View style={styles.messageInputContainer}>
-            <TextInput
-              style={styles.messageInput}
-              multiline
-              placeholder="New message"
-              placeholderTextColor="#88849C"
-              value={message}
-              onChangeText={(message) => setMessage(message)}
-            />
-            <View style={{ alignSelf: "flex-end" }}>
-              <TouchableOpacity onPress={() => addNewMessage()}>
-                {!!message ? <IconSend /> : <View style={{ height: 32 }} />}
-              </TouchableOpacity>
-            </View>
-          </View>
-        </BlurView>
-        {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
-      </View>
+      <MessageInput onSubmit={(msg) => pushMessage(msg)} />
       {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
     </>
   );
@@ -282,42 +245,6 @@ const styles = StyleSheet.create({
     borderColor: "#FFF",
     alignItems: "center",
     justifyContent: "center",
-  },
-  messageInputOuterContainer: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-  },
-  messageInputBlur: {
-    backgroundColor: ios ? "rgba(136, 132, 156, 0.1)" : "#FFF",
-    padding: 8,
-    flexDirection: "row",
-  },
-  messageToolbarButton: {
-    alignSelf: "flex-end",
-    marginBottom: 10,
-    marginRight: 8,
-  },
-  messageInputContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: ios ? "rgba(255, 255, 255, 0.7)" : "#FFF",
-    borderColor: "#D9D7E6",
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingVertical: 4,
-    paddingRight: 4,
-    paddingLeft: 16,
-    maxHeight: 230,
-  },
-  messageInput: {
-    fontFamily: "Outfit_400Regular",
-    fontSize: 16,
-    lineHeight: 20,
-    color: "#5E5B71",
-    height: "100%",
-    flex: 1,
   },
 });
 

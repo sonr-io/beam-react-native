@@ -64,6 +64,7 @@ export const ChatItem: React.FC<Props> = ({
           isIncoming={!isSender}
           showTimestamp={showTimestamp}
           reactions={message.reactions.map((r) => r.emoji)}
+          forwardedFrom={message.forwardedFrom}
         />
       </TouchableWithoutFeedback>
     </Swipeable>
