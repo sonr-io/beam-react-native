@@ -72,7 +72,8 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           <View>
             <EmojiPresetBar
               onSelectEmoji={pushEmoji}
-              handleShowEmojiSelector={() => {
+              isEmojiSelectorVisible={showEmojiSelector}
+              handleEmojiSelectorVisibility={() => {
                 setShowEmojiSelector(!showEmojiSelector);
               }}
             />

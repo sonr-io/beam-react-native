@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { useEmojiHistoryContext } from "../../contexts/EmojiHistoryContext";
 import IconPlus from "../../icons/Plus";
@@ -8,36 +8,17 @@ import { EmojiItem } from "./EmojiItem";
 
 type EmojiPresetBarProps = {
   onSelectEmoji: (emoji: Emoji) => void;
-  handleShowEmojiSelector: () => void;
+  handleEmojiSelectorVisibility: () => void;
+  isEmojiSelectorVisible: boolean;
 };
 
 export const EmojiPresetBar = ({
   onSelectEmoji,
-  handleShowEmojiSelector,
+  handleEmojiSelectorVisibility,
+  isEmojiSelectorVisible,
 }: EmojiPresetBarProps) => {
   const { emojisHistory } = useEmojiHistoryContext();
   const [emojis, setEmojis] = useState<Emoji[]>([]);
-  const [showEmojiSelector, setShowEmojiSelector] = useState(false);
-
-  const animationOfEmojisToggleButton = new Animated.Value(
-    showEmojiSelector ? 0 : 1
-  );
-
-  Animated.timing(animationOfEmojisToggleButton, {
-    toValue: showEmojiSelector ? 1 : 0,
-    duration: 100,
-    useNativeDriver: true,
-  }).start();
-
-  const rotateEmojisToggleButtonInterpolate =
-    animationOfEmojisToggleButton.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "45deg"],
-    });
-
-  const animatedStylesForEmojisToggleButton = {
-    transform: [{ rotate: rotateEmojisToggleButtonInterpolate }],
-  };
 
   useEffect(() => {
     if (!emojisHistory || !emojisHistory.length) {
@@ -66,15 +47,16 @@ export const EmojiPresetBar = ({
         );
       })}
       <TouchableOpacity
-        onPress={() => {
-          setShowEmojiSelector(!showEmojiSelector);
-          handleShowEmojiSelector();
-        }}
+        onPress={handleEmojiSelectorVisibility}
         style={styles.emojiShowSelector}
       >
-        <Animated.View style={animatedStylesForEmojisToggleButton}>
+        <View
+          style={{
+            transform: [{ rotate: isEmojiSelectorVisible ? "45deg" : "0deg" }],
+          }}
+        >
           <IconPlus />
-        </Animated.View>
+        </View>
       </TouchableOpacity>
     </View>
   );
