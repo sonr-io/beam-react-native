@@ -1,10 +1,9 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import emoji from "emoji-datasource";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ScrollableTabView from "react-native-scrollable-tab-view";
-import { StorageKeyForEmojis } from "../../Constants";
 
+import { useEmojiHistoryContext } from "../../contexts/EmojiHistoryContext";
 import { Emoji, EmojiCategory } from "../../types/Emoji";
 import { emojiCategories, EmojiCategoryIcon } from "./EmojiCategoryIcon";
 import { EmojiCategoryView } from "./EmojiCategoryView";
@@ -15,31 +14,11 @@ type ScrollableTabViewProps = {
   goToPage: (page: number) => void;
 };
 
-export const addEmojiToHistory = async (
-  emoji: Emoji,
-  callback?: () => void
-) => {
-  const history = await AsyncStorage.getItem(StorageKeyForEmojis);
-  let value = [];
-  if (!history) {
-    value.push(Object.assign({}, emoji, { count: 1 }));
-  } else {
-    const json = JSON.parse(history);
-    if (json.filter((e: Emoji) => e.unified === emoji.unified).length > 0) {
-      value = json;
-    } else {
-      value = [Object.assign({}, emoji, { count: 1 }), ...json];
-    }
-  }
-
-  AsyncStorage.setItem(StorageKeyForEmojis, JSON.stringify(value));
-  callback && callback();
-};
-
 type EmojiSelectorProps = { onSelectEmoji: (emoji: string) => void };
 
 export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
-  const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
+  const { emojisHistory, addEmojiToHistory } = useEmojiHistoryContext();
+  const [emojis, setEmojis] = useState<Emoji[]>([]);
 
   const validEmojis: Emoji[] = emoji
     .filter((e) => !e["obsoleted_by"])
@@ -51,40 +30,35 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
       sort_order: e.sort_order,
     }));
 
-  const filterEmojisByCategory = (category: EmojiCategory): Emoji[] => {
-    const categoryLookup =
-      category === "Smileys & People"
-        ? ["Smileys & Emotion", "People & Body"]
-        : [category];
+  const filterEmojisByCategory = useCallback(
+    (category: EmojiCategory) => {
+      const categoryLookup =
+        category === "Smileys & People"
+          ? ["Smileys & Emotion", "People & Body"]
+          : [category];
 
-    if (category === "History") {
-      return emojisHistory;
-    }
+      if (category === "History") {
+        return emojisHistory;
+      }
 
-    return validEmojis
-      .filter((e) => categoryLookup.includes(e.category))
-      .sort((a, b) => a.sort_order - b.sort_order) as Emoji[];
-  };
-
-  const loadEmojisHistory = async () => {
-    const history = await AsyncStorage.getItem(StorageKeyForEmojis);
-    if (!history) {
-      return;
-    }
-
-    setEmojisHistory(JSON.parse(history));
-  };
+      return validEmojis
+        .filter((e) => categoryLookup.includes(e.category))
+        .sort((a, b) => a.sort_order - b.sort_order) as Emoji[];
+    },
+    [emojis]
+  );
 
   const handleSelectEmoji = (emoji: Emoji) => {
     onSelectEmoji(charFromEmojiObject(emoji));
-    addEmojiToHistory(emoji, () => {
-      loadEmojisHistory();
-    });
+    addEmojiToHistory(emoji);
   };
 
   useEffect(() => {
-    loadEmojisHistory();
-  }, []);
+    if (!emojisHistory || !emojisHistory.length) {
+      return;
+    }
+    setEmojis(emojisHistory);
+  }, [emojisHistory]);
 
   return (
     <View style={styles.wrapper}>

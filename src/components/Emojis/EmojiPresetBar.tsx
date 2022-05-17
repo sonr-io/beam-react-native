@@ -1,13 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import emoji from "emoji-datasource";
 import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { DefaultEmojisNames, StorageKeyForEmojis } from "../../Constants";
+import { useEmojiHistoryContext } from "../../contexts/EmojiHistoryContext";
 import IconPlus from "../../icons/Plus";
 import { Emoji } from "../../types/Emoji";
 import { charFromEmojiObject, EmojiItem } from "./EmojiItem";
-import { addEmojiToHistory } from "./EmojiSelector";
 
 type EmojiPresetBarProps = {
   onSelectEmoji: (emoji: string) => void;
@@ -18,27 +15,9 @@ export const EmojiPresetBar = ({
   onSelectEmoji,
   handleShowEmojiSelector,
 }: EmojiPresetBarProps) => {
-  const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
+  const { emojisHistory, addEmojiToHistory } = useEmojiHistoryContext();
+  const [emojis, setEmojis] = useState<Emoji[]>([]);
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
-
-  const loadEmojisHistory = async () => {
-    const history = await AsyncStorage.getItem(StorageKeyForEmojis);
-    if (!history) {
-      const defaultEmojis = emoji
-        .filter((emoji: Emoji) => DefaultEmojisNames.includes(emoji.name))
-        .map((e) => ({
-          name: e.name,
-          unified: e.unified,
-          category: e.category,
-          subcategory: e.subcategory,
-          sort_order: e.sort_order,
-        }));
-      setEmojisHistory(defaultEmojis);
-      return;
-    }
-
-    setEmojisHistory(JSON.parse(history).slice(0, 7));
-  };
 
   const animationOfEmojisToggleButton = new Animated.Value(
     showEmojiSelector ? 0 : 1
@@ -61,23 +40,28 @@ export const EmojiPresetBar = ({
   };
 
   useEffect(() => {
-    loadEmojisHistory();
-  }, []);
+    if (!emojisHistory || !emojisHistory.length) {
+      return;
+    }
+    setEmojis(
+      emojisHistory.filter((_, i) => {
+        return i <= 7;
+      })
+    );
+  }, [emojisHistory]);
 
-  if (!emojisHistory || !emojisHistory.length) {
+  if (!emojis || !emojis.length) {
     return <></>;
   }
 
   const handleSelectEmoji = (emoji: Emoji) => {
     onSelectEmoji(charFromEmojiObject(emoji));
-    addEmojiToHistory(emoji, () => {
-      loadEmojisHistory();
-    });
+    addEmojiToHistory(emoji);
   };
 
   return (
     <View style={styles.wrapper}>
-      {emojisHistory.map((emoji) => {
+      {emojis.map((emoji) => {
         return (
           <EmojiItem
             key={emoji.unified}
