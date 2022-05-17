@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 
   sender: {
     marginBottom: 2,
-    fontFamily: "Outfit_400Regular",
+    fontFamily: "THICCCBOI_ExtraBold",
     fontSize: 12,
   },
   senderColorSelf: {
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontFamily: "Outfit_400Regular",
+    fontFamily: "THICCCBOI_Medium",
     fontSize: 14,
     color: "#5E5B71",
     paddingLeft: 12,

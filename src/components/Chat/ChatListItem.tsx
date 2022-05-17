@@ -44,7 +44,7 @@ export const ChatListItem = (props: Props) => {
       <View style={styles.buttonContainer}>
         <Avatar user={lastMessage.sender}></Avatar>
         <View style={{ flex: 1 }}>
-          <Text style={styles.messageName}>
+          <Text style={styles.chatName}>
             {name}
 
             {totalUnReadMessages > 0 && (
@@ -69,9 +69,9 @@ export const ChatListItem = (props: Props) => {
 };
 
 const styles = StyleSheet.create({
-  messageName: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 16,
+  chatName: {
+    fontFamily: "THICCCBOI_Bold",
+    fontSize: 20,
     lineHeight: 24,
     color: "#353945",
   },
@@ -85,20 +85,20 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   },
   totalUnReadMessagesText: {
-    fontFamily: "Montserrat_600SemiBold",
+    fontFamily: "THICCCBOI_ExtraBold",
     color: "#FFFFFF",
     fontSize: 8,
   },
   lastMessage: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 14,
+    fontFamily: "THICCCBOI_Regular",
+    fontSize: 16,
     lineHeight: 24,
     color: "#777E90",
   },
   messageTime: {
     fontSize: 12,
     paddingTop: 6,
-    fontFamily: "Outfit_700Bold",
+    fontFamily: "THICCCBOI_Bold",
     alignSelf: "flex-start",
     color: "#D9D7E6",
   },

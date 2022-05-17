@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     maxHeight: 230,
   },
   messageInput: {
-    fontFamily: "Outfit_400Regular",
+    fontFamily: "THICCCBOI_Medium",
     fontSize: 16,
     lineHeight: 20,
     color: "#5E5B71",
