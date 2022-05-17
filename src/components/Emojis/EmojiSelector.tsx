@@ -3,6 +3,7 @@ import emoji from "emoji-datasource";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ScrollableTabView from "react-native-scrollable-tab-view";
+import { StorageKeyForEmojis } from "../../Constants";
 
 import { Emoji, EmojiCategory } from "../../types/Emoji";
 import { emojiCategories, EmojiCategoryIcon } from "./EmojiCategoryIcon";
@@ -13,9 +14,31 @@ type ScrollableTabViewProps = {
   activeTab: number;
   goToPage: (page: number) => void;
 };
+
+export const addEmojiToHistory = async (
+  emoji: Emoji,
+  callback?: () => void
+) => {
+  const history = await AsyncStorage.getItem(StorageKeyForEmojis);
+  let value = [];
+  if (!history) {
+    value.push(Object.assign({}, emoji, { count: 1 }));
+  } else {
+    const json = JSON.parse(history);
+    if (json.filter((e: Emoji) => e.unified === emoji.unified).length > 0) {
+      value = json;
+    } else {
+      value = [Object.assign({}, emoji, { count: 1 }), ...json];
+    }
+  }
+
+  AsyncStorage.setItem(StorageKeyForEmojis, JSON.stringify(value));
+  callback && callback();
+};
+
 type EmojiSelectorProps = { onSelectEmoji: (emoji: string) => void };
+
 export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
-  const storageKey = "Beam_EmojisHistory";
   const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
 
   const validEmojis: Emoji[] = emoji
@@ -43,26 +66,8 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
       .sort((a, b) => a.sort_order - b.sort_order) as Emoji[];
   };
 
-  const addEmojiToHistory = async (emoji: Emoji) => {
-    const history = await AsyncStorage.getItem(storageKey);
-    let value = [];
-    if (!history) {
-      value.push(Object.assign({}, emoji, { count: 1 }));
-    } else {
-      const json = JSON.parse(history);
-      if (json.filter((e: Emoji) => e.unified === emoji.unified).length > 0) {
-        value = json;
-      } else {
-        value = [Object.assign({}, emoji, { count: 1 }), ...json];
-      }
-    }
-
-    AsyncStorage.setItem(storageKey, JSON.stringify(value));
-    setEmojisHistory(value);
-  };
-
   const loadEmojisHistory = async () => {
-    const history = await AsyncStorage.getItem(storageKey);
+    const history = await AsyncStorage.getItem(StorageKeyForEmojis);
     if (!history) {
       return;
     }
@@ -72,7 +77,9 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
 
   const handleSelectEmoji = (emoji: Emoji) => {
     onSelectEmoji(charFromEmojiObject(emoji));
-    addEmojiToHistory(emoji);
+    addEmojiToHistory(emoji, () => {
+      loadEmojisHistory();
+    });
   };
 
   useEffect(() => {
