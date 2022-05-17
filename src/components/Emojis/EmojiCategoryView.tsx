@@ -21,7 +21,7 @@ export const EmojiCategoryView = ({
   onSelectEmoji,
 }: EmojiCategoryViewProps) => {
   const [pages, setPages] = useState<Emoji[][]>([]);
-  const [subPage, setSubPage] = useState(0);
+  const [subPage, _] = useState(0);
 
   useEffect(() => {
     if (!emojis || !emojis.length) {
