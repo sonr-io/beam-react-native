@@ -54,7 +54,7 @@ export const EmojiCategoryView = ({
   }
 
   return (
-    <View style={styles.categoryView}>
+    <View style={styles.wapper}>
       <ScrollableTabView
         initialPage={subPage}
         renderTabBar={({ activeTab }: ScrollableTabViewProps) => {
@@ -98,9 +98,10 @@ export const EmojiCategoryView = ({
 };
 
 const styles = StyleSheet.create({
-  categoryView: {
+  wapper: {
     position: "relative",
     flex: 1,
+    height: 300,
   },
   categoryPageView: {
     flex: 1,

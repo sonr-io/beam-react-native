@@ -30,10 +30,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     margin: 5,
-    height: 26,
-    width: 26,
+    height: 25,
+    width: 25,
   },
   emojiItemText: {
-    fontSize: 23,
+    fontSize: 18,
   },
 });

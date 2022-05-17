@@ -45,7 +45,7 @@ export const EmojiPresetBar = ({
     }
     setEmojis(
       emojisHistory.filter((_, i) => {
-        return i <= 7;
+        return i <= 6;
       })
     );
   }, [emojisHistory]);

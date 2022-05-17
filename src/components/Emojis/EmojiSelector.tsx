@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 4,
     height: 330,
     overflow: "visible",
+    width: "100%",
   },
   container: {
     display: "flex",
