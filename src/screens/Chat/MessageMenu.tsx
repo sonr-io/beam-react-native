@@ -1,22 +1,28 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Platform,
   StyleSheet,
+  Text,
+  TextInput,
   TouchableOpacity,
   View,
-  Text,
 } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
 import { EmojiSelector } from "../../components/EmojiSelector";
-import IconPlus from "../../icons/Plus";
 import { MessageBubble } from "../../components/MessageBubble";
+import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
+import IconCopy from "../../icons/Copy";
+import IconForward from "../../icons/Forward";
+import IconPlus from "../../icons/Plus";
+import IconReply from "../../icons/Reply";
 
 const ios = Platform.OS === "ios";
 
@@ -37,11 +43,17 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
-  const { addReaction } = useChatContext();
+  const { addReaction, addMessage } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const pushEmoji = (emoji: string) => {
     addReaction(chatId, message.id, emoji);
   };
+  const pushMessage = (text: string) => {
+    addMessage(chatId, text, message.id);
+    navigation.goBack();
+  };
+
+  const inputRef = useRef<TextInput>(null);
 
   return (
     <BlurView
@@ -89,19 +101,28 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
           {!showEmojiSelector && (
             <>
-              <TouchableOpacity style={styles.menuButton}>
+              <TouchableOpacity
+                style={styles.menuButton}
+                onPress={() => inputRef.current?.focus()}
+              >
                 <Text style={styles.menuButtonText}>Reply</Text>
+                <IconReply />
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuButton}>
                 <Text style={styles.menuButtonText}>Forward</Text>
+                <IconForward />
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuButton}>
                 <Text style={styles.menuButtonText}>Copy</Text>
+                <IconCopy />
               </TouchableOpacity>
             </>
           )}
         </BlurView>
       </View>
+
+      <MessageInput onSubmit={(msg) => pushMessage(msg)} inputRef={inputRef} />
+      {ios && <KeyboardSpacer topSpacing={-insets.bottom} />}
     </BlurView>
   );
 };
@@ -163,11 +184,14 @@ const styles = StyleSheet.create({
     borderTopColor: "#88849C20",
     marginHorizontal: 15,
     paddingVertical: 15,
+    flexDirection: "row",
   },
   menuButtonText: {
     color: "#88849C",
-    fontFamily: "THICCCBOI_Bold",
+    fontFamily: "THICCCBOI_ExtraBold",
     fontSize: 16,
+    lineHeight: 22,
+    flex: 1,
   },
 });
 

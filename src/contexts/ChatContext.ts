@@ -5,7 +5,7 @@ import { Chat } from "../types/Chat";
 export type ChatContextType = {
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
-  addMessage: (chatId: string, message: string) => void;
+  addMessage: (chatId: string, message: string, parentId?: string) => void;
   addReaction: (chatId: string, messageId: string, emoji: string) => void;
 };
 
