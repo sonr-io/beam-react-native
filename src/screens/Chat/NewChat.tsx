@@ -81,7 +81,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       <View style={styles.modalContainer}>
         <BlurView intensity={100} style={styles.blur}>
           <View style={styles.headerWithButton}>
-            <Text style={styles.title}>New Message</Text>
+            <Text style={styles.title}>New Chat</Text>
             <TouchableOpacity
               onPress={() => {
                 navigation.goBack();
