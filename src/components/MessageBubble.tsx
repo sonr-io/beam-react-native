@@ -1,9 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { getTime } from "../lib/getTime";
 
 import IconForwarded from "../icons/Forwarded";
+
+const URLPattern = /^https?:\/\/.*\.com$/;
 
 type Props = {
   text: string;
@@ -16,6 +19,10 @@ type Props = {
 
 export const MessageBubble = (props: Props) => {
   const stylesCustom = props.isIncoming ? stylesIncoming : stylesOutgoing;
+  const parsedText = props.text
+    .split(" ")
+    .map((word) => ({ word, clickable: URLPattern.test(word) }));
+
   return (
     <View style={stylesCustom.container}>
       <View style={[stylesCommon.bubble, stylesCustom.bubble]}>
@@ -32,7 +39,20 @@ export const MessageBubble = (props: Props) => {
             </Text>
           </View>
         )}
-        <Text style={[stylesCommon.text, stylesCustom.text]}>{props.text}</Text>
+        <View style={stylesCommon.textContainer}>
+          {parsedText.map(({ word, clickable }) => (
+            <TouchableOpacity
+              disabled={!clickable}
+              onPress={() => {
+                Linking.openURL(word);
+              }}
+            >
+              <Text style={[stylesCommon.text, stylesCustom.text]}>
+                {word + " "}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
       {props.reactions.length > 0 && (
@@ -77,6 +97,10 @@ const stylesCommon = StyleSheet.create({
     borderTopLeftRadius: 4,
   },
 
+  textContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
   text: {
     fontFamily: "THICCCBOI_Medium",
     fontSize: 16,
@@ -101,6 +125,7 @@ const stylesCommon = StyleSheet.create({
   reactionsContainer: {
     alignSelf: "flex-end",
     flexDirection: "row",
+    alignItems: "center",
     marginTop: -3,
     marginRight: 8,
     backgroundColor: "#D9D7E6",
