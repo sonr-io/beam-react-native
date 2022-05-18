@@ -84,7 +84,7 @@ const UserSelector: React.FC<Props> = ({
                   }
                 }}
               >
-                <Text>Go</Text>
+                <Text style={{ color: "#5E5B71" }}>Go</Text>
               </TouchableOpacity>
             )}
           </View>
