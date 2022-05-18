@@ -18,6 +18,7 @@ import IconCheckCircle from "../icons/CheckCircle";
 import IconClose from "../icons/Close";
 
 import { User } from "../types/User";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   onPressGo?: (value: string) => void;
@@ -35,6 +36,7 @@ const UserSelector: React.FC<Props> = ({
   onSend,
 }) => {
   const { chats } = useChatContext();
+  const insets = useSafeAreaInsets();
   const users = chats.map((chat) => chat.user);
 
   const inputRef = React.useRef<TextInput>(null);
@@ -127,7 +129,15 @@ const UserSelector: React.FC<Props> = ({
         }
         ItemSeparatorComponent={() => <View style={{ marginTop: 16 }} />}
       />
-      {onSend && <Button title="Send" onPress={onSend} />}
+      {onSend && (
+        <View
+          style={[styles.sendButtonContainer, { paddingBottom: insets.bottom }]}
+        >
+          <TouchableOpacity style={styles.sendButton} onPress={onSend}>
+            <Text style={styles.sendButtonLabel}>Send</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </>
   );
 };
@@ -213,6 +223,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "THICCCBOI_Medium",
     color: "#88849C",
+  },
+  sendButtonContainer: {
+    width: "100%",
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderColor: "rgba(136, 132, 156, 0.1)",
+  },
+  sendButton: {
+    width: "100%",
+    alignItems: "center",
+    backgroundColor: "#1792FF",
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 12,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 4,
+    paddingVertical: 10,
+  },
+  sendButtonLabel: {
+    fontFamily: "THICCCBOI_ExtraBold",
+    fontSize: 16,
+    color: "#FFF",
   },
 });
 
