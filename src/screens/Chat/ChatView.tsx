@@ -60,7 +60,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
   const insets = useSafeAreaInsets();
   const FLATLIST_BOTTOM_OFFSET = 58 + insets.bottom;
-  const chatId = route.params.id;
+  const { id: chatId } = route.params;
 
   useEffect(() => {
     if (!chatId || !chats || !chats.length) {
@@ -77,7 +77,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   }, [chats, chatId]);
 
   const pushMessage = (message: string) => {
-    addMessage(chatId, message);
+    addMessage({ chatId, message });
     scrollToBottom();
   };
 
