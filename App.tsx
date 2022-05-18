@@ -2,13 +2,6 @@ import "intl";
 import "intl/locale-data/jsonp/en";
 import "react-native-gesture-handler";
 
-import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
-import { Outfit_400Regular, Outfit_700Bold } from "@expo-google-fonts/outfit";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_600SemiBold,
-} from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import emoji from "emoji-datasource";
@@ -36,12 +29,6 @@ import { User } from "./src/types/User";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    Montserrat_600SemiBold,
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    Outfit_400Regular,
-    Outfit_700Bold,
     THICCCBOI_ExtraBold: require("./assets/fonts/THICCCBOI-ExtraBold.ttf"),
     THICCCBOI_Bold: require("./assets/fonts/THICCCBOI-Bold.ttf"),
     THICCCBOI_Medium: require("./assets/fonts/THICCCBOI-Medium.ttf"),

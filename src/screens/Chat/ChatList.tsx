@@ -11,7 +11,15 @@ import { useChatContext } from "../../contexts/ChatContext";
 type Props = StackScreenProps<Params, "ChatList">;
 
 const ChatList: React.FC<Props> = ({ navigation }) => {
-  const { chats } = useChatContext();
+  const { chats: unorderedChats } = useChatContext();
+  const chats = unorderedChats.sort((a, b) => {
+    if (a.messages.length <= 0 || b.messages.length <= 0) {
+      return 0;
+    }
+    const timestampA = a.messages[a.messages.length - 1].timestamp;
+    const timestampB = b.messages[b.messages.length - 1].timestamp;
+    return timestampA > timestampB ? -1 : 1;
+  });
 
   const navigateToChat = (id: string) => {
     navigation.navigate("ChatView", { id });
@@ -41,9 +49,9 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 24,
+    fontSize: 34,
     fontWeight: "bold",
-    fontFamily: "Poppins_600SemiBold",
+    fontFamily: "THICCCBOI_ExtraBold",
     color: "#FFFFFF",
     paddingHorizontal: 16,
     marginTop: 4,

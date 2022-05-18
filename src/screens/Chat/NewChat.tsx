@@ -81,7 +81,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       <View style={styles.modalContainer}>
         <BlurView intensity={100} style={styles.blur}>
           <View style={styles.headerWithButton}>
-            <Text style={styles.title}>New Message</Text>
+            <Text style={styles.title}>New Chat</Text>
             <TouchableOpacity
               onPress={() => {
                 navigation.goBack();
@@ -112,7 +112,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
                 />
                 <Text style={styles.snrLabel}>.snr</Text>
                 <TouchableOpacity onPress={onPressGo}>
-                  <Text>Go</Text>
+                  <Text style={{ color: "#5E5B71" }}>Go</Text>
                 </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>

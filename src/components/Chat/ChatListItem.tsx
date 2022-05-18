@@ -43,63 +43,62 @@ export const ChatListItem = (props: Props) => {
     >
       <View style={styles.buttonContainer}>
         <Avatar user={lastMessage.sender}></Avatar>
+
         <View style={{ flex: 1 }}>
-          <Text style={styles.messageName}>
-            {name}
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text style={styles.chatName}>{name}</Text>
 
             {totalUnReadMessages > 0 && (
-              <>
-                {" "}
-                <View style={styles.totalUnReadMessages}>
-                  <Text style={styles.totalUnReadMessagesText}>
-                    {totalUnReadMessages}
-                  </Text>
-                </View>
-              </>
+              <View style={styles.totalUnReadMessages}>
+                <Text style={styles.totalUnReadMessagesText}>
+                  {totalUnReadMessages}
+                </Text>
+              </View>
             )}
-          </Text>
+
+            <Text style={styles.messageTime}>{elapsedTime}</Text>
+          </View>
+
           <Text style={styles.lastMessage} numberOfLines={1}>
             {lastMessage?.text}
           </Text>
         </View>
-        <Text style={styles.messageTime}>{elapsedTime}</Text>
       </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  messageName: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 16,
+  chatName: {
+    fontFamily: "THICCCBOI_Bold",
+    fontSize: 20,
     lineHeight: 24,
     color: "#353945",
   },
   totalUnReadMessages: {
     borderRadius: 2,
     backgroundColor: "#14B69A",
-    textAlign: "center",
-    paddingBottom: 2,
-    paddingLeft: 4,
-    paddingRight: 4,
-    paddingTop: 2,
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    margin: 4,
   },
   totalUnReadMessagesText: {
-    fontFamily: "Montserrat_600SemiBold",
+    fontFamily: "THICCCBOI_ExtraBold",
     color: "#FFFFFF",
-    fontSize: 8,
+    fontSize: 10,
   },
   lastMessage: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 14,
+    fontFamily: "THICCCBOI_Regular",
+    fontSize: 16,
     lineHeight: 24,
     color: "#777E90",
   },
   messageTime: {
     fontSize: 12,
     paddingTop: 6,
-    fontFamily: "Outfit_700Bold",
-    alignSelf: "flex-start",
+    fontFamily: "THICCCBOI_Bold",
+    flex: 1,
+    textAlign: "right",
     color: "#D9D7E6",
   },
   button: {
