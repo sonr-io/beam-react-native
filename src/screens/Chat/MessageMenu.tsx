@@ -14,29 +14,18 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
-import { EmojiSelector } from "../../components/EmojiSelector";
+import { EmojiPresetBar } from "../../components/Emojis/EmojiPresetBar";
+import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
 import { MessageBubble } from "../../components/MessageBubble";
 import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconCopy from "../../icons/Copy";
 import IconForward from "../../icons/Forward";
-import IconPlus from "../../icons/Plus";
 import IconReply from "../../icons/Reply";
+import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
-
-type ReactionProps = {
-  emoji: string;
-  onPress: (emoji: string) => void;
-};
-const EmojiReaction = ({ emoji, onPress }: ReactionProps) => {
-  return (
-    <TouchableOpacity style={styles.emojiButton} onPress={() => onPress(emoji)}>
-      <Text style={styles.emojiDisplay}>{emoji}</Text>
-    </TouchableOpacity>
-  );
-};
 
 type Props = StackScreenProps<Params, "MessageMenu">;
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
@@ -45,12 +34,18 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { user } = useUserContext();
   const { addReaction, addMessage } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
-  const pushEmoji = (emoji: string) => {
+
+  const pushEmoji = (emoji: Emoji) => {
     addReaction(chatId, message.id, emoji);
   };
+
   const pushMessage = (text: string) => {
     addMessage(chatId, text, message.id);
     navigation.goBack();
+  };
+
+  const handleEmojiSelectorVisibility = () => {
+    setShowEmojiSelector(!showEmojiSelector);
   };
 
   const inputRef = useRef<TextInput>(null);
@@ -78,26 +73,15 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
       <View style={styles.menuContainer}>
         <BlurView>
-          <View style={styles.emojiPreset}>
-            <EmojiReaction emoji="👍" onPress={(e) => pushEmoji(e)} />
-            <EmojiReaction emoji="✅" onPress={(e) => pushEmoji(e)} />
-            <EmojiReaction emoji="❤" onPress={(e) => pushEmoji(e)} />
-            <EmojiReaction emoji="☕" onPress={(e) => pushEmoji(e)} />
-            <EmojiReaction emoji="📅" onPress={(e) => pushEmoji(e)} />
-            <EmojiReaction emoji="💥" onPress={(e) => pushEmoji(e)} />
-            <EmojiReaction emoji="😎" onPress={(e) => pushEmoji(e)} />
-
-            <TouchableOpacity
-              onPress={() => setShowEmojiSelector(!showEmojiSelector)}
-              style={styles.emojiShowSelector}
-            >
-              <IconPlus />
-            </TouchableOpacity>
+          <View>
+            <EmojiPresetBar
+              onSelectEmoji={pushEmoji}
+              isEmojiSelectorVisible={showEmojiSelector}
+              handleEmojiSelectorVisibility={handleEmojiSelectorVisibility}
+            />
           </View>
 
-          {showEmojiSelector && (
-            <EmojiSelector onSelectEmoji={(e) => pushEmoji(e)} />
-          )}
+          {showEmojiSelector && <EmojiSelector onSelectEmoji={pushEmoji} />}
 
           {!showEmojiSelector && (
             <>
@@ -151,7 +135,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-
   menuContainer: {
     width: 300,
     marginTop: 40,
@@ -160,24 +143,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     borderBottomRightRadius: 4,
     borderBottomLeftRadius: 12,
-  },
-  emojiPreset: {
-    flexDirection: "row",
-    width: "100%",
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-  },
-  emojiShowSelector: {
-    flex: 1,
-    alignItems: "flex-end",
-    paddingTop: 4,
-    paddingRight: 4,
-  },
-  emojiButton: {
-    padding: 4,
-  },
-  emojiDisplay: {
-    fontSize: 20,
   },
   menuButton: {
     borderTopWidth: 1,
