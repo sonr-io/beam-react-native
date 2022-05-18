@@ -3,10 +3,9 @@ import { Linking, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { getTime } from "../lib/getTime";
+import { normalizeUrl } from "../lib/normalizeUrl";
 
 import IconForwarded from "../icons/Forwarded";
-
-const URLPattern = /^https?:\/\/.*\.com$/;
 
 type Props = {
   text: string;
@@ -19,9 +18,10 @@ type Props = {
 
 export const MessageBubble = (props: Props) => {
   const stylesCustom = props.isIncoming ? stylesIncoming : stylesOutgoing;
-  const parsedText = props.text
-    .split(" ")
-    .map((word) => ({ word, clickable: URLPattern.test(word) }));
+  const parsedText = props.text.split(" ").map((word) => ({
+    word,
+    url: normalizeUrl(word),
+  }));
 
   return (
     <View style={stylesCustom.container}>
@@ -40,18 +40,25 @@ export const MessageBubble = (props: Props) => {
           </View>
         )}
         <View style={stylesCommon.textContainer}>
-          {parsedText.map(({ word, clickable }) => (
-            <TouchableOpacity
-              disabled={!clickable}
-              onPress={() => {
-                Linking.openURL(word);
-              }}
-            >
+          {parsedText.map(({ word, url }, index) => {
+            const Word = () => (
               <Text style={[stylesCommon.text, stylesCustom.text]}>
-                {word + " "}
+                {word + (index === parsedText.length - 1 ? "" : " ")}
               </Text>
-            </TouchableOpacity>
-          ))}
+            );
+
+            return url ? (
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL(url);
+                }}
+              >
+                <Word />
+              </TouchableOpacity>
+            ) : (
+              <Word />
+            );
+          })}
         </View>
       </View>
 
