@@ -1,3 +1,4 @@
+import "allsettled-polyfill";
 import "intl";
 import "intl/locale-data/jsonp/en";
 import "react-native-gesture-handler";
@@ -6,8 +7,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import emoji from "emoji-datasource";
 import { useFonts } from "expo-font";
+import * as matrixSdk from "matrix-js-sdk";
 import React, { useEffect, useState } from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
+import request from "xmlhttp-request";
 
 import { fakeChats } from "./src/_data/chats";
 import { Thiago } from "./src/_data/users";
@@ -26,6 +29,13 @@ import { User } from "./src/types/User";
 // import ProfileScreen from "./src/screens/Profile";
 
 // const Tab = createBottomTabNavigator();
+
+const client = matrixSdk.createClient({
+  baseUrl: "https://matrix.sonr.network",
+  request,
+  userId: "",
+  accessToken: "",
+});
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -134,6 +144,12 @@ export default function App() {
 
   useEffect(() => {
     loadEmojisHistory();
+
+    // matrix SDK test code
+    client.startClient();
+    setTimeout(() => {
+      console.log(client.getRooms().map((room) => room.name));
+    }, 10000);
   }, []);
 
   if (!fontsLoaded) {
