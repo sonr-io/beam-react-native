@@ -1,7 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 
 import { getTime } from "../lib/getTime";
+import { normalizeUrl } from "../lib/normalizeUrl";
 
 import IconForwarded from "../icons/Forwarded";
 
@@ -16,6 +17,11 @@ type Props = {
 
 export const MessageBubble = (props: Props) => {
   const stylesCustom = props.isIncoming ? stylesIncoming : stylesOutgoing;
+  const parsedText = props.text.split(" ").map((word) => ({
+    word,
+    url: normalizeUrl(word),
+  }));
+
   return (
     <View style={stylesCustom.container}>
       <View style={[stylesCommon.bubble, stylesCustom.bubble]}>
@@ -32,7 +38,24 @@ export const MessageBubble = (props: Props) => {
             </Text>
           </View>
         )}
-        <Text style={[stylesCommon.text, stylesCustom.text]}>{props.text}</Text>
+        <Text style={[stylesCommon.text, stylesCustom.text]}>
+          {parsedText.map(({ word, url }, index) => {
+            const spacedWord =
+              word + (index === parsedText.length - 1 ? "" : " ");
+            return url ? (
+              <Text
+                key={index}
+                onPress={() => {
+                  Linking.openURL(url);
+                }}
+              >
+                {spacedWord}
+              </Text>
+            ) : (
+              spacedWord
+            );
+          })}
+        </Text>
       </View>
 
       {props.reactions.length > 0 && (
@@ -101,6 +124,7 @@ const stylesCommon = StyleSheet.create({
   reactionsContainer: {
     alignSelf: "flex-end",
     flexDirection: "row",
+    alignItems: "center",
     marginTop: -3,
     marginRight: 8,
     backgroundColor: "#D9D7E6",
