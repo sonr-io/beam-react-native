@@ -44,6 +44,7 @@ export const MessageBubble = (props: Props) => {
               word + (index === parsedText.length - 1 ? "" : " ");
             return url ? (
               <Text
+                key={index}
                 onPress={() => {
                   Linking.openURL(url);
                 }}
