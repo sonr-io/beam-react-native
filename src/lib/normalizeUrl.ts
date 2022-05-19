@@ -1,4 +1,4 @@
-const URLPattern = /^(https?:\/\/)?(.*\.(com|io|org|studio)(\/.*)?)$/;
+const URLPattern = /^([a-z]*:\/\/)?(.*\.([a-z]{2,6})(\/.*)?)$/;
 
 export const normalizeUrl = (candidate: string) => {
   const result = URLPattern.exec(candidate);
