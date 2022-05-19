@@ -1,6 +1,5 @@
 import React from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { getTime } from "../lib/getTime";
 import { normalizeUrl } from "../lib/normalizeUrl";
@@ -39,27 +38,23 @@ export const MessageBubble = (props: Props) => {
             </Text>
           </View>
         )}
-        <View style={stylesCommon.textContainer}>
+        <Text style={[stylesCommon.text, stylesCustom.text]}>
           {parsedText.map(({ word, url }, index) => {
-            const Word = () => (
-              <Text style={[stylesCommon.text, stylesCustom.text]}>
-                {word + (index === parsedText.length - 1 ? "" : " ")}
-              </Text>
-            );
-
+            const spacedWord =
+              word + (index === parsedText.length - 1 ? "" : " ");
             return url ? (
-              <TouchableOpacity
+              <Text
                 onPress={() => {
                   Linking.openURL(url);
                 }}
               >
-                <Word />
-              </TouchableOpacity>
+                {spacedWord}
+              </Text>
             ) : (
-              <Word />
+              spacedWord
             );
           })}
-        </View>
+        </Text>
       </View>
 
       {props.reactions.length > 0 && (
@@ -104,10 +99,6 @@ const stylesCommon = StyleSheet.create({
     borderTopLeftRadius: 4,
   },
 
-  textContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
   text: {
     fontFamily: "THICCCBOI_Medium",
     fontSize: 16,

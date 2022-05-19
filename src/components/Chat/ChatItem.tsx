@@ -1,9 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
-import {
-  Swipeable,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
+import { Swipeable } from "react-native-gesture-handler";
 
 import { Message } from "../../types/Chat";
 import { User } from "../../types/User";
@@ -23,7 +20,7 @@ export const ChatItem: React.FC<Props> = ({
   user,
   onSwipe,
 }) => {
-  const [showTimestamp, setShowTimestamp] = React.useState(false);
+  const [showTimestamp /* setShowTimestamp */] = React.useState(false);
   const swipeableRef = React.useRef<Swipeable>(null);
 
   const renderLeftActions = () => <View style={{ width: 30 }} />;
@@ -52,11 +49,11 @@ export const ChatItem: React.FC<Props> = ({
           />
         </View>
       )}
-      <TouchableWithoutFeedback
+      <View
         style={styles.messageContainer}
-        onPress={() => {
+        /* onPress={() => {
           setShowTimestamp(!showTimestamp);
-        }}
+        }} */
       >
         <MessageBubble
           text={message.text}
@@ -66,7 +63,7 @@ export const ChatItem: React.FC<Props> = ({
           reactions={message.reactions.map((r) => r.emoji)}
           forwardedFrom={message.forwardedFrom}
         />
-      </TouchableWithoutFeedback>
+      </View>
     </Swipeable>
   );
 };
