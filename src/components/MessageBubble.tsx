@@ -48,6 +48,7 @@ export const MessageBubble = (props: Props) => {
                 onPress={() => {
                   Linking.openURL(url);
                 }}
+                style={{ textDecorationLine: "underline" }}
               >
                 {spacedWord}
               </Text>
