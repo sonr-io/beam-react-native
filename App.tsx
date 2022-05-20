@@ -5,21 +5,28 @@ import "react-native-gesture-handler";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import emoji from "emoji-datasource";
 import { useFonts } from "expo-font";
-import * as matrixSdk from "matrix-js-sdk";
+import { MatrixClient } from "matrix-js-sdk";
 import React, { useEffect, useState } from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
-import request from "xmlhttp-request";
 
 import { fakeChats } from "./src/_data/chats";
 import { Thiago } from "./src/_data/users";
+
 import { charFromEmojiObject } from "./src/components/Emojis/EmojiItem";
+
 import { DefaultEmojisNames, StorageKeyForEmojis } from "./src/Constants";
+
 import { ChatContext } from "./src/contexts/ChatContext";
 import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
+import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
 import { UserContext } from "./src/contexts/UserContext";
+
 import ChatScreen from "./src/screens/Chat";
+import LoginScreen from "./src/screens/Login";
+
 import { Chat } from "./src/types/Chat";
 import { Emoji } from "./src/types/Emoji";
 import { User } from "./src/types/User";
@@ -30,12 +37,12 @@ import { User } from "./src/types/User";
 
 // const Tab = createBottomTabNavigator();
 
-const client = matrixSdk.createClient({
-  baseUrl: "https://matrix.sonr.network",
-  request,
-  userId: "",
-  accessToken: "",
-});
+const Stack = createStackNavigator();
+
+export type StackParams = {
+  Login: {};
+  Chat: {};
+};
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -47,6 +54,7 @@ export default function App() {
 
   const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
   const [user, setUser] = useState<User>(Thiago);
+  const [client, setClient] = useState<MatrixClient | null>(null);
   const [chats, setChats] = useState<Chat[]>(fakeChats);
 
   const addMessage = ({
@@ -144,13 +152,11 @@ export default function App() {
 
   useEffect(() => {
     loadEmojisHistory();
-
-    // matrix SDK test code
-    client.startClient();
-    setTimeout(() => {
-      console.log(client.getRooms().map((room) => room.name));
-    }, 10000);
   }, []);
+
+  useEffect(() => {
+    console.log(client?.getRooms().map((room) => room.name));
+  }, [client]);
 
   if (!fontsLoaded) {
     return <></>;
@@ -159,32 +165,37 @@ export default function App() {
   return (
     <View style={styles.container}>
       <UserContext.Provider value={{ user, setUser }}>
-        <EmojiHistoryContext.Provider
-          value={{ emojisHistory, addEmojiToHistory: updateEmojisHistory }}
-        >
-          <ChatContext.Provider
-            value={{ chats, setChats, addMessage, addReaction }}
+        <MatrixClientContext.Provider value={{ client, setClient }}>
+          <EmojiHistoryContext.Provider
+            value={{ emojisHistory, addEmojiToHistory: updateEmojisHistory }}
           >
-            <NavigationContainer>
-              <StatusBar
-                barStyle="light-content"
-                backgroundColor={"transparent"}
-                translucent
-              />
-              {/*
-        <Tab.Navigator
-          screenOptions={{ headerShown: false }}
-          initialRouteName="Chat"
-        >
-          <Tab.Screen name="Nearby" component={NearbyScreen} />
-          <Tab.Screen name="Chat" component={ChatListScreen} />
-          <Tab.Screen name="Profile" component={ProfileScreen} />
-        </Tab.Navigator>
-        */}
-              <ChatScreen />
-            </NavigationContainer>
-          </ChatContext.Provider>
-        </EmojiHistoryContext.Provider>
+            <ChatContext.Provider
+              value={{ chats, setChats, addMessage, addReaction }}
+            >
+              <NavigationContainer>
+                <StatusBar
+                  barStyle="light-content"
+                  backgroundColor={"transparent"}
+                  translucent
+                />
+                {/*
+                <Tab.Navigator
+                  screenOptions={{ headerShown: false }}
+                  initialRouteName="Chat"
+                >
+                  <Tab.Screen name="Nearby" component={NearbyScreen} />
+                  <Tab.Screen name="Chat" component={ChatListScreen} />
+                  <Tab.Screen name="Profile" component={ProfileScreen} />
+                </Tab.Navigator>
+                */}
+                <Stack.Navigator screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="Login" component={LoginScreen} />
+                  <Stack.Screen name="Chat" component={ChatScreen} />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </ChatContext.Provider>
+          </EmojiHistoryContext.Provider>
+        </MatrixClientContext.Provider>
       </UserContext.Provider>
     </View>
   );
