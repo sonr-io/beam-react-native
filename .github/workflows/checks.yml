@@ -1,7 +1,7 @@
-name: prettier
+name: checks
 on: [pull_request]
 jobs:
-  prettier:
+  linter:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -10,3 +10,12 @@ jobs:
           node-version: "16"
       - run: npm install prettier
       - run: npm run lint
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: yarn
+      - run: yarn test
