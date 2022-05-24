@@ -47,7 +47,7 @@
     "react-native-reanimated": "~2.3.1",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
-    "react-native-scrollable-tab-view": "^1.0.0",
+    "react-native-scrollable-tab-view": "ptomasroos/react-native-scrollable-tab-view#1371236e91c217e2f42468e355419f83410e3133",
     "react-native-svg": "12.1.1",
     "react-native-web": "0.17.1",
     "xmlhttp-request": "^0.4.1"
@@ -59,6 +59,7 @@
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "@types/react-native-keyboard-spacer": "^0.4.2",
+    "@types/react-native-scrollable-tab-view": "^0.10.3",
     "husky": "^7.0.4",
     "jest": "^28.1.0",
     "prettier": "^2.6.2",
