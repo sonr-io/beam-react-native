@@ -34,15 +34,6 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {presetUsers.map(({ username, password }) => (
-        <Button
-          key={username}
-          title={username}
-          onPress={() => {
-            onLogin(username, password);
-          }}
-        />
-      ))}
       <TextInput
         autoFocus
         autoCapitalize={"none"}
@@ -61,13 +52,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           setPassword(text);
         }}
       />
-      {error && (
-        <Text style={{ marginBottom: 20, color: "darkred" }}>
-          Incorrect credentials
-        </Text>
-      )}
 
-      <View style={{ flexDirection: "row", marginHorizontal: -10 }}>
+      {error && <Text style={styles.error}>Incorrect credentials</Text>}
+
+      <View style={styles.section}>
         <TouchableOpacity
           style={styles.button}
           onPress={() => onLogin(user, password)}
@@ -83,6 +71,20 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.buttonText}>Skip</Text>
         </TouchableOpacity>
       </View>
+
+      <View style={{ flexDirection: "row" }}>
+        {presetUsers.map(({ username, password }) => (
+          <TouchableOpacity
+            key={username}
+            style={styles.presetUser}
+            onPress={() => {
+              onLogin(username, password);
+            }}
+          >
+            <Text>{username}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 };
@@ -91,9 +93,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
+  },
+  section: {
+    flexDirection: "row",
+    marginHorizontal: -10,
+    marginBottom: 20,
   },
   input: {
     borderWidth: 1,
@@ -104,6 +110,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
+    borderRadius: 4,
     backgroundColor: "dodgerblue",
     marginHorizontal: 10,
     padding: 10,
@@ -111,6 +118,18 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: "center",
     color: "white",
+  },
+  presetUser: {
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: "lightgray",
+    marginRight: 10,
+  },
+  error: {
+    marginBottom: 20,
+    color: "darkred",
+    textAlign: "center",
   },
 });
 
