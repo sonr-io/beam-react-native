@@ -36,21 +36,14 @@ export const MessageBubble = (props: Props) => {
           </View>
         )}
         <Text style={[stylesCommon.text, stylesCustom.text]}>
-          {splitText.map(({ word, url }, index) => {
-            const spacedWord =
-              word + (index === splitText.length - 1 ? "" : " ");
+          {splitText.map(({ word, separator, url }, index) => {
             return url ? (
-              <Text
-                key={index}
-                onPress={() => {
-                  Linking.openURL(url);
-                }}
-                style={{ textDecorationLine: "underline" }}
-              >
-                {spacedWord}
-              </Text>
+              <>
+                <Link text={word} url={url} index={index} />
+                {separator}
+              </>
             ) : (
-              spacedWord
+              word + separator
             );
           })}
         </Text>
@@ -74,6 +67,20 @@ export const MessageBubble = (props: Props) => {
         </View>
       )}
     </View>
+  );
+};
+
+const Link = (props: { text: string; url: string; index: number }) => {
+  return (
+    <Text
+      key={props.index}
+      onPress={() => {
+        Linking.openURL(props.url);
+      }}
+      style={{ textDecorationLine: "underline" }}
+    >
+      {props.text}
+    </Text>
   );
 };
 

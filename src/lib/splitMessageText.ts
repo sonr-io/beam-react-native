@@ -1,5 +1,11 @@
 import { normalizeUrl } from "./normalizeUrl";
 
 export const splitMessageText = (text: string) => {
-  return text.split(" ").map((word) => ({ word, url: normalizeUrl(word) }));
+  const regexp = /(([^  \n,\(\))]+)([ \n,\(\)]*))+?/g;
+  const matches = [...text.matchAll(regexp)];
+  return matches.map((group) => ({
+    word: group[2],
+    separator: group[3],
+    url: normalizeUrl(group[2]),
+  }));
 };
