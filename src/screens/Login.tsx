@@ -19,7 +19,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { setClient } = useMatrixClientContext();
   const [user, setUser] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const presetUsers: PresetUser[] = JSON.parse(USERS);
+  const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
 
   const onLogin = async (_user?: string, _password?: string) => {
     const client = await login(_user ?? user, _password ?? password);
