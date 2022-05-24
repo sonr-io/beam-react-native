@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { LogBox, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 
 import { Emoji } from "../../types/Emoji";
 import { EmojiItem } from "./EmojiItem";
-
-// TODO:
-// handle the warning: Calling `getNode()` on the ref of an Animated component is no longer necessary.
-// You can now directly use the ref instead. This method will be removed in a future release., ReactNativeFiberHostComponent
-// this message is comming from the ScrollableTabView
-LogBox.ignoreLogs(["Calling `getNode()`"]);
-
-type ScrollableTabViewProps = { activeTab: number };
 
 type EmojiCategoryViewProps = {
   emojis: Emoji[];
@@ -60,7 +52,7 @@ export const EmojiCategoryView = ({
       <ScrollableTabView
         prerenderingSiblingsNumber={1}
         initialPage={subPage}
-        renderTabBar={({ activeTab }: ScrollableTabViewProps) => {
+        renderTabBar={({ activeTab }) => {
           return (
             <View style={styles.categoryPageNavigationWrapper}>
               {pages.map((_, index) => {

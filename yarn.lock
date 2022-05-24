@@ -1775,10 +1775,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.11.tgz#2f4c6e10bee0786abff4604e39a37ded6f3980ce"
   integrity sha512-rQfMIGSR/1r/SyN87+VD8xHHzDYeHaJq6elOSCAD+0iLagXkSI2pfA0LmSXP21uw5i3em7GkkRjfJ8wpqWXZNw==
 
-"@react-native-community/viewpager@^2.0.1":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/viewpager/-/viewpager-2.0.2.tgz#622b190294b1310c4825c98daeaee1c8443f7124"
-  integrity sha512-CKVhIZdX/Cmb80muog8sKpi5vM8npwFp4tx4Dj1IvTBidZweuO22+VH2rDOj7E0LzdV9IYRJ4FGBwcPBD2qUrQ==
+"@react-native-community/viewpager@3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/viewpager/-/viewpager-3.3.0.tgz#e613747a43a31a6f3278f817ba96fdaaa7941f23"
+  integrity sha512-tyzh79l4t/hxiyS9QD3LRmWMs8KVkZzjrkQ8U8+8To1wmvVCBtp8BenvNsDLTBO7CpO/YmiThpmIdEZMr1WuVw==
 
 "@react-native-masked-view/masked-view@0.2.6":
   version "0.2.6"
@@ -2008,6 +2008,14 @@
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@types/react-native-keyboard-spacer/-/react-native-keyboard-spacer-0.4.2.tgz#1989655f8bf1c46bd355494984233779a6267676"
   integrity sha512-5L2lvRbewC07Rj6KJj9EK9tcZbjVXZUtSkQ48ml9kMVSW5O0F9wIY/giF5ahXYL5/pbYyMsre+SsmDEFCQJUSA==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
+"@types/react-native-scrollable-tab-view@^0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@types/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.10.3.tgz#ce1d528b5ba6054a14dddb18d969f578e0816d5d"
+  integrity sha512-TH5oGSgoSej7gzl7/zWk9slvgfT3S7cMvNPrGs4p5kpT3zpywyN4l9ILuOMUf9SJiwDr9v81+b75MZRRhZYQJQ==
   dependencies:
     "@types/react" "*"
     "@types/react-native" "*"
@@ -7738,12 +7746,11 @@ react-native-screens@~3.10.1:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-scrollable-tab-view@^1.0.0:
+react-native-scrollable-tab-view@ptomasroos/react-native-scrollable-tab-view#1371236e91c217e2f42468e355419f83410e3133:
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-1.0.0.tgz#87319896067f7bb643ecd7fba2cba4d6d8f9e18b"
-  integrity sha512-lpZ9xz+PBdgSzpk93VjCIfxV0zvJDX9iEUP8ImDg3p1QJGHOWbWyfDx+lcx5VCDVrrdZdtuVAAdc0tkYXZyQDw==
+  resolved "https://codeload.github.com/ptomasroos/react-native-scrollable-tab-view/tar.gz/1371236e91c217e2f42468e355419f83410e3133"
   dependencies:
-    "@react-native-community/viewpager" "^2.0.1"
+    "@react-native-community/viewpager" "3.3.0"
     create-react-class "^15.6.2"
     prop-types "^15.6.0"
     react-timer-mixin "^0.13.3"
