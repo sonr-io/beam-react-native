@@ -222,6 +222,13 @@ export const fakeChats: Chat[] = [
         reactions: [],
         forwardedFrom: "matheus.snr",
       },
+      {
+        id: "13",
+        text: "hey, check this: https://www.pivotaltracker.com/n/projects/2561773",
+        sender: Dylan,
+        timestamp: 1653420979002,
+        reactions: [],
+      },
     ],
   },
 ];
