@@ -1,7 +1,7 @@
 import { USERS } from "@env";
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
