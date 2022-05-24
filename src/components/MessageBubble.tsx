@@ -2,7 +2,7 @@ import React from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 
 import { getTime } from "../lib/getTime";
-import { normalizeUrl } from "../lib/normalizeUrl";
+import { splitMessageText } from "../lib/splitMessageText";
 
 import IconForwarded from "../icons/Forwarded";
 
@@ -17,10 +17,7 @@ type Props = {
 
 export const MessageBubble = (props: Props) => {
   const stylesCustom = props.isIncoming ? stylesIncoming : stylesOutgoing;
-  const parsedText = props.text.split(" ").map((word) => ({
-    word,
-    url: normalizeUrl(word),
-  }));
+  const splitText = splitMessageText(props.text);
 
   return (
     <View style={stylesCustom.container}>
@@ -39,9 +36,9 @@ export const MessageBubble = (props: Props) => {
           </View>
         )}
         <Text style={[stylesCommon.text, stylesCustom.text]}>
-          {parsedText.map(({ word, url }, index) => {
+          {splitText.map(({ word, url }, index) => {
             const spacedWord =
-              word + (index === parsedText.length - 1 ? "" : " ");
+              word + (index === splitText.length - 1 ? "" : " ");
             return url ? (
               <Text
                 key={index}
