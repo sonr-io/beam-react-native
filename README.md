@@ -10,6 +10,12 @@ yarn
 yarn ios
 ```
 
+## reload environment variables (clear cache)
+
+```
+yarn ios -c
+```
+
 ## how to publish the app to expo host (staging)
 
 ```
