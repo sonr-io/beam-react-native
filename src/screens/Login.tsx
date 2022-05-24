@@ -22,9 +22,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
   const [error, setError] = React.useState(false);
 
-const onLogin = async (_user?: string, _password?: string) => {
-  try {
-      const client = await login(_user ?? user, _password ?? password);
+  const onLogin = async (user: string, password: string) => {
+    try {
+      const client = await login(user, password);
       setClient(client);
       setError(false);
     } catch (_) {
@@ -66,8 +66,12 @@ const onLogin = async (_user?: string, _password?: string) => {
           Incorrect credentials
         </Text>
       )}
+
       <View style={{ flexDirection: "row", marginHorizontal: -10 }}>
-        <TouchableOpacity style={styles.button} onPress={() => onLogin()}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => onLogin(user, password)}
+        >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
