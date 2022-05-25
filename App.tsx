@@ -161,10 +161,39 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    console.log(
-      "[Rooms]",
-      client?.getRooms().map((room) => room.name)
-    );
+    if (client) {
+      const privateRooms = client
+        .getRooms()
+        .filter(
+          (room) =>
+            room.getJoinRule() === "invite" && room.getMembers().length === 2
+        );
+      setChats(
+        privateRooms.map((room) => ({
+          id: room.roomId,
+          name: room.name,
+          user: {
+            id: room.name,
+            name: room.name,
+            isOnline: false,
+          },
+          lastSeen: 0,
+          messages: [
+            {
+              id: "1",
+              text: "last message placeholder",
+              timestamp: 0,
+              sender: {
+                id: room.name,
+                name: room.name,
+                isOnline: false,
+              },
+              reactions: [],
+            },
+          ],
+        }))
+      );
+    }
   }, [client]);
 
   if (!fontsLoaded) {
