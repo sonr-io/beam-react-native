@@ -2,7 +2,7 @@ import React from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 
 import { getTime } from "../lib/getTime";
-import { normalizeUrl } from "../lib/normalizeUrl";
+import { splitMessageText } from "../lib/splitMessageText";
 
 import IconForwarded from "../icons/Forwarded";
 
@@ -17,10 +17,7 @@ type Props = {
 
 export const MessageBubble = (props: Props) => {
   const stylesCustom = props.isIncoming ? stylesIncoming : stylesOutgoing;
-  const parsedText = props.text.split(" ").map((word) => ({
-    word,
-    url: normalizeUrl(word),
-  }));
+  const splitText = splitMessageText(props.text);
 
   return (
     <View style={stylesCustom.container}>
@@ -39,20 +36,14 @@ export const MessageBubble = (props: Props) => {
           </View>
         )}
         <Text style={[stylesCommon.text, stylesCustom.text]}>
-          {parsedText.map(({ word, url }, index) => {
-            const spacedWord =
-              word + (index === parsedText.length - 1 ? "" : " ");
+          {splitText.map(({ word, separator, url }, index) => {
             return url ? (
-              <Text
-                key={index}
-                onPress={() => {
-                  Linking.openURL(url);
-                }}
-              >
-                {spacedWord}
-              </Text>
+              <>
+                <Link text={word} url={url} index={index} />
+                {separator}
+              </>
             ) : (
-              spacedWord
+              word + separator
             );
           })}
         </Text>
@@ -76,6 +67,20 @@ export const MessageBubble = (props: Props) => {
         </View>
       )}
     </View>
+  );
+};
+
+const Link = (props: { text: string; url: string; index: number }) => {
+  return (
+    <Text
+      key={props.index}
+      onPress={() => {
+        Linking.openURL(props.url);
+      }}
+      style={{ textDecorationLine: "underline" }}
+    >
+      {props.text}
+    </Text>
   );
 };
 
