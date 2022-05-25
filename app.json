@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Beam",
+    "name": "Beam | Chat, Share, & Pay",
     "slug": "sonr-beam",
     "version": "1.0.0",
     "owner": "sonr-io",
@@ -16,7 +16,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.sonr.beam.ios"
     },
     "android": {
       "adaptiveIcon": {
