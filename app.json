@@ -3,7 +3,7 @@
     "name": "Beam",
     "slug": "sonr-beam",
     "version": "1.0.0",
-    "owner": "prad.snr",
+    "owner": "sonr-io",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
