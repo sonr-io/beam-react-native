@@ -155,7 +155,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    console.log(client?.getRooms().map((room) => room.name));
+    console.log(
+      "[Rooms]",
+      client?.getRooms().map((room) => room.name)
+    );
   }, [client]);
 
   if (!fontsLoaded) {
