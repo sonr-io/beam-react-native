@@ -29,4 +29,4 @@ you can download the latest version by download the expo app for your device:
 
 and use this url
 
-https://expo.dev/%40prad.snr/sonr-beam?serviceType=classic&distribution=expo-go&releaseChannel=staging
+https://expo.dev/@sonr-io/sonr-beam?serviceType=classic&distribution=expo-go&release-channel=staging
