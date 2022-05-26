@@ -25,6 +25,8 @@ import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
 import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
 import { UserContext } from "./src/contexts/UserContext";
 
+import { getChats } from "./src/lib/matrix";
+
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
 
@@ -162,37 +164,7 @@ export default function App() {
 
   useEffect(() => {
     if (client) {
-      const privateRooms = client
-        .getRooms()
-        .filter(
-          (room) =>
-            room.getJoinRule() === "invite" && room.getMembers().length === 2
-        );
-      setChats(
-        privateRooms.map((room) => ({
-          id: room.roomId,
-          name: room.name,
-          user: {
-            id: room.name,
-            name: room.name,
-            isOnline: false,
-          },
-          lastSeen: 0,
-          messages: [
-            {
-              id: "1",
-              text: "last message placeholder",
-              timestamp: 0,
-              sender: {
-                id: room.name,
-                name: room.name,
-                isOnline: false,
-              },
-              reactions: [],
-            },
-          ],
-        }))
-      );
+      setChats(getChats(client));
     }
   }, [client]);
 
