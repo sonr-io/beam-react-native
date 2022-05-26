@@ -24,6 +24,7 @@ export const login = async (user: string, password: string) => {
     request,
     userId,
     accessToken,
+    localTimeoutMs: 5000,
   });
   const result = new Promise<MatrixClient>((resolve) => {
     client.on(ClientEvent.Sync, (state) => {
