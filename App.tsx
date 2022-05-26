@@ -25,8 +25,6 @@ import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
 import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
 import { UserContext } from "./src/contexts/UserContext";
 
-import { getChats } from "./src/lib/matrix";
-
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
 
@@ -161,12 +159,6 @@ export default function App() {
   useEffect(() => {
     loadEmojisHistory();
   }, []);
-
-  useEffect(() => {
-    if (client) {
-      setChats(getChats(client));
-    }
-  }, [client]);
 
   if (!fontsLoaded) {
     return <></>;

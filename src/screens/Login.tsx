@@ -5,8 +5,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
+import { useChatContext } from "../contexts/ChatContext";
 import { useMatrixClientContext } from "../contexts/MatrixClientContext";
-import { login } from "../lib/matrix";
+import { getChats, login } from "../lib/matrix";
 
 interface PresetUser {
   username: string;
@@ -17,6 +18,7 @@ type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { setClient } = useMatrixClientContext();
+  const { setChats } = useChatContext();
   const [user, setUser] = React.useState("");
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
@@ -27,6 +29,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       const client = await login(user, password);
       setClient(client);
       setError(false);
+      setChats(getChats(client));
+      navigation.navigate("Chat", {});
     } catch (_) {
       setError(true);
     }
