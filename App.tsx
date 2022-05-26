@@ -1,6 +1,7 @@
 import "allsettled-polyfill";
 import "intl";
 import "intl/locale-data/jsonp/en";
+import "./intl-collator";
 import "react-native-gesture-handler";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
