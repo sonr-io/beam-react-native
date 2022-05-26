@@ -31,6 +31,7 @@ import LoginScreen from "./src/screens/Login";
 import { Chat } from "./src/types/Chat";
 import { Emoji } from "./src/types/Emoji";
 import { User } from "./src/types/User";
+import { LogBox } from "react-native";
 
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import NearbyScreen from "./src/screens/Nearby";
@@ -46,6 +47,10 @@ export type StackParams = {
 };
 
 export default function App() {
+  LogBox.ignoreLogs([
+    "Setting a timer for a long period of time, i.e. multiple minutes, is a performance and correctness issue on Android as it keeps the timer module awake, and timers can only be called when the app is in the foreground. See https://github.com/facebook/react-native/issues/12981 for more info.",
+  ]);
+
   const [fontsLoaded] = useFonts({
     THICCCBOI_ExtraBold: require("./assets/fonts/THICCCBOI-ExtraBold.ttf"),
     THICCCBOI_Bold: require("./assets/fonts/THICCCBOI-Bold.ttf"),
