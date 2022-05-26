@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 
 import { Chat } from "../types/Chat";
 import { Emoji } from "../types/Emoji";
+import { User } from "../types/User";
 
 export type ChatContextType = {
   chats: Chat[];
@@ -9,6 +10,7 @@ export type ChatContextType = {
   addMessage: (params: {
     chatId: string;
     message: string;
+    sender: User;
     parentId?: string;
     forwardedFrom?: string;
   }) => void;

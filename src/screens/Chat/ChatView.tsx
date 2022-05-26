@@ -79,9 +79,9 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   }, [chats, chatId]);
 
   const pushMessage = async (message: string) => {
-    if (client) {
+    if (client && user) {
       await client.sendTextMessage(chatId, message);
-      addMessage({ chatId, message });
+      addMessage({ chatId, message, sender: user });
       scrollToBottom();
     }
   };
@@ -99,7 +99,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     return messages.find((m) => m.id === message.parentId);
   };
 
-  if (!chatRoom || !recipient) {
+  if (!chatRoom || !recipient || !user) {
     return <></>;
   }
 

@@ -7,7 +7,8 @@ import { TextInput } from "react-native-gesture-handler";
 import { StackParams } from "../../App";
 import { useChatContext } from "../contexts/ChatContext";
 import { useMatrixClientContext } from "../contexts/MatrixClientContext";
-import { getChats, login } from "../lib/matrix";
+import { useUserContext } from "../contexts/UserContext";
+import { getChats, login, onReceiveMessage } from "../lib/matrix";
 
 interface PresetUser {
   username: string;
@@ -18,8 +19,9 @@ type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { setClient } = useMatrixClientContext();
-  const { setChats } = useChatContext();
-  const [user, setUser] = React.useState("");
+  const { setUser } = useUserContext();
+  const { addMessage, setChats } = useChatContext();
+  const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
   const [error, setError] = React.useState(false);
@@ -29,9 +31,21 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       const client = await login(user, password);
       setClient(client);
       setError(false);
+      setUser({
+        id: client.getUserId(),
+        name: client.getUserId(),
+        isOnline: false,
+      });
       setChats(getChats(client));
+      onReceiveMessage(client, (chatId, message, sender) => {
+        addMessage({
+          chatId,
+          message,
+          sender: { id: sender, name: sender, isOnline: false },
+        });
+      });
       navigation.navigate("Chat", {});
-    } catch (_) {
+    } catch {
       setError(true);
     }
   };
@@ -45,7 +59,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.input}
         placeholder="username"
         onChangeText={(text) => {
-          setUser(text);
+          setUsername(text);
         }}
       />
       <TextInput
@@ -62,7 +76,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.section}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => onLogin(user, password)}
+          onPress={() => onLogin(username, password)}
         >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>

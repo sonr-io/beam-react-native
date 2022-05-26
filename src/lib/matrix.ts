@@ -4,6 +4,8 @@ import {
   createClient,
   JoinRule,
   MatrixClient,
+  Room,
+  RoomEvent,
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import request from "xmlhttp-request";
@@ -48,13 +50,17 @@ export const login = async (user: string, password: string) => {
   return result;
 };
 
-export const getChats = (client: MatrixClient): Chat[] => {
-  const privateRooms = client
+const getPrivateRooms = (client: MatrixClient): Room[] => {
+  return client
     .getRooms()
     .filter(
       (room) =>
         room.getJoinRule() === JoinRule.Invite && room.getMembers().length === 2
     );
+};
+
+export const getChats = (client: MatrixClient): Chat[] => {
+  const privateRooms = getPrivateRooms(client);
   return privateRooms.map((room) => ({
     id: room.roomId,
     name: room.name,
@@ -78,4 +84,20 @@ export const getChats = (client: MatrixClient): Chat[] => {
       },
     ],
   }));
+};
+
+type Callback = (roomId: string, message: string, sender: string) => void;
+
+export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
+  const privateRooms = getPrivateRooms(client);
+  privateRooms.forEach((room) => {
+    room.on(RoomEvent.Timeline, (event) => {
+      if (
+        event.getType() === "m.room.message" &&
+        event.getSender() !== client.getUserId()
+      ) {
+        callback(room.roomId, event.getContent().body, event.getSender());
+      }
+    });
+  });
 };
