@@ -160,13 +160,6 @@ export default function App() {
     loadEmojisHistory();
   }, []);
 
-  useEffect(() => {
-    console.log(
-      "[Rooms]",
-      client?.getRooms().map((room) => room.name)
-    );
-  }, [client]);
-
   if (!fontsLoaded) {
     return <></>;
   }
