@@ -39,7 +39,7 @@ export const login = async (user: string, password: string) => {
     localTimeoutMs: 5000,
   });
   const result = new Promise<MatrixClient>((resolve) => {
-    client.on(ClientEvent.Sync, (state) => {
+    client.once(ClientEvent.Sync, (state) => {
       if (state === SyncState.Prepared) {
         resolve(client);
       }
