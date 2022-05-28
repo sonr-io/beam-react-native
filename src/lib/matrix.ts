@@ -71,17 +71,19 @@ export const getChats = (client: MatrixClient): Chat[] => {
     },
     lastSeen: 0,
     messages: [
-      {
-        id: "1",
-        text: "last message placeholder",
-        timestamp: 0,
-        sender: {
-          id: room.name,
-          name: room.name,
-          isOnline: false,
-        },
-        reactions: [],
-      },
+      ...room.timeline
+        .filter((event) => event.getType() === "m.room.message")
+        .map((event) => ({
+          id: event.getId(),
+          text: event.getContent().body,
+          timestamp: event.getTs(),
+          sender: {
+            id: event.getSender(),
+            name: event.getSender(),
+            isOnline: false,
+          },
+          reactions: [],
+        })),
     ],
   }));
 };
