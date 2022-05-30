@@ -59,8 +59,14 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
     );
 };
 
-export const getChats = (client: MatrixClient): Chat[] => {
+export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
   const privateRooms = getPrivateRooms(client);
+  for (const room of privateRooms) {
+    // load all events
+    while (room.oldState.paginationToken) {
+      await client.scrollback(room);
+    }
+  }
   return privateRooms.map((room) => ({
     id: room.roomId,
     name: room.name,

@@ -41,7 +41,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         name: _client.getUserId(),
         isOnline: false,
       });
-      setChats(getChats(_client));
+      setChats(await getChats(_client));
       onReceiveMessage(_client, (chatId, message, sender) => {
         addMessage({
           chatId,
