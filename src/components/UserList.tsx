@@ -11,13 +11,17 @@ import { Avatar } from "./Avatar/Avatar";
 
 type Props = {
   sections: { title: string; data: User[] }[];
+  onPress: (user: User) => void;
 };
 export const UserList = (props: Props) => {
   return (
     <SectionList
       sections={props.sections}
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.listItem}>
+        <TouchableOpacity
+          style={styles.listItem}
+          onPress={() => props.onPress(item)}
+        >
           <Avatar user={item} />
           <View>
             <Text style={styles.name}>{item.name}</Text>

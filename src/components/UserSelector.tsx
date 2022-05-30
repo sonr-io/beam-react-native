@@ -102,7 +102,10 @@ const UserSelector: React.FC<Props> = ({
           ))}
         </View>
       </View>
-      <UserList sections={[{ title: "Recent", data: userList }]} />
+      <UserList
+        sections={[{ title: "Recent", data: userList }]}
+        onPress={onUserSelected}
+      />
       {onSend && (
         <View
           style={[styles.sendButtonContainer, { paddingBottom: insets.bottom }]}
