@@ -1,15 +1,23 @@
-import { ClientEvent, createClient, MatrixClient } from "matrix-js-sdk";
+import { MATRIX_NETWORK_BASE_URL } from "@env";
+import {
+  ClientEvent,
+  createClient,
+  JoinRule,
+  MatrixClient,
+} from "matrix-js-sdk";
+import { SyncState } from "matrix-js-sdk/lib/sync";
 import request from "xmlhttp-request";
+import { MatrixLoginType } from "../Constants/Matrix";
 
 import { Chat } from "../types/Chat";
 
 export const login = async (user: string, password: string) => {
   const response = await fetch(
-    "https://matrix.sonr.network/_matrix/client/r0/login",
+    `${MATRIX_NETWORK_BASE_URL}/_matrix/client/r0/login`,
     {
       method: "POST",
       body: JSON.stringify({
-        type: "m.login.password",
+        type: MatrixLoginType.LoginPassword,
         user,
         password,
       }),
@@ -22,7 +30,7 @@ export const login = async (user: string, password: string) => {
   }
 
   const client = createClient({
-    baseUrl: "https://matrix.sonr.network",
+    baseUrl: MATRIX_NETWORK_BASE_URL,
     request,
     userId,
     accessToken,
@@ -30,7 +38,7 @@ export const login = async (user: string, password: string) => {
   });
   const result = new Promise<MatrixClient>((resolve) => {
     client.on(ClientEvent.Sync, (state) => {
-      if (state === "PREPARED") {
+      if (state === SyncState.Prepared) {
         resolve(client);
       }
     });
@@ -45,7 +53,7 @@ export const getChats = (client: MatrixClient): Chat[] => {
     .getRooms()
     .filter(
       (room) =>
-        room.getJoinRule() === "invite" && room.getMembers().length === 2
+        room.getJoinRule() === JoinRule.Invite && room.getMembers().length === 2
     );
   return privateRooms.map((room) => ({
     id: room.roomId,
