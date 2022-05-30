@@ -6,11 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
-  Button,
 } from "react-native";
-
-import { Avatar } from "./Avatar/Avatar";
 
 import { useChatContext } from "../contexts/ChatContext";
 
@@ -19,6 +15,7 @@ import IconClose from "../icons/Close";
 
 import { User } from "../types/User";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { UserList } from "./UserList";
 
 interface Props {
   onPressGo?: (value: string) => void;
@@ -105,33 +102,7 @@ const UserSelector: React.FC<Props> = ({
           ))}
         </View>
       </View>
-      <FlatList
-        data={userList}
-        renderItem={({ item: user }) => (
-          <TouchableOpacity
-            style={styles.userListItem}
-            onPress={() => {
-              onUserSelected(user);
-            }}
-          >
-            <Avatar user={user} />
-            <View>
-              <Text style={styles.userName}>{user.name}</Text>
-              <Text style={styles.userId}>{user.id}</Text>
-            </View>
-            <View style={{ flex: 1 }} />
-            {markedUsers?.has(user.id) && <IconCheckCircle />}
-          </TouchableOpacity>
-        )}
-        ListHeaderComponent={
-          userList.length > 0 ? (
-            <Text style={styles.recentLabel}>Recent</Text>
-          ) : (
-            <></>
-          )
-        }
-        ItemSeparatorComponent={() => <View style={{ marginTop: 16 }} />}
-      />
+      <UserList sections={[{ title: "Recent", data: userList }]} />
       {onSend && (
         <View
           style={[styles.sendButtonContainer, { paddingBottom: insets.bottom }]}
@@ -203,26 +174,6 @@ const styles = StyleSheet.create({
     fontFamily: "THICCCBOI_Medium",
     color: "#F5F4FA",
     marginRight: 8,
-  },
-  recentLabel: {
-    fontSize: 20,
-    fontFamily: "THICCCBOI_ExtraBold",
-    color: "#B7B4C7",
-    marginBottom: 16,
-  },
-  userListItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  userName: {
-    fontSize: 20,
-    fontFamily: "THICCCBOI_Bold",
-    color: "#1D1A27",
-  },
-  userId: {
-    fontSize: 18,
-    fontFamily: "THICCCBOI_Medium",
-    color: "#88849C",
   },
   sendButtonContainer: {
     width: "100%",
