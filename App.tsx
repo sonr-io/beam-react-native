@@ -18,7 +18,10 @@ import { Thiago } from "./src/_data/users";
 
 import { charFromEmojiObject } from "./src/components/Emojis/EmojiItem";
 
-import { DefaultEmojisNames, StorageKeyForEmojis } from "./src/Constants";
+import {
+  DefaultEmojisNames,
+  StorageKeyForEmojis,
+} from "./src/Constants/Emojis";
 
 import { ChatContext } from "./src/contexts/ChatContext";
 import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
