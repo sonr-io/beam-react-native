@@ -53,56 +53,59 @@ const UserSelector: React.FC<Props> = ({
 
   return (
     <>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>To:</Text>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            inputRef.current?.focus();
-          }}
-        >
-          <View
-            style={[
-              styles.inputInnerContainer,
-              error && { borderColor: "#FF2866" },
-            ]}
+      <View style={{ marginBottom: 24 }}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>To:</Text>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              inputRef.current?.focus();
+            }}
           >
-            <TextInput
-              ref={inputRef}
-              style={styles.nameInput}
-              autoCorrect={false}
-              autoCapitalize="none"
-              onChangeText={onInputChange}
-            />
-            <Text style={styles.snrLabel}>.snr</Text>
-            {onPressGo && (
+            <View
+              style={[
+                styles.inputInnerContainer,
+                error && { borderColor: "#FF2866" },
+              ]}
+            >
+              <TextInput
+                ref={inputRef}
+                style={styles.nameInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+                onChangeText={onInputChange}
+              />
+              <Text style={styles.snrLabel}>.snr</Text>
+              {onPressGo && (
+                <TouchableOpacity
+                  onPress={() => {
+                    try {
+                      onPressGo(inputValue);
+                    } catch {
+                      setError(true);
+                    }
+                  }}
+                >
+                  <Text style={{ color: "#5E5B71" }}>Go</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+        {error && <Text style={styles.errorMessage}>Invalid .snr domain</Text>}
+        <View style={styles.selectedUsers}>
+          {[...(markedUsers?.values() ?? [])].map((id) => (
+            <View style={styles.selectedUserContainer} key={id}>
+              <Text style={styles.selectedUser}>{id}</Text>
               <TouchableOpacity
-                onPress={() => {
-                  try {
-                    onPressGo(inputValue);
-                  } catch {
-                    setError(true);
-                  }
-                }}
+                onPress={() => onUnmarkUser && onUnmarkUser(id)}
               >
-                <Text style={{ color: "#5E5B71" }}>Go</Text>
+                <IconClose />
               </TouchableOpacity>
-            )}
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-      {error && <Text style={styles.errorMessage}>Invalid .snr domain</Text>}
-      <View style={styles.selectedUsers}>
-        {[...(markedUsers?.values() ?? [])].map((id) => (
-          <View style={styles.selectedUserContainer} key={id}>
-            <Text style={styles.selectedUser}>{id}</Text>
-            <TouchableOpacity onPress={() => onUnmarkUser && onUnmarkUser(id)}>
-              <IconClose />
-            </TouchableOpacity>
-          </View>
-        ))}
+            </View>
+          ))}
+        </View>
       </View>
       <FlatList
-        style={styles.userList}
         data={userList}
         renderItem={({ item: user }) => (
           <TouchableOpacity
@@ -200,9 +203,6 @@ const styles = StyleSheet.create({
     fontFamily: "THICCCBOI_Medium",
     color: "#F5F4FA",
     marginRight: 8,
-  },
-  userList: {
-    marginTop: 24,
   },
   recentLabel: {
     fontSize: 20,
