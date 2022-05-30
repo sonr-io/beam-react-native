@@ -2,6 +2,7 @@ import { MATRIX_NETWORK_BASE_URL } from "@env";
 import {
   ClientEvent,
   createClient,
+  EventType,
   JoinRule,
   MatrixClient,
   Room,
@@ -78,7 +79,7 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
     lastSeen: 0,
     messages: [
       ...room.timeline
-        .filter((event) => event.getType() === "m.room.message")
+        .filter((event) => event.getType() === EventType.RoomMessage)
         .map((event) => ({
           id: event.getId(),
           text: event.getContent().body,
@@ -101,7 +102,7 @@ export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
   privateRooms.forEach((room) => {
     room.on(RoomEvent.Timeline, (event) => {
       if (
-        event.getType() === "m.room.message" &&
+        event.getType() === EventType.RoomMessage &&
         event.getSender() !== client.getUserId()
       ) {
         callback(room.roomId, event.getContent().body, event.getSender());
