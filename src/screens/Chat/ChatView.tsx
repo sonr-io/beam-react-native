@@ -12,6 +12,7 @@ import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
 import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
+import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconArrowDown from "../../icons/ArrowDown";
 import IconBackArrow from "../../icons/BackArrow";
@@ -50,6 +51,7 @@ type Props = StackScreenProps<Params, "ChatView">;
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { user } = useUserContext();
   const { chats, addMessage } = useChatContext();
+  const { client } = useMatrixClientContext();
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
@@ -76,9 +78,12 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     setMessages(toViewable(chat.messages).reverse());
   }, [chats, chatId]);
 
-  const pushMessage = (message: string) => {
-    addMessage({ chatId, message });
-    scrollToBottom();
+  const pushMessage = async (message: string) => {
+    if (client && user) {
+      await client.sendTextMessage(chatId, message);
+      addMessage({ chatId, message, sender: user });
+      scrollToBottom();
+    }
   };
 
   const scrollToBottom = () => {
@@ -94,7 +99,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     return messages.find((m) => m.id === message.parentId);
   };
 
-  if (!chatRoom || !recipient) {
+  if (!chatRoom || !recipient || !user) {
     return <></>;
   }
 

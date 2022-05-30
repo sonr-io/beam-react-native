@@ -14,7 +14,6 @@ import React, { useEffect, useState } from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
 
 import { fakeChats } from "./src/_data/chats";
-import { Thiago } from "./src/_data/users";
 
 import { charFromEmojiObject } from "./src/components/Emojis/EmojiItem";
 
@@ -62,7 +61,7 @@ export default function App() {
   });
 
   const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
-  const [user, setUser] = useState<User>(Thiago);
+  const [user, setUser] = useState<User | null>(null);
   const [client, setClient] = useState<MatrixClient | null>(null);
   const [chats, setChats] = useState<Chat[]>(fakeChats);
 
@@ -71,9 +70,11 @@ export default function App() {
     message,
     parentId,
     forwardedFrom,
+    sender,
   }: {
     chatId: string;
     message: string;
+    sender: User;
     parentId?: string;
     forwardedFrom?: string;
   }) => {
@@ -87,7 +88,7 @@ export default function App() {
           id: (chat.messages.length + 1).toString(),
           text: message,
           timestamp: new Date().getTime(),
-          sender: user,
+          sender,
           reactions: [],
           parentId,
           forwardedFrom,
@@ -100,7 +101,7 @@ export default function App() {
   const addReaction = (chatId: string, messageId: string, emoji: Emoji) => {
     setChats((chats) =>
       chats.map((chat) => {
-        if (chat.id !== chatId) {
+        if (!user || chat.id !== chatId) {
           return chat;
         }
         updateEmojisHistory(emoji);
