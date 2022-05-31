@@ -28,6 +28,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
     const fullId = `@${id}:matrix.sonr.network`;
 
     if (fullId === client?.getUserId()) {
+      setError(true);
       return;
     }
 
