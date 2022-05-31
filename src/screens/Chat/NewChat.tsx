@@ -1,4 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Preset } from "matrix-js-sdk/lib/@types/partials";
 import React from "react";
 import { View } from "react-native";
 
@@ -7,12 +8,14 @@ import { StartNewChat } from "../../components/StartNewChat";
 import TransparentModal from "../../components/TransparentModal";
 import { UserList } from "../../components/UserList";
 import { useChatContext } from "../../contexts/ChatContext";
+import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 import { User } from "../../types/User";
 
 type Props = StackScreenProps<Params, "NewChat">;
 
 const NewChat: React.FC<Props> = ({ navigation }) => {
   const { chats, setChats } = useChatContext();
+  const { client } = useMatrixClientContext();
   const users = chats.map((chat) => chat.user);
 
   const navigateToChat = (id: string) => {
@@ -20,33 +23,30 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
     navigation.navigate("ChatView", { id });
   };
 
-  const startNew = (value: string) => {
-    const snrId = `${value}.snr`;
+  const startNew = async (id: string) => {
+    const response = await client?.createRoom({
+      invite: [`@${id}:matrix.sonr.network`],
+      preset: Preset.PrivateChat,
+    });
+    if (!response) return;
 
-    if (snrId === "mark.snr") {
-      throw new Error();
-    }
+    // if id does not exist
 
-    const chat = chats.find((chat) => chat.name === snrId);
+    // if chat already exists
 
-    if (chat) {
-      navigateToChat(chat.id);
-    } else {
-      const chatId = `${chats.length + 1}`;
-      chats.push({
-        id: chatId,
-        lastSeen: 0,
-        messages: [],
-        name: snrId,
-        user: {
-          id: snrId,
-          isOnline: false,
-          name: value,
-        },
-      });
-      setChats(chats);
-      navigateToChat(chatId);
-    }
+    chats.push({
+      id: response.room_id,
+      lastSeen: 0,
+      messages: [],
+      name: id,
+      user: {
+        id: id,
+        name: id,
+        isOnline: false,
+      },
+    });
+    setChats(chats);
+    navigateToChat(response.room_id);
   };
 
   const goToExisting = (user: User) => {
