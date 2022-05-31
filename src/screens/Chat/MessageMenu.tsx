@@ -28,19 +28,6 @@ import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
 
-type ReactionProps = {
-  emoji: string;
-  onPress: (emoji: string) => void;
-};
-
-const EmojiReaction = ({ emoji, onPress }: ReactionProps) => {
-  return (
-    <TouchableOpacity style={styles.emojiButton} onPress={() => onPress(emoji)}>
-      <Text style={styles.emojiDisplay}>{emoji}</Text>
-    </TouchableOpacity>
-  );
-};
-
 type Props = StackScreenProps<Params, "MessageMenu">;
 
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
@@ -158,9 +145,6 @@ const styles = StyleSheet.create({
   content: {
     paddingTop: 40,
     paddingHorizontal: 20,
-  },
-  messageInput: {
-    marginTop: 20,
   },
   touchableBackgroundContainer: {
     position: "absolute",
