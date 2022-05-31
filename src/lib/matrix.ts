@@ -76,32 +76,44 @@ export const getChats = async (
   }
 
   return {
-    chats: privateRooms.map((room) => ({
-      id: room.roomId,
-      name: room.name,
-      user: {
-        id: room.name,
+    chats: privateRooms
+      .map((room) => {
+        const interlocutor = room
+          .getMembers()
+          .filter((member) => member.userId !== room.myUserId)[0];
+        return {
+          id: room.roomId,
+          name: interlocutor.name,
+          member: interlocutor.userId,
+          timeline: room.timeline,
+        };
+      })
+      .map((room) => ({
+        id: room.id,
         name: room.name,
-        isOnline: false,
-      },
-      lastSeen: 0,
-      messages: [
-        ...room.timeline
-          .filter((event) => event.getType() === EventType.RoomMessage)
-          .map((event) => ({
-            id: event.getId(),
-            text: event.getContent().body,
-            timestamp: event.getTs(),
-            sender: {
-              id: event.getSender(),
-              name: event.getSender(),
-              isOnline: false,
-            },
-            parentId: event.getContent().parentId,
-            reactions: [],
-          })),
-      ],
-    })),
+        user: {
+          id: room.name,
+          name: room.name,
+          isOnline: false,
+        },
+        lastSeen: 0,
+        messages: [
+          ...room.timeline
+            .filter((event) => event.getType() === EventType.RoomMessage)
+            .map((event) => ({
+              id: event.getId(),
+              text: event.getContent().body,
+              timestamp: event.getTs(),
+              sender: {
+                id: event.getSender(),
+                name: event.getSender(),
+                isOnline: false,
+              },
+              parentId: event.getContent().parentId,
+              reactions: [],
+            })),
+        ],
+      })),
     members: new Map(members),
   };
 };
