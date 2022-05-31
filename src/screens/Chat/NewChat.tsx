@@ -51,7 +51,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       name: id,
       isMember: true,
       user: {
-        id: id,
+        id: fullId,
         name: id,
         isOnline: false,
       },
