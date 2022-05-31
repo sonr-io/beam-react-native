@@ -4,13 +4,9 @@ import { View } from "react-native";
 
 import { Params } from ".";
 import { StartNewChat } from "../../components/StartNewChat";
-
 import TransparentModal from "../../components/TransparentModal";
 import { UserList } from "../../components/UserList";
-import UserSelector from "../../components/UserSelector";
-
 import { useChatContext } from "../../contexts/ChatContext";
-
 import { User } from "../../types/User";
 
 type Props = StackScreenProps<Params, "NewChat">;

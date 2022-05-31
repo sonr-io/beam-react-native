@@ -1,20 +1,17 @@
 import React from "react";
 import {
-  View,
   StyleSheet,
-  TouchableWithoutFeedback,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useChatContext } from "../contexts/ChatContext";
-
-import IconCheckCircle from "../icons/CheckCircle";
 import IconClose from "../icons/Close";
-
 import { User } from "../types/User";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { UserList } from "./UserList";
 
 interface Props {
@@ -32,14 +29,14 @@ const UserSelector: React.FC<Props> = ({
   onUnmarkUser,
   onSend,
 }) => {
-  const { chats } = useChatContext();
   const insets = useSafeAreaInsets();
+  const { chats } = useChatContext();
   const users = chats.map((chat) => chat.user);
+  const [userList, setUserList] = React.useState(users);
 
   const inputRef = React.useRef<TextInput>(null);
   const [inputValue, setInputValue] = React.useState("");
   const [error, setError] = React.useState(false);
-  const [userList, setUserList] = React.useState(users);
 
   const onInputChange = (input: string) => {
     setInputValue(input);
