@@ -76,29 +76,21 @@ export const getChats = async (
   }
 
   return {
-    chats: privateRooms
-      .map((room) => {
-        const interlocutor = room
-          .getMembers()
-          .filter((member) => member.userId !== room.myUserId)[0];
-        return {
-          id: room.roomId,
-          memberName: interlocutor.name,
-          memberId: interlocutor.userId,
-          selfMembership: room.getMyMembership(),
-          timeline: room.timeline,
-        };
-      })
-      .map((room) => ({
-        id: room.id,
-        name: room.memberName,
+    chats: privateRooms.map((room) => {
+      // we know that there are at least 2 members, so this will always find a user
+      const interlocutor = room
+        .getMembers()
+        .find((member) => member.userId !== room.myUserId)!;
+      return {
+        id: room.roomId,
+        name: interlocutor.name,
         user: {
-          id: room.memberId,
-          name: room.memberName,
+          id: interlocutor.userId,
+          name: interlocutor.name,
           isOnline: false,
         },
         lastSeen: 0,
-        isMember: room.selfMembership === "join",
+        isMember: room.getMyMembership() === "join",
         messages: [
           ...room.timeline
             .filter((event) => event.getType() === EventType.RoomMessage)
@@ -115,7 +107,8 @@ export const getChats = async (
               reactions: [],
             })),
         ],
-      })),
+      };
+    }),
     members: new Map(members),
   };
 };
