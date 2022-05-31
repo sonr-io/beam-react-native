@@ -42,6 +42,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         isOnline: false,
       });
       const { chats, members } = await getChats(_client);
+      chats
+        .filter((chat) => !chat.isMember)
+        .map((chat) => _client.joinRoom(chat.id));
       setChats(chats);
       setMembers(members);
       onReceiveMessage(

@@ -83,20 +83,22 @@ export const getChats = async (
           .filter((member) => member.userId !== room.myUserId)[0];
         return {
           id: room.roomId,
-          name: interlocutor.name,
-          member: interlocutor.userId,
+          memberName: interlocutor.name,
+          memberId: interlocutor.userId,
+          selfMembership: room.getMyMembership(),
           timeline: room.timeline,
         };
       })
       .map((room) => ({
         id: room.id,
-        name: room.name,
+        name: room.memberName,
         user: {
-          id: room.name,
-          name: room.name,
+          id: room.memberId,
+          name: room.memberName,
           isOnline: false,
         },
         lastSeen: 0,
+        isMember: room.selfMembership === "join",
         messages: [
           ...room.timeline
             .filter((event) => event.getType() === EventType.RoomMessage)
@@ -124,7 +126,6 @@ type Callback = (params: {
   sender: string;
   parentId?: string;
 }) => void;
-
 export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
   const privateRooms = getPrivateRooms(client);
   privateRooms.forEach((room) => {
