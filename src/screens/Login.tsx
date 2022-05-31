@@ -42,13 +42,17 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         isOnline: false,
       });
       setChats(await getChats(_client));
-      onReceiveMessage(_client, (chatId, message, sender) => {
-        addMessage({
-          chatId,
-          message,
-          sender: { id: sender, name: sender, isOnline: false },
-        });
-      });
+      onReceiveMessage(
+        _client,
+        ({ roomId: chatId, message, sender, parentId }) => {
+          addMessage({
+            chatId,
+            message,
+            sender: { id: sender, name: sender, isOnline: false },
+            parentId,
+          });
+        }
+      );
 
       navigation.navigate("Chat", {});
     } catch {

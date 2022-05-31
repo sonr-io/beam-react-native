@@ -19,6 +19,7 @@ import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
 import { MessageBubble } from "../../components/MessageBubble";
 import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
+import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconCopy from "../../icons/Copy";
 import IconForward from "../../icons/Forward";
@@ -47,7 +48,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
   const { addReaction, addMessage } = useChatContext();
+  const { client } = useMatrixClientContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
+
+  if (!user || !client) {
+    return <></>;
+  }
 
   const pushEmoji = (emoji: Emoji) => {
     addReaction(chatId, message.id, emoji);
@@ -57,6 +63,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
     addMessage({
       chatId,
       message: text,
+      sender: user,
+      parentId: message.id,
+    });
+    client.sendMessage(chatId, {
+      msgtype: "m.reply",
+      body: text,
       parentId: message.id,
     });
     navigation.goBack();

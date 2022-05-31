@@ -89,13 +89,19 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
             name: event.getSender(),
             isOnline: false,
           },
+          parentId: event.getContent().parentId,
           reactions: [],
         })),
     ],
   }));
 };
 
-type Callback = (roomId: string, message: string, sender: string) => void;
+type Callback = (params: {
+  roomId: string;
+  message: string;
+  sender: string;
+  parentId?: string;
+}) => void;
 
 export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
   const privateRooms = getPrivateRooms(client);
@@ -105,7 +111,12 @@ export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
         event.getType() === EventType.RoomMessage &&
         event.getSender() !== client.getUserId()
       ) {
-        callback(room.roomId, event.getContent().body, event.getSender());
+        callback({
+          roomId: room.roomId,
+          message: event.getContent().body,
+          sender: event.getSender(),
+          parentId: event.getContent().parentId,
+        });
       }
     });
   });
