@@ -10,8 +10,8 @@ import {
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import request from "xmlhttp-request";
-import { MatrixLoginType } from "../Constants/Matrix";
 
+import { MatrixLoginType } from "../Constants/Matrix";
 import { Chat } from "../types/Chat";
 
 export const login = async (user: string, password: string) => {
