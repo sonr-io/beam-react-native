@@ -2,6 +2,7 @@ import { MATRIX_NETWORK_BASE_URL } from "@env";
 import {
   ClientEvent,
   createClient,
+  EventType,
   JoinRule,
   MatrixClient,
   Room,
@@ -39,7 +40,7 @@ export const login = async (user: string, password: string) => {
     localTimeoutMs: 5000,
   });
   const result = new Promise<MatrixClient>((resolve) => {
-    client.on(ClientEvent.Sync, (state) => {
+    client.once(ClientEvent.Sync, (state) => {
       if (state === SyncState.Prepared) {
         resolve(client);
       }
@@ -59,8 +60,14 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
     );
 };
 
-export const getChats = (client: MatrixClient): Chat[] => {
+export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
   const privateRooms = getPrivateRooms(client);
+  for (const room of privateRooms) {
+    // load all events
+    while (room.oldState.paginationToken) {
+      await client.scrollback(room);
+    }
+  }
   return privateRooms.map((room) => ({
     id: room.roomId,
     name: room.name,
@@ -71,17 +78,19 @@ export const getChats = (client: MatrixClient): Chat[] => {
     },
     lastSeen: 0,
     messages: [
-      {
-        id: "1",
-        text: "last message placeholder",
-        timestamp: 0,
-        sender: {
-          id: room.name,
-          name: room.name,
-          isOnline: false,
-        },
-        reactions: [],
-      },
+      ...room.timeline
+        .filter((event) => event.getType() === EventType.RoomMessage)
+        .map((event) => ({
+          id: event.getId(),
+          text: event.getContent().body,
+          timestamp: event.getTs(),
+          sender: {
+            id: event.getSender(),
+            name: event.getSender(),
+            isOnline: false,
+          },
+          reactions: [],
+        })),
     ],
   }));
 };
@@ -93,7 +102,7 @@ export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
   privateRooms.forEach((room) => {
     room.on(RoomEvent.Timeline, (event) => {
       if (
-        event.getType() === "m.room.message" &&
+        event.getType() === EventType.RoomMessage &&
         event.getSender() !== client.getUserId()
       ) {
         callback(room.roomId, event.getContent().body, event.getSender());

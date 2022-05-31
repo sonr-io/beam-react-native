@@ -18,7 +18,7 @@ interface PresetUser {
 type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const { setClient } = useMatrixClientContext();
+  const { client, setClient } = useMatrixClientContext();
   const { setUser } = useUserContext();
   const { addMessage, setChats } = useChatContext();
   const [username, setUsername] = React.useState("");
@@ -28,22 +28,28 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   const onLogin = async (user: string, password: string) => {
     try {
-      const client = await login(user, password);
-      setClient(client);
       setError(false);
+
+      if (client) {
+        await client.logout();
+      }
+
+      const _client = await login(user, password);
+      setClient(_client);
       setUser({
-        id: client.getUserId(),
-        name: client.getUserId(),
+        id: _client.getUserId(),
+        name: _client.getUserId(),
         isOnline: false,
       });
-      setChats(getChats(client));
-      onReceiveMessage(client, (chatId, message, sender) => {
+      setChats(await getChats(_client));
+      onReceiveMessage(_client, (chatId, message, sender) => {
         addMessage({
           chatId,
           message,
           sender: { id: sender, name: sender, isOnline: false },
         });
       });
+
       navigation.navigate("Chat", {});
     } catch {
       setError(true);
