@@ -56,7 +56,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
         isOnline: false,
       },
     });
-    setChats(chats);
+    setChats([...chats]);
     navigateToChat(response.room_id);
   };
 
