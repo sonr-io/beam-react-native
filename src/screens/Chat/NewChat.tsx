@@ -24,14 +24,20 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
   };
 
   const startNew = async (id: string) => {
-    const existingChat = chats.find((chat) => chat.user.id === id);
+    const fullId = `@${id}:matrix.sonr.network`;
+
+    if (fullId === client?.getUserId()) {
+      return;
+    }
+
+    const existingChat = chats.find((chat) => chat.user.id === fullId);
     if (existingChat) {
       navigateToChat(existingChat.id);
       return;
     }
 
     const response = await client?.createRoom({
-      invite: [`@${id}:matrix.sonr.network`],
+      invite: [fullId],
       preset: Preset.PrivateChat,
     });
     if (!response) return;
