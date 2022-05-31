@@ -1,7 +1,7 @@
+import "./intl-collator";
 import "allsettled-polyfill";
 import "intl";
 import "intl/locale-data/jsonp/en";
-import "./intl-collator";
 import "react-native-gesture-handler";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,29 +11,23 @@ import emoji from "emoji-datasource";
 import { useFonts } from "expo-font";
 import { MatrixClient } from "matrix-js-sdk";
 import React, { useEffect, useState } from "react";
-import { StatusBar, StyleSheet, View } from "react-native";
+import { LogBox, StatusBar, StyleSheet, View } from "react-native";
 
 import { fakeChats } from "./src/_data/chats";
-
 import { charFromEmojiObject } from "./src/components/Emojis/EmojiItem";
-
 import {
   DefaultEmojisNames,
   StorageKeyForEmojis,
 } from "./src/Constants/Emojis";
-
 import { ChatContext } from "./src/contexts/ChatContext";
 import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
 import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
 import { UserContext } from "./src/contexts/UserContext";
-
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
-
 import { Chat } from "./src/types/Chat";
 import { Emoji } from "./src/types/Emoji";
 import { User } from "./src/types/User";
-import { LogBox } from "react-native";
 
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import NearbyScreen from "./src/screens/Nearby";

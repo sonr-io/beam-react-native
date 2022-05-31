@@ -1,4 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Preset } from "matrix-js-sdk/lib/@types/partials";
 import React from "react";
 import { View } from "react-native";
 
@@ -7,46 +8,63 @@ import { StartNewChat } from "../../components/StartNewChat";
 import TransparentModal from "../../components/TransparentModal";
 import { UserList } from "../../components/UserList";
 import { useChatContext } from "../../contexts/ChatContext";
+import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 import { User } from "../../types/User";
 
 type Props = StackScreenProps<Params, "NewChat">;
 
 const NewChat: React.FC<Props> = ({ navigation }) => {
+  const { client } = useMatrixClientContext();
   const { chats, setChats } = useChatContext();
   const users = chats.map((chat) => chat.user);
+  const [error, setError] = React.useState(false);
 
   const navigateToChat = (id: string) => {
     navigation.goBack();
     navigation.navigate("ChatView", { id });
   };
 
-  const startNew = (value: string) => {
-    const snrId = `${value}.snr`;
+  const startNew = async (id: string) => {
+    const fullId = `@${id}:matrix.sonr.network`;
 
-    if (snrId === "mark.snr") {
-      throw new Error();
+    if (fullId === client?.getUserId()) {
+      setError(true);
+      return;
     }
 
-    const chat = chats.find((chat) => chat.name === snrId);
-
-    if (chat) {
-      navigateToChat(chat.id);
-    } else {
-      const chatId = `${chats.length + 1}`;
-      chats.push({
-        id: chatId,
-        lastSeen: 0,
-        messages: [],
-        name: snrId,
-        user: {
-          id: snrId,
-          isOnline: false,
-          name: value,
-        },
-      });
-      setChats(chats);
-      navigateToChat(chatId);
+    const existingChat = chats.find((chat) => chat.user.id === fullId);
+    if (existingChat) {
+      navigateToChat(existingChat.id);
+      return;
     }
+
+    try {
+      await client?.getProfileInfo(fullId);
+    } catch {
+      setError(true);
+      return;
+    }
+
+    const response = await client?.createRoom({
+      invite: [fullId],
+      preset: Preset.PrivateChat,
+    });
+    if (!response) return;
+
+    chats.push({
+      id: response.room_id,
+      lastSeen: 0,
+      messages: [],
+      name: id,
+      isMember: true,
+      user: {
+        id: fullId,
+        name: id,
+        isOnline: false,
+      },
+    });
+    setChats([...chats]);
+    navigateToChat(response.room_id);
   };
 
   const goToExisting = (user: User) => {
@@ -61,7 +79,11 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       title="New Conversation"
       onClose={() => navigation.goBack()}
     >
-      <StartNewChat onPress={startNew} />
+      <StartNewChat
+        onPress={startNew}
+        onChangeText={() => setError(false)}
+        hasError={error}
+      />
 
       <View style={{ marginBottom: 24 }} />
 

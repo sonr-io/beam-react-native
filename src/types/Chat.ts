@@ -22,6 +22,7 @@ export type Chat = {
   name: string;
   user: User;
   lastSeen: number;
+  isMember: boolean;
   messages: Message[];
 };
 

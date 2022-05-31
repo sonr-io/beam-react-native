@@ -10,8 +10,8 @@ import {
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import request from "xmlhttp-request";
-import { MatrixLoginType } from "../Constants/Matrix";
 
+import { MatrixLoginType } from "../Constants/Matrix";
 import { Chat } from "../types/Chat";
 
 export const login = async (user: string, password: string) => {
@@ -76,32 +76,39 @@ export const getChats = async (
   }
 
   return {
-    chats: privateRooms.map((room) => ({
-      id: room.roomId,
-      name: room.name,
-      user: {
-        id: room.name,
-        name: room.name,
-        isOnline: false,
-      },
-      lastSeen: 0,
-      messages: [
-        ...room.timeline
-          .filter((event) => event.getType() === EventType.RoomMessage)
-          .map((event) => ({
-            id: event.getId(),
-            text: event.getContent().body,
-            timestamp: event.getTs(),
-            sender: {
-              id: event.getSender(),
-              name: event.getSender(),
-              isOnline: false,
-            },
-            parentId: event.getContent().parentId,
-            reactions: [],
-          })),
-      ],
-    })),
+    chats: privateRooms.map((room) => {
+      // we know that there are at least 2 members, so this will always find a user
+      const interlocutor = room
+        .getMembers()
+        .find((member) => member.userId !== room.myUserId)!;
+      return {
+        id: room.roomId,
+        name: interlocutor.name,
+        user: {
+          id: interlocutor.userId,
+          name: interlocutor.name,
+          isOnline: false,
+        },
+        lastSeen: 0,
+        isMember: room.getMyMembership() === "join",
+        messages: [
+          ...room.timeline
+            .filter((event) => event.getType() === EventType.RoomMessage)
+            .map((event) => ({
+              id: event.getId(),
+              text: event.getContent().body,
+              timestamp: event.getTs(),
+              sender: {
+                id: event.getSender(),
+                name: event.getSender(),
+                isOnline: false,
+              },
+              parentId: event.getContent().parentId,
+              reactions: [],
+            })),
+        ],
+      };
+    }),
     members: new Map(members),
   };
 };
@@ -112,7 +119,6 @@ type Callback = (params: {
   sender: string;
   parentId?: string;
 }) => void;
-
 export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
   const privateRooms = getPrivateRooms(client);
   privateRooms.forEach((room) => {

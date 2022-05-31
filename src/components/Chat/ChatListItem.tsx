@@ -12,17 +12,13 @@ type Props = {
 };
 
 export const ChatListItem = (props: Props) => {
-  const { id, name, lastSeen, messages } = props.chat;
+  const { name, lastSeen, messages } = props.chat;
 
-  if (!messages) {
-    return <></>;
-  }
-
-  const lastMessage = messages[messages.length - 1];
-
-  if (!lastMessage) {
-    return <></>;
-  }
+  const lastMessage = messages[messages.length - 1] || {
+    timestamp: Date.now(),
+    text: " ",
+    sender: { isOnline: false },
+  };
 
   const elapsedTime = timeAgo(lastMessage.timestamp);
 
@@ -60,7 +56,7 @@ export const ChatListItem = (props: Props) => {
           </View>
 
           <Text style={styles.lastMessage} numberOfLines={1}>
-            {lastMessage?.text}
+            {lastMessage.text}
           </Text>
         </View>
       </View>
