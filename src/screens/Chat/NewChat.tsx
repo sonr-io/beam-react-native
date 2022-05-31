@@ -14,9 +14,10 @@ import { User } from "../../types/User";
 type Props = StackScreenProps<Params, "NewChat">;
 
 const NewChat: React.FC<Props> = ({ navigation }) => {
-  const { chats, setChats } = useChatContext();
   const { client } = useMatrixClientContext();
+  const { chats, setChats } = useChatContext();
   const users = chats.map((chat) => chat.user);
+  const [error, setError] = React.useState(false);
 
   const navigateToChat = (id: string) => {
     navigation.goBack();
@@ -36,13 +37,18 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
+    try {
+      await client?.getProfileInfo(fullId);
+    } catch {
+      setError(true);
+      return;
+    }
+
     const response = await client?.createRoom({
       invite: [fullId],
       preset: Preset.PrivateChat,
     });
     if (!response) return;
-
-    // if id does not exist
 
     chats.push({
       id: response.room_id,
@@ -72,7 +78,11 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       title="New Conversation"
       onClose={() => navigation.goBack()}
     >
-      <StartNewChat onPress={startNew} />
+      <StartNewChat
+        onPress={startNew}
+        onChangeText={() => setError(false)}
+        hasError={error}
+      />
 
       <View style={{ marginBottom: 24 }} />
 

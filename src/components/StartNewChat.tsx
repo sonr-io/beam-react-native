@@ -10,23 +10,35 @@ import {
 
 type Props = {
   onPress: (value: string) => void;
+  onChangeText?: (value: string) => void;
+  hasError: boolean;
 };
 export const StartNewChat = (props: Props) => {
   const ref = React.useRef<TextInput>(null);
   const [value, setValue] = React.useState("");
 
+  const onChangeText = (value: string) => {
+    setValue(value);
+    props.onChangeText?.(value);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.inputLabel}>TO</Text>
       <TouchableWithoutFeedback onPress={() => ref.current?.focus()}>
-        <View style={[styles.inputContainer]}>
+        <View
+          style={[
+            styles.inputContainer,
+            props.hasError && { borderColor: "#FF2866" },
+          ]}
+        >
           <TextInput
             ref={ref}
             style={styles.input}
             autoCorrect={false}
             autoCapitalize="none"
             value={value}
-            onChangeText={(value) => setValue(value)}
+            onChangeText={onChangeText}
           />
           <Text style={styles.inputSuffix}>:matrix.sonr.network</Text>
           <TouchableOpacity onPress={() => props.onPress(value)}>
