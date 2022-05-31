@@ -28,7 +28,7 @@ export const StartNewChat = (props: Props) => {
             value={value}
             onChangeText={(value) => setValue(value)}
           />
-          <Text style={styles.inputSuffix}>.snr</Text>
+          <Text style={styles.inputSuffix}>:matrix.sonr.network</Text>
           <TouchableOpacity onPress={() => props.onPress(value)}>
             <Text style={{ color: "#5E5B71" }}>GO</Text>
           </TouchableOpacity>
@@ -69,5 +69,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "THICCCBOI_Medium",
     color: "#B7B4C7",
+    lineHeight: 18,
   },
 });
