@@ -24,6 +24,12 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
   };
 
   const startNew = async (id: string) => {
+    const existingChat = chats.find((chat) => chat.user.id === id);
+    if (existingChat) {
+      navigateToChat(existingChat.id);
+      return;
+    }
+
     const response = await client?.createRoom({
       invite: [`@${id}:matrix.sonr.network`],
       preset: Preset.PrivateChat,
@@ -31,8 +37,6 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
     if (!response) return;
 
     // if id does not exist
-
-    // if chat already exists
 
     chats.push({
       id: response.room_id,
