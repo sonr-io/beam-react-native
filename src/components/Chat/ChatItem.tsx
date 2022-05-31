@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
+import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 
 import { Message } from "../../types/Chat";
 import { User } from "../../types/User";
@@ -20,6 +21,7 @@ export const ChatItem: React.FC<Props> = ({
   user,
   onSwipe,
 }) => {
+  const { members } = useMatrixClientContext();
   const [showTimestamp /* setShowTimestamp */] = React.useState(false);
   const swipeableRef = React.useRef<Swipeable>(null);
 
@@ -43,7 +45,10 @@ export const ChatItem: React.FC<Props> = ({
         <View style={styles.parentMessageContainer}>
           <ReplyBubble
             text={parentMessage.text}
-            senderName={parentMessage.sender.name}
+            senderName={
+              members.get(parentMessage.sender.name) ??
+              parentMessage.sender.name
+            }
             selfReply={selfReply}
             isIncoming={!isSender}
           />
