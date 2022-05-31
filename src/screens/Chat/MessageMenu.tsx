@@ -19,6 +19,7 @@ import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
 import { MessageBubble } from "../../components/MessageBubble";
 import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
+import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconCopy from "../../icons/Copy";
 import IconForward from "../../icons/Forward";
@@ -27,19 +28,6 @@ import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
 
-type ReactionProps = {
-  emoji: string;
-  onPress: (emoji: string) => void;
-};
-
-const EmojiReaction = ({ emoji, onPress }: ReactionProps) => {
-  return (
-    <TouchableOpacity style={styles.emojiButton} onPress={() => onPress(emoji)}>
-      <Text style={styles.emojiDisplay}>{emoji}</Text>
-    </TouchableOpacity>
-  );
-};
-
 type Props = StackScreenProps<Params, "MessageMenu">;
 
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
@@ -47,7 +35,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
   const { addReaction, addMessage } = useChatContext();
+  const { client } = useMatrixClientContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
+
+  if (!user || !client) {
+    return <></>;
+  }
 
   const pushEmoji = (emoji: Emoji) => {
     addReaction(chatId, message.id, emoji);
@@ -57,6 +50,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
     addMessage({
       chatId,
       message: text,
+      sender: user,
+      parentId: message.id,
+    });
+    client.sendMessage(chatId, {
+      msgtype: "m.reply",
+      body: text,
       parentId: message.id,
     });
     navigation.goBack();
@@ -146,9 +145,6 @@ const styles = StyleSheet.create({
   content: {
     paddingTop: 40,
     paddingHorizontal: 20,
-  },
-  messageInput: {
-    marginTop: 20,
   },
   touchableBackgroundContainer: {
     position: "absolute",

@@ -60,42 +60,58 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
     );
 };
 
-export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
+export const getChats = async (
+  client: MatrixClient
+): Promise<{ chats: Chat[]; members: Map<string, string> }> => {
   const privateRooms = getPrivateRooms(client);
+  const members: [string, string][] = [];
   for (const room of privateRooms) {
+    room
+      .getMembers()
+      .forEach((member) => members.push([member.userId, member.name]));
     // load all events
     while (room.oldState.paginationToken) {
       await client.scrollback(room);
     }
   }
-  return privateRooms.map((room) => ({
-    id: room.roomId,
-    name: room.name,
-    user: {
-      id: room.name,
+
+  return {
+    chats: privateRooms.map((room) => ({
+      id: room.roomId,
       name: room.name,
-      isOnline: false,
-    },
-    lastSeen: 0,
-    messages: [
-      ...room.timeline
-        .filter((event) => event.getType() === EventType.RoomMessage)
-        .map((event) => ({
-          id: event.getId(),
-          text: event.getContent().body,
-          timestamp: event.getTs(),
-          sender: {
-            id: event.getSender(),
-            name: event.getSender(),
-            isOnline: false,
-          },
-          reactions: [],
-        })),
-    ],
-  }));
+      user: {
+        id: room.name,
+        name: room.name,
+        isOnline: false,
+      },
+      lastSeen: 0,
+      messages: [
+        ...room.timeline
+          .filter((event) => event.getType() === EventType.RoomMessage)
+          .map((event) => ({
+            id: event.getId(),
+            text: event.getContent().body,
+            timestamp: event.getTs(),
+            sender: {
+              id: event.getSender(),
+              name: event.getSender(),
+              isOnline: false,
+            },
+            parentId: event.getContent().parentId,
+            reactions: [],
+          })),
+      ],
+    })),
+    members: new Map(members),
+  };
 };
 
-type Callback = (roomId: string, message: string, sender: string) => void;
+type Callback = (params: {
+  roomId: string;
+  message: string;
+  sender: string;
+  parentId?: string;
+}) => void;
 
 export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
   const privateRooms = getPrivateRooms(client);
@@ -105,7 +121,12 @@ export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
         event.getType() === EventType.RoomMessage &&
         event.getSender() !== client.getUserId()
       ) {
-        callback(room.roomId, event.getContent().body, event.getSender());
+        callback({
+          roomId: room.roomId,
+          message: event.getContent().body,
+          sender: event.getSender(),
+          parentId: event.getContent().parentId,
+        });
       }
     });
   });
