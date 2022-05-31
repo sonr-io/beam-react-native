@@ -1,24 +1,18 @@
 import React from "react";
 import {
-  View,
   StyleSheet,
-  TouchableWithoutFeedback,
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
-  Button,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-
-import { Avatar } from "./Avatar/Avatar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useChatContext } from "../contexts/ChatContext";
-
-import IconCheckCircle from "../icons/CheckCircle";
 import IconClose from "../icons/Close";
-
 import { User } from "../types/User";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { UserList } from "./UserList";
 
 interface Props {
   onPressGo?: (value: string) => void;
@@ -35,14 +29,14 @@ const UserSelector: React.FC<Props> = ({
   onUnmarkUser,
   onSend,
 }) => {
-  const { chats } = useChatContext();
   const insets = useSafeAreaInsets();
+  const { chats } = useChatContext();
   const users = chats.map((chat) => chat.user);
+  const [userList, setUserList] = React.useState(users);
 
   const inputRef = React.useRef<TextInput>(null);
   const [inputValue, setInputValue] = React.useState("");
   const [error, setError] = React.useState(false);
-  const [userList, setUserList] = React.useState(users);
 
   const onInputChange = (input: string) => {
     setInputValue(input);
@@ -53,81 +47,61 @@ const UserSelector: React.FC<Props> = ({
 
   return (
     <>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>To:</Text>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            inputRef.current?.focus();
-          }}
-        >
-          <View
-            style={[
-              styles.inputInnerContainer,
-              error && { borderColor: "#FF2866" },
-            ]}
-          >
-            <TextInput
-              ref={inputRef}
-              style={styles.nameInput}
-              autoCorrect={false}
-              autoCapitalize="none"
-              onChangeText={onInputChange}
-            />
-            <Text style={styles.snrLabel}>.snr</Text>
-            {onPressGo && (
-              <TouchableOpacity
-                onPress={() => {
-                  try {
-                    onPressGo(inputValue);
-                  } catch {
-                    setError(true);
-                  }
-                }}
-              >
-                <Text style={{ color: "#5E5B71" }}>Go</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-      {error && <Text style={styles.errorMessage}>Invalid .snr domain</Text>}
-      <View style={styles.selectedUsers}>
-        {[...(markedUsers?.values() ?? [])].map((id) => (
-          <View style={styles.selectedUserContainer} key={id}>
-            <Text style={styles.selectedUser}>{id}</Text>
-            <TouchableOpacity onPress={() => onUnmarkUser && onUnmarkUser(id)}>
-              <IconClose />
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
-      <FlatList
-        style={styles.userList}
-        data={userList}
-        renderItem={({ item: user }) => (
-          <TouchableOpacity
-            style={styles.userListItem}
+      <View style={{ marginBottom: 24 }}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>To:</Text>
+          <TouchableWithoutFeedback
             onPress={() => {
-              onUserSelected(user);
+              inputRef.current?.focus();
             }}
           >
-            <Avatar user={user} />
-            <View>
-              <Text style={styles.userName}>{user.name}</Text>
-              <Text style={styles.userId}>{user.id}</Text>
+            <View
+              style={[
+                styles.inputInnerContainer,
+                error && { borderColor: "#FF2866" },
+              ]}
+            >
+              <TextInput
+                ref={inputRef}
+                style={styles.nameInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+                onChangeText={onInputChange}
+              />
+              <Text style={styles.snrLabel}>.snr</Text>
+              {onPressGo && (
+                <TouchableOpacity
+                  onPress={() => {
+                    try {
+                      onPressGo(inputValue);
+                    } catch {
+                      setError(true);
+                    }
+                  }}
+                >
+                  <Text style={{ color: "#5E5B71" }}>Go</Text>
+                </TouchableOpacity>
+              )}
             </View>
-            <View style={{ flex: 1 }} />
-            {markedUsers?.has(user.id) && <IconCheckCircle />}
-          </TouchableOpacity>
-        )}
-        ListHeaderComponent={
-          userList.length > 0 ? (
-            <Text style={styles.recentLabel}>Recent</Text>
-          ) : (
-            <></>
-          )
-        }
-        ItemSeparatorComponent={() => <View style={{ marginTop: 16 }} />}
+          </TouchableWithoutFeedback>
+        </View>
+        {error && <Text style={styles.errorMessage}>Invalid .snr domain</Text>}
+        <View style={styles.selectedUsers}>
+          {[...(markedUsers?.values() ?? [])].map((id) => (
+            <View style={styles.selectedUserContainer} key={id}>
+              <Text style={styles.selectedUser}>{id}</Text>
+              <TouchableOpacity
+                onPress={() => onUnmarkUser && onUnmarkUser(id)}
+              >
+                <IconClose />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </View>
+      <UserList
+        sections={[{ title: "Recent", data: userList }]}
+        onPress={onUserSelected}
       />
       {onSend && (
         <View
@@ -200,29 +174,6 @@ const styles = StyleSheet.create({
     fontFamily: "THICCCBOI_Medium",
     color: "#F5F4FA",
     marginRight: 8,
-  },
-  userList: {
-    marginTop: 24,
-  },
-  recentLabel: {
-    fontSize: 20,
-    fontFamily: "THICCCBOI_ExtraBold",
-    color: "#B7B4C7",
-    marginBottom: 16,
-  },
-  userListItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  userName: {
-    fontSize: 20,
-    fontFamily: "THICCCBOI_Bold",
-    color: "#1D1A27",
-  },
-  userId: {
-    fontSize: 18,
-    fontFamily: "THICCCBOI_Medium",
-    color: "#88849C",
   },
   sendButtonContainer: {
     width: "100%",
