@@ -14,7 +14,6 @@ import React, { useEffect, useState } from "react";
 import { LogBox, StatusBar, StyleSheet, View } from "react-native";
 
 import { fakeChats } from "./src/_data/chats";
-import { charFromEmojiObject } from "./src/components/Emojis/EmojiItem";
 import {
   DefaultEmojisNames,
   StorageKeyForEmojis,
@@ -23,6 +22,7 @@ import { ChatContext } from "./src/contexts/ChatContext";
 import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
 import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
 import { UserContext } from "./src/contexts/UserContext";
+import { charFromEmojiObject } from "./src/lib/emoji";
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
 import { Chat } from "./src/types/Chat";
