@@ -57,7 +57,6 @@ export default function App() {
   const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [client, setClient] = useState<MatrixClient | null>(null);
-  const [members, setMembers] = useState<Map<string, string>>(new Map());
   const [chats, setChats] = useState<Chat[]>(fakeChats);
 
   const addMessage = ({
@@ -166,9 +165,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <UserContext.Provider value={{ user, setUser }}>
-        <MatrixClientContext.Provider
-          value={{ client, setClient, members, setMembers }}
-        >
+        <MatrixClientContext.Provider value={{ client, setClient }}>
           <EmojiHistoryContext.Provider
             value={{ emojisHistory, addEmojiToHistory: updateEmojisHistory }}
           >

@@ -21,7 +21,6 @@ export const ChatItem: React.FC<Props> = ({
   user,
   onSwipe,
 }) => {
-  const { members } = useMatrixClientContext();
   const [showTimestamp /* setShowTimestamp */] = React.useState(false);
   const swipeableRef = React.useRef<Swipeable>(null);
 
@@ -45,10 +44,7 @@ export const ChatItem: React.FC<Props> = ({
         <View style={styles.parentMessageContainer}>
           <ReplyBubble
             text={parentMessage.text}
-            senderName={
-              members.get(parentMessage.sender.name) ??
-              parentMessage.sender.name
-            }
+            senderName={parentMessage.sender.name}
             selfReply={selfReply}
             isIncoming={!isSender}
           />

@@ -60,57 +60,53 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
     );
 };
 
-export const getChats = async (
-  client: MatrixClient
-): Promise<{ chats: Chat[]; members: Map<string, string> }> => {
+export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
   const privateRooms = getPrivateRooms(client);
-  const members: [string, string][] = [];
+  const members = new Map<string, string>();
   for (const room of privateRooms) {
     room
       .getMembers()
-      .forEach((member) => members.push([member.userId, member.name]));
+      .forEach((member) => members.set(member.userId, member.name));
     // load all events
     while (room.oldState.paginationToken) {
       await client.scrollback(room);
     }
   }
 
-  return {
-    chats: privateRooms.map((room) => {
-      // we know that there are at least 2 members, so this will always find a user
-      const interlocutor = room
-        .getMembers()
-        .find((member) => member.userId !== room.myUserId)!;
-      return {
-        id: room.roomId,
+  return privateRooms.map((room) => {
+    // we know that there are at least 2 members, so this will always find a user
+    const interlocutor = room
+      .getMembers()
+      .find((member) => member.userId !== room.myUserId)!;
+    return {
+      id: room.roomId,
+      name: interlocutor.name,
+      user: {
+        id: interlocutor.userId,
         name: interlocutor.name,
-        user: {
-          id: interlocutor.userId,
-          name: interlocutor.name,
-          isOnline: false,
-        },
-        lastSeen: 0,
-        isMember: room.getMyMembership() === "join",
-        messages: [
-          ...room.timeline
-            .filter((event) => event.getType() === EventType.RoomMessage)
-            .map((event) => ({
-              id: event.getId(),
-              text: event.getContent().body,
-              timestamp: event.getTs(),
-              sender: {
-                id: event.getSender(),
-                name: event.getSender(),
-                isOnline: false,
-              },
-              parentId: event.getContent().parentId,
-              reactions: [],
-            })),
-        ],
-      };
-    }),
-    members: new Map(members),
-  };
+        isOnline: false,
+      },
+      lastSeen: 0,
+      isMember: room.getMyMembership() === "join",
+      messages: [
+        ...room.timeline
+          .filter((event) => event.getType() === EventType.RoomMessage)
+          .map((event) => ({
+            id: event.getId(),
+            text: event.getContent().body,
+            timestamp: event.getTs(),
+            sender: {
+              id: event.getSender(),
+              name: members.get(event.getSender()) ?? event.getSender(),
+              isOnline: false,
+            },
+            parentId: event.getContent().parentId,
+            forwardedFrom: event.getContent().forwardedFrom,
+            reactions: [],
+          })),
+      ],
+    };
+  });
 };
 
 type Callback = (params: {
@@ -118,6 +114,7 @@ type Callback = (params: {
   message: string;
   sender: string;
   parentId?: string;
+  forwardedFrom?: string;
 }) => void;
 export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
   const privateRooms = getPrivateRooms(client);
@@ -132,6 +129,7 @@ export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
           message: event.getContent().body,
           sender: event.getSender(),
           parentId: event.getContent().parentId,
+          forwardedFrom: event.getContent().forwardedFrom,
         });
       }
     });

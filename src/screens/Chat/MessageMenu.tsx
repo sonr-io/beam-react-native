@@ -71,7 +71,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
     navigation.goBack();
     navigation.navigate("ForwardMenu", {
       text: message.text,
-      from: message.sender.id,
+      from: message.sender.name,
     });
   };
 
