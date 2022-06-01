@@ -15,6 +15,11 @@ export type ChatContextType = {
     forwardedFrom?: string;
   }) => void;
   addReaction: (chatId: string, messageId: string, emoji: Emoji) => void;
+  addReactionToMessage: (
+    chatId: string,
+    messageId: string,
+    emoji: string
+  ) => void;
 };
 
 export const ChatContext = createContext<ChatContextType>({
@@ -22,5 +27,6 @@ export const ChatContext = createContext<ChatContextType>({
   setChats: () => {},
   addMessage: () => {},
   addReaction: () => {},
+  addReactionToMessage: () => {},
 });
 export const useChatContext = () => useContext(ChatContext);

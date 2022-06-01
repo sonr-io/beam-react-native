@@ -24,6 +24,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import IconCopy from "../../icons/Copy";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
+import { charFromEmojiObject } from "../../lib/emoji";
 import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
@@ -44,6 +45,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
   const pushEmoji = (emoji: Emoji) => {
     addReaction(chatId, message.id, emoji);
+    client.sendMessage(chatId, {
+      msgtype: "m.reaction",
+      body: "",
+      messageId: message.id,
+      emoji: charFromEmojiObject(emoji),
+    });
   };
 
   const pushMessage = (text: string) => {

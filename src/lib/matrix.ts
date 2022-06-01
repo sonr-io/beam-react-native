@@ -109,14 +109,25 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
   });
 };
 
-type Callback = (params: {
+type OnMessageCallback = (params: {
   roomId: string;
   message: string;
   sender: string;
   parentId?: string;
   forwardedFrom?: string;
 }) => void;
-export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
+
+type OnReactionCallback = (params: {
+  roomId: string;
+  messageId: string;
+  emoji: string;
+}) => void;
+
+export const onReceiveMessage = (
+  client: MatrixClient,
+  onMessage: OnMessageCallback,
+  onReaction: OnReactionCallback
+) => {
   const privateRooms = getPrivateRooms(client);
   privateRooms.forEach((room) => {
     room.on(RoomEvent.Timeline, (event) => {
@@ -124,13 +135,21 @@ export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
         event.getType() === EventType.RoomMessage &&
         event.getSender() !== client.getUserId()
       ) {
-        callback({
-          roomId: room.roomId,
-          message: event.getContent().body,
-          sender: event.getSender(),
-          parentId: event.getContent().parentId,
-          forwardedFrom: event.getContent().forwardedFrom,
-        });
+        if (event.getContent().msgtype === "m.reaction") {
+          onReaction({
+            roomId: room.roomId,
+            messageId: event.getContent().messageId,
+            emoji: event.getContent().emoji,
+          });
+        } else {
+          onMessage({
+            roomId: room.roomId,
+            message: event.getContent().body,
+            sender: event.getSender(),
+            parentId: event.getContent().parentId,
+            forwardedFrom: event.getContent().forwardedFrom,
+          });
+        }
       }
     });
   });

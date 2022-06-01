@@ -26,7 +26,7 @@ type Props = StackScreenProps<StackParams, "Login">;
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { client, setClient } = useMatrixClientContext();
   const { setUser } = useUserContext();
-  const { addMessage, setChats } = useChatContext();
+  const { addMessage, addReactionToMessage, setChats } = useChatContext();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
@@ -64,6 +64,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             parentId,
             forwardedFrom,
           });
+        },
+        ({ roomId, messageId, emoji }) => {
+          addReactionToMessage(roomId, messageId, emoji);
         }
       );
 
