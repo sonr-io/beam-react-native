@@ -1,5 +1,5 @@
 import emoji from "emoji-datasource";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 
@@ -8,16 +8,12 @@ import { Emoji, EmojiCategory } from "../../types/Emoji";
 import { emojiCategories, EmojiCategoryIcon } from "./EmojiCategoryIcon";
 import { EmojiCategoryView } from "./EmojiCategoryView";
 
-type ScrollableTabViewProps = {
-  activeTab: number;
-  goToPage: (page: number) => void;
-};
-
 type EmojiSelectorProps = { onSelectEmoji: (emoji: Emoji) => void };
 
-export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
+export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
+  onSelectEmoji,
+}) => {
   const { emojisHistory } = useEmojiHistoryContext();
-  const [emojis, setEmojis] = useState<Emoji[]>([]);
 
   const validEmojis: Emoji[] = emoji
     .filter((e) => !e["obsoleted_by"])
@@ -48,7 +44,6 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
     if (!emojisHistory || !emojisHistory.length) {
       return;
     }
-    setEmojis(emojisHistory);
   }, [emojisHistory]);
 
   return (
@@ -57,36 +52,32 @@ export const EmojiSelector = ({ onSelectEmoji }: EmojiSelectorProps) => {
         initialPage={0}
         tabBarPosition="bottom"
         prerenderingSiblingsNumber={1}
-        renderTabBar={(props: ScrollableTabViewProps) => {
-          const { activeTab, goToPage } = props;
+        renderTabBar={({ activeTab, goToPage }) => (
+          <View style={[styles.container, styles.categories]}>
+            {emojiCategories.map((category, index) => {
+              const active = activeTab === index;
 
-          return (
-            <View style={[styles.container, styles.categories]}>
-              {emojiCategories.map((category, index) => {
-                const active = activeTab === index;
-
-                return (
-                  <View
-                    key={category}
-                    style={[
-                      styles.emojiCategoryBarItem,
-                      active ? styles.emojiCategoryBarItemSelected : null,
-                    ]}
+              return (
+                <View
+                  key={category}
+                  style={[
+                    styles.emojiCategoryBarItem,
+                    active ? styles.emojiCategoryBarItemSelected : null,
+                  ]}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      goToPage && goToPage(index);
+                    }}
+                    activeOpacity={0.5}
                   >
-                    <TouchableOpacity
-                      onPress={() => {
-                        goToPage(index);
-                      }}
-                      activeOpacity={0.5}
-                    >
-                      <EmojiCategoryIcon category={category} active={active} />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
-            </View>
-          );
-        }}
+                    <EmojiCategoryIcon category={category} active={active} />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </View>
+        )}
       >
         {emojiCategories.map((category, index) => {
           return (
