@@ -104,6 +104,7 @@ export const getChats = async (
                 isOnline: false,
               },
               parentId: event.getContent().parentId,
+              forwardedFrom: event.getContent().forwardedFrom,
               reactions: [],
             })),
         ],
@@ -118,6 +119,7 @@ type Callback = (params: {
   message: string;
   sender: string;
   parentId?: string;
+  forwardedFrom?: string;
 }) => void;
 export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
   const privateRooms = getPrivateRooms(client);
@@ -132,6 +134,7 @@ export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
           message: event.getContent().body,
           sender: event.getSender(),
           parentId: event.getContent().parentId,
+          forwardedFrom: event.getContent().forwardedFrom,
         });
       }
     });

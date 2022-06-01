@@ -49,12 +49,13 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       setMembers(members);
       onReceiveMessage(
         _client,
-        ({ roomId: chatId, message, sender, parentId }) => {
+        ({ roomId: chatId, message, sender, parentId, forwardedFrom }) => {
           addMessage({
             chatId,
             message,
             sender: { id: sender, name: sender, isOnline: false },
             parentId,
+            forwardedFrom,
           });
         }
       );
