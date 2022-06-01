@@ -91,6 +91,7 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
       messages: [
         ...room.timeline
           .filter((event) => event.getType() === EventType.RoomMessage)
+          .filter((event) => event.getContent().msgtype !== "m.reaction")
           .map((event) => ({
             id: event.getId(),
             text: event.getContent().body,
