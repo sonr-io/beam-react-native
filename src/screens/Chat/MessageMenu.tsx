@@ -43,26 +43,26 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
     return <></>;
   }
 
-  const pushEmoji = (emoji: Emoji) => {
-    addReaction(chatId, message.id, emoji);
-    client.sendMessage(chatId, {
+  const pushEmoji = async (emoji: Emoji) => {
+    await client.sendMessage(chatId, {
       msgtype: "m.reaction",
       body: "",
       messageId: message.id,
       emoji: charFromEmojiObject(emoji),
     });
+    addReaction(chatId, message.id, emoji);
   };
 
-  const pushMessage = (text: string) => {
+  const pushMessage = async (text: string) => {
+    await client.sendMessage(chatId, {
+      msgtype: "m.reply",
+      body: text,
+      parentId: message.id,
+    });
     addMessage({
       chatId,
       message: text,
       sender: user,
-      parentId: message.id,
-    });
-    client.sendMessage(chatId, {
-      msgtype: "m.reply",
-      body: text,
       parentId: message.id,
     });
     navigation.goBack();
