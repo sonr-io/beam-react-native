@@ -78,6 +78,12 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
     const interlocutor = room
       .getMembers()
       .find((member) => member.userId !== room.myUserId)!;
+    const reactions = room.timeline
+      .filter((event) => event.getContent().msgtype === "m.reaction")
+      .map((event) => ({
+        messageId: event.getContent().messageId,
+        emoji: event.getContent().emoji,
+      }));
     return {
       id: room.roomId,
       name: interlocutor.name,
@@ -92,19 +98,24 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
         ...room.timeline
           .filter((event) => event.getType() === EventType.RoomMessage)
           .filter((event) => event.getContent().msgtype !== "m.reaction")
-          .map((event) => ({
-            id: event.getId(),
-            text: event.getContent().body,
-            timestamp: event.getTs(),
-            sender: {
+          .map((event) => {
+            const sender = {
               id: event.getSender(),
               name: members.get(event.getSender()) ?? event.getSender(),
               isOnline: false,
-            },
-            parentId: event.getContent().parentId,
-            forwardedFrom: event.getContent().forwardedFrom,
-            reactions: [],
-          })),
+            };
+            return {
+              id: event.getId(),
+              text: event.getContent().body,
+              timestamp: event.getTs(),
+              sender,
+              parentId: event.getContent().parentId,
+              forwardedFrom: event.getContent().forwardedFrom,
+              reactions: reactions
+                .filter((reaction) => reaction.messageId === event.getId())
+                .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+            };
+          }),
       ],
     };
   });
