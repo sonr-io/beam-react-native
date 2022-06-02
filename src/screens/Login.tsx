@@ -44,11 +44,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
       const _client = await login(user, password);
       setClient(_client);
-      setUser({
-        id: _client.getUserId(),
-        name: _client.getUserId(),
-        isOnline: false,
-      });
+      setUser(getUser(_client, _client.getUserId()));
       const chats = await getChats(_client);
       chats
         .filter((chat) => !chat.isMember)
@@ -65,8 +61,13 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             forwardedFrom,
           });
         },
-        ({ roomId, messageId, emoji }) => {
-          addReactionToMessage(roomId, messageId, emoji);
+        ({ roomId, messageId, sender, emoji }) => {
+          addReactionToMessage(
+            roomId,
+            messageId,
+            getUser(_client, sender),
+            emoji
+          );
         }
       );
 

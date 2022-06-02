@@ -18,6 +18,7 @@ export type ChatContextType = {
   addReactionToMessage: (
     chatId: string,
     messageId: string,
+    user: User,
     emoji: string
   ) => void;
 };

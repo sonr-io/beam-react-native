@@ -93,20 +93,23 @@ export default function App() {
   };
 
   const addReaction = (chatId: string, messageId: string, emoji: Emoji) => {
-    updateEmojisHistory(emoji);
-    const emojiChar = charFromEmojiObject(emoji);
-    addReactionToMessage(chatId, messageId, emojiChar);
+    if (user) {
+      updateEmojisHistory(emoji);
+      const emojiChar = charFromEmojiObject(emoji);
+      addReactionToMessage(chatId, messageId, user, emojiChar);
+    }
   };
 
   const addReactionToMessage = (
     chatId: string,
     messageId: string,
+    user: User,
     emojiChar: string
   ) => {
     setChats((chats) => {
       const chat = chats.find((chat) => chat.id === chatId);
 
-      if (user && chat) {
+      if (chat) {
         const i = chat.messages.findIndex((m) => m.id === messageId);
         const reactionIndex = chat.messages[i].reactions.findIndex(
           (e) => e.user.id === user.id && e.emoji === emojiChar

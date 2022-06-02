@@ -134,6 +134,7 @@ type OnMessageCallback = (params: {
 type OnReactionCallback = (params: {
   roomId: string;
   messageId: string;
+  sender: string;
   emoji: string;
 }) => void;
 
@@ -153,6 +154,7 @@ export const onReceiveMessage = (
           onReaction({
             roomId: room.roomId,
             messageId: event.getContent().messageId,
+            sender: event.getSender(),
             emoji: event.getContent().emoji,
           });
         } else {
@@ -169,11 +171,14 @@ export const onReceiveMessage = (
   });
 };
 
-export const getUser = memoize((client: MatrixClient, userId: string): User => {
-  const { displayName } = client.getUser(userId);
-  return {
-    id: userId,
-    name: displayName,
-    isOnline: false,
-  };
-});
+export const getUser = memoize(
+  (client: MatrixClient, userId: string): User => {
+    const { displayName } = client.getUser(userId);
+    return {
+      id: userId,
+      name: displayName,
+      isOnline: false,
+    };
+  },
+  (client, userId) => `${client.getUserId()}${userId}`
+);
