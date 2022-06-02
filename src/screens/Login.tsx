@@ -14,7 +14,7 @@ import { StackParams } from "../../App";
 import { useChatContext } from "../contexts/ChatContext";
 import { useMatrixClientContext } from "../contexts/MatrixClientContext";
 import { useUserContext } from "../contexts/UserContext";
-import { getChats, login, onReceiveMessage } from "../lib/matrix";
+import { getChats, getUser, login, onReceiveMessage } from "../lib/matrix";
 
 interface PresetUser {
   username: string;
@@ -60,7 +60,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           addMessage({
             chatId,
             message,
-            sender: { id: sender, name: sender, isOnline: false },
+            sender: getUser(_client, sender),
             parentId,
             forwardedFrom,
           });

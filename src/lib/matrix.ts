@@ -1,4 +1,5 @@
 import { MATRIX_NETWORK_BASE_URL } from "@env";
+import { memoize } from "lodash";
 import {
   ClientEvent,
   createClient,
@@ -13,6 +14,7 @@ import request from "xmlhttp-request";
 
 import { MatrixLoginType } from "../Constants/Matrix";
 import { Chat } from "../types/Chat";
+import { User } from "../types/User";
 
 export const login = async (user: string, password: string) => {
   const response = await fetch(
@@ -166,3 +168,12 @@ export const onReceiveMessage = (
     });
   });
 };
+
+export const getUser = memoize((client: MatrixClient, userId: string): User => {
+  const { displayName } = client.getUser(userId);
+  return {
+    id: userId,
+    name: displayName,
+    isOnline: false,
+  };
+});
