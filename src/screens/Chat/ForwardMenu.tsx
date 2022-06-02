@@ -42,12 +42,13 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
   const forwardMessage = async (to: string, text: string, from: string) => {
     const chat = chats.find((chat) => chat.user.id === to);
     if (chat) {
-      await client.sendMessage(chat.id, {
+      const { event_id: id } = await client.sendMessage(chat.id, {
         msgtype: "m.forward",
         body: text,
         forwardedFrom: from,
       });
       addMessage({
+        id,
         chatId: chat.id,
         message: text,
         forwardedFrom: from,

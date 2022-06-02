@@ -8,6 +8,7 @@ export type ChatContextType = {
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
   addMessage: (params: {
+    id: string;
     chatId: string;
     message: string;
     sender: User;

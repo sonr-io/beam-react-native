@@ -124,6 +124,7 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
 };
 
 type OnMessageCallback = (params: {
+  messageId: string;
   roomId: string;
   message: string;
   sender: string;
@@ -159,6 +160,7 @@ export const onReceiveMessage = (
           });
         } else {
           onMessage({
+            messageId: event.getId(),
             roomId: room.roomId,
             message: event.getContent().body,
             sender: event.getSender(),

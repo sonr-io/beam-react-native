@@ -52,8 +52,16 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       setChats(chats);
       onReceiveMessage(
         _client,
-        ({ roomId: chatId, message, sender, parentId, forwardedFrom }) => {
+        ({
+          messageId: id,
+          roomId: chatId,
+          message,
+          sender,
+          parentId,
+          forwardedFrom,
+        }) => {
           addMessage({
+            id,
             chatId,
             message,
             sender: getUser(_client, sender),

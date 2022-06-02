@@ -60,12 +60,14 @@ export default function App() {
   const [chats, setChats] = useState<Chat[]>(fakeChats);
 
   const addMessage = ({
+    id,
     chatId,
     message,
     parentId,
     forwardedFrom,
     sender,
   }: {
+    id: string;
     chatId: string;
     message: string;
     sender: User;
@@ -79,7 +81,7 @@ export default function App() {
         }
 
         chat.messages.push({
-          id: (chat.messages.length + 1).toString(),
+          id,
           text: message,
           timestamp: new Date().getTime(),
           sender,
