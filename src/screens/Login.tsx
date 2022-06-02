@@ -34,10 +34,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = React.useState(false);
 
   const onLogin = async (user: string, password: string) => {
-    try {
-      setError(false);
-      setLoading(true);
+    setError(false);
+    setLoading(true);
 
+    try {
       if (client) {
         await client.logout();
       }
@@ -70,8 +70,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       navigation.navigate("Chat", {});
     } catch {
       setError(true);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
