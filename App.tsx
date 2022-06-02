@@ -14,7 +14,6 @@ import React, { useEffect, useState } from "react";
 import { LogBox, StatusBar, StyleSheet, View } from "react-native";
 
 import { fakeChats } from "./src/_data/chats";
-import { charFromEmojiObject } from "./src/components/Emojis/EmojiItem";
 import {
   DefaultEmojisNames,
   StorageKeyForEmojis,
@@ -23,6 +22,7 @@ import { ChatContext } from "./src/contexts/ChatContext";
 import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
 import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
 import { UserContext } from "./src/contexts/UserContext";
+import { charFromEmojiObject } from "./src/lib/emoji";
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
 import { Chat } from "./src/types/Chat";
@@ -60,12 +60,14 @@ export default function App() {
   const [chats, setChats] = useState<Chat[]>(fakeChats);
 
   const addMessage = ({
+    id,
     chatId,
     message,
     parentId,
     forwardedFrom,
     sender,
   }: {
+    id: string;
     chatId: string;
     message: string;
     sender: User;
@@ -79,7 +81,7 @@ export default function App() {
         }
 
         chat.messages.push({
-          id: (chat.messages.length + 1).toString(),
+          id,
           text: message,
           timestamp: new Date().getTime(),
           sender,
@@ -93,13 +95,23 @@ export default function App() {
   };
 
   const addReaction = (chatId: string, messageId: string, emoji: Emoji) => {
-    setChats((chats) =>
-      chats.map((chat) => {
-        if (!user || chat.id !== chatId) {
-          return chat;
-        }
-        updateEmojisHistory(emoji);
-        const emojiChar = charFromEmojiObject(emoji);
+    if (user) {
+      updateEmojisHistory(emoji);
+      const emojiChar = charFromEmojiObject(emoji);
+      addReactionToMessage(chatId, messageId, user, emojiChar);
+    }
+  };
+
+  const addReactionToMessage = (
+    chatId: string,
+    messageId: string,
+    user: User,
+    emojiChar: string
+  ) => {
+    setChats((chats) => {
+      const chat = chats.find((chat) => chat.id === chatId);
+
+      if (chat) {
         const i = chat.messages.findIndex((m) => m.id === messageId);
         const reactionIndex = chat.messages[i].reactions.findIndex(
           (e) => e.user.id === user.id && e.emoji === emojiChar
@@ -109,9 +121,10 @@ export default function App() {
         } else {
           chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
         }
-        return chat;
-      })
-    );
+      }
+
+      return [...chats];
+    });
   };
 
   const updateEmojisHistory = async (emoji: Emoji) => {
@@ -170,7 +183,13 @@ export default function App() {
             value={{ emojisHistory, addEmojiToHistory: updateEmojisHistory }}
           >
             <ChatContext.Provider
-              value={{ chats, setChats, addMessage, addReaction }}
+              value={{
+                chats,
+                setChats,
+                addMessage,
+                addReaction,
+                addReactionToMessage,
+              }}
             >
               <NavigationContainer>
                 <StatusBar

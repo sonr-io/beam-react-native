@@ -24,6 +24,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import IconCopy from "../../icons/Copy";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
+import { charFromEmojiObject } from "../../lib/emoji";
 import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
@@ -42,20 +43,27 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
     return <></>;
   }
 
-  const pushEmoji = (emoji: Emoji) => {
+  const pushEmoji = async (emoji: Emoji) => {
+    await client.sendMessage(chatId, {
+      msgtype: "m.reaction",
+      body: "",
+      messageId: message.id,
+      emoji: charFromEmojiObject(emoji),
+    });
     addReaction(chatId, message.id, emoji);
   };
 
-  const pushMessage = (text: string) => {
+  const pushMessage = async (text: string) => {
+    const { event_id: id } = await client.sendMessage(chatId, {
+      msgtype: "m.reply",
+      body: text,
+      parentId: message.id,
+    });
     addMessage({
+      id,
       chatId,
       message: text,
       sender: user,
-      parentId: message.id,
-    });
-    client.sendMessage(chatId, {
-      msgtype: "m.reply",
-      body: text,
       parentId: message.id,
     });
     navigation.goBack();

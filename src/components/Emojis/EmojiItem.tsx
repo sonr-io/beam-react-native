@@ -1,16 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
+import { charFromEmojiObject } from "../../lib/emoji";
 import { Emoji } from "../../types/Emoji";
-
-const charFromUtf16 = (utf16: string) => {
-  return String.fromCodePoint(
-    ...utf16.split("-").map((code) => Number(`0x${code}`))
-  );
-};
-
-export const charFromEmojiObject = (emoji: Emoji) =>
-  charFromUtf16(emoji.unified);
 
 type EmojiItemProps = { emoji: Emoji; onSelectEmoji: (emoji: Emoji) => void };
 export const EmojiItem = ({ emoji, onSelectEmoji }: EmojiItemProps) => (

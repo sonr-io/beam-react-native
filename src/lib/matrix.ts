@@ -1,4 +1,5 @@
 import { MATRIX_NETWORK_BASE_URL } from "@env";
+import { memoize } from "lodash";
 import {
   ClientEvent,
   createClient,
@@ -13,6 +14,7 @@ import request from "xmlhttp-request";
 
 import { MatrixLoginType } from "../Constants/Matrix";
 import { Chat } from "../types/Chat";
+import { User } from "../types/User";
 
 export const login = async (user: string, password: string) => {
   const response = await fetch(
@@ -60,6 +62,8 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
     );
 };
 
+const msgTypesToRender = new Set(["m.text", "m.reply", "m.forward"]);
+
 export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
   const privateRooms = getPrivateRooms(client);
   const members = new Map<string, string>();
@@ -78,6 +82,12 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
     const interlocutor = room
       .getMembers()
       .find((member) => member.userId !== room.myUserId)!;
+    const reactions = room.timeline
+      .filter((event) => event.getContent().msgtype === "m.reaction")
+      .map((event) => ({
+        messageId: event.getContent().messageId,
+        emoji: event.getContent().emoji,
+      }));
     return {
       id: room.roomId,
       name: interlocutor.name,
@@ -91,32 +101,53 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
       messages: [
         ...room.timeline
           .filter((event) => event.getType() === EventType.RoomMessage)
-          .map((event) => ({
-            id: event.getId(),
-            text: event.getContent().body,
-            timestamp: event.getTs(),
-            sender: {
+          .filter((event) =>
+            msgTypesToRender.has(event.getContent().msgtype ?? "")
+          )
+          .map((event) => {
+            const sender = {
               id: event.getSender(),
               name: members.get(event.getSender()) ?? event.getSender(),
               isOnline: false,
-            },
-            parentId: event.getContent().parentId,
-            forwardedFrom: event.getContent().forwardedFrom,
-            reactions: [],
-          })),
+            };
+            return {
+              id: event.getId(),
+              text: event.getContent().body,
+              timestamp: event.getTs(),
+              sender,
+              parentId: event.getContent().parentId,
+              forwardedFrom: event.getContent().forwardedFrom,
+              reactions: reactions
+                .filter((reaction) => reaction.messageId === event.getId())
+                .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+            };
+          }),
       ],
     };
   });
 };
 
-type Callback = (params: {
+type OnMessageCallback = (params: {
+  messageId: string;
   roomId: string;
   message: string;
   sender: string;
   parentId?: string;
   forwardedFrom?: string;
 }) => void;
-export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
+
+type OnReactionCallback = (params: {
+  roomId: string;
+  messageId: string;
+  sender: string;
+  emoji: string;
+}) => void;
+
+export const onReceiveMessage = (
+  client: MatrixClient,
+  onMessage: OnMessageCallback,
+  onReaction: OnReactionCallback
+) => {
   const privateRooms = getPrivateRooms(client);
   privateRooms.forEach((room) => {
     room.on(RoomEvent.Timeline, (event) => {
@@ -124,14 +155,36 @@ export const onReceiveMessage = (client: MatrixClient, callback: Callback) => {
         event.getType() === EventType.RoomMessage &&
         event.getSender() !== client.getUserId()
       ) {
-        callback({
-          roomId: room.roomId,
-          message: event.getContent().body,
-          sender: event.getSender(),
-          parentId: event.getContent().parentId,
-          forwardedFrom: event.getContent().forwardedFrom,
-        });
+        if (event.getContent().msgtype === "m.reaction") {
+          onReaction({
+            roomId: room.roomId,
+            messageId: event.getContent().messageId,
+            sender: event.getSender(),
+            emoji: event.getContent().emoji,
+          });
+        } else {
+          onMessage({
+            messageId: event.getId(),
+            roomId: room.roomId,
+            message: event.getContent().body,
+            sender: event.getSender(),
+            parentId: event.getContent().parentId,
+            forwardedFrom: event.getContent().forwardedFrom,
+          });
+        }
       }
     });
   });
 };
+
+export const getUser = memoize(
+  (client: MatrixClient, userId: string): User => {
+    const { displayName } = client.getUser(userId);
+    return {
+      id: userId,
+      name: displayName,
+      isOnline: false,
+    };
+  },
+  (client, userId) => `${client.getUserId()}${userId}`
+);

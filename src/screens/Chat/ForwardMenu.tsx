@@ -39,33 +39,34 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
     setMarkedUsers(new Set(markedUsers));
   };
 
-  const forwardMessage = (to: string, text: string, from: string) => {
+  const forwardMessage = async (to: string, text: string, from: string) => {
     const chat = chats.find((chat) => chat.user.id === to);
     if (chat) {
+      const { event_id: id } = await client.sendMessage(chat.id, {
+        msgtype: "m.forward",
+        body: text,
+        forwardedFrom: from,
+      });
       addMessage({
+        id,
         chatId: chat.id,
         message: text,
         forwardedFrom: from,
         sender: user,
       });
-      client.sendMessage(chat.id, {
-        msgtype: "m.forward",
-        body: text,
-        forwardedFrom: from,
-      });
       return chat.id;
     }
   };
 
-  const onSend = () => {
+  const onSend = async () => {
     if (markedUsers.size === 1) {
       const { value: id } = markedUsers.values().next();
-      const chatId = forwardMessage(id, text, from) ?? "";
+      const chatId = (await forwardMessage(id, text, from)) ?? "";
       navigation.navigate("ChatView", { id: chatId });
     } else {
-      for (const id of markedUsers.values()) {
-        forwardMessage(id, text, from);
-      }
+      await Promise.all(
+        [...markedUsers.values()].map((id) => forwardMessage(id, text, from))
+      );
       navigation.navigate("ChatList", {});
     }
   };

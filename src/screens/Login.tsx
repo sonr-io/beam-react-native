@@ -14,7 +14,7 @@ import { StackParams } from "../../App";
 import { useChatContext } from "../contexts/ChatContext";
 import { useMatrixClientContext } from "../contexts/MatrixClientContext";
 import { useUserContext } from "../contexts/UserContext";
-import { getChats, login, onReceiveMessage } from "../lib/matrix";
+import { getChats, getUser, login, onReceiveMessage } from "../lib/matrix";
 
 interface PresetUser {
   username: string;
@@ -26,7 +26,7 @@ type Props = StackScreenProps<StackParams, "Login">;
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { client, setClient } = useMatrixClientContext();
   const { setUser } = useUserContext();
-  const { addMessage, setChats } = useChatContext();
+  const { addMessage, addReactionToMessage, setChats } = useChatContext();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
@@ -44,11 +44,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
       const _client = await login(user, password);
       setClient(_client);
-      setUser({
-        id: _client.getUserId(),
-        name: _client.getUserId(),
-        isOnline: false,
-      });
+      setUser(getUser(_client, _client.getUserId()));
       const chats = await getChats(_client);
       chats
         .filter((chat) => !chat.isMember)
@@ -56,14 +52,30 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       setChats(chats);
       onReceiveMessage(
         _client,
-        ({ roomId: chatId, message, sender, parentId, forwardedFrom }) => {
+        ({
+          messageId: id,
+          roomId: chatId,
+          message,
+          sender,
+          parentId,
+          forwardedFrom,
+        }) => {
           addMessage({
+            id,
             chatId,
             message,
-            sender: { id: sender, name: sender, isOnline: false },
+            sender: getUser(_client, sender),
             parentId,
             forwardedFrom,
           });
+        },
+        ({ roomId, messageId, sender, emoji }) => {
+          addReactionToMessage(
+            roomId,
+            messageId,
+            getUser(_client, sender),
+            emoji
+          );
         }
       );
 
