@@ -62,6 +62,8 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
     );
 };
 
+const msgTypesToRender = new Set(["m.text", "m.reply", "m.forward"]);
+
 export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
   const privateRooms = getPrivateRooms(client);
   const members = new Map<string, string>();
@@ -99,7 +101,9 @@ export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
       messages: [
         ...room.timeline
           .filter((event) => event.getType() === EventType.RoomMessage)
-          .filter((event) => event.getContent().msgtype !== "m.reaction")
+          .filter((event) =>
+            msgTypesToRender.has(event.getContent().msgtype ?? "")
+          )
           .map((event) => {
             const sender = {
               id: event.getSender(),
