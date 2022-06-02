@@ -1,7 +1,13 @@
 import { USERS } from "@env";
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
@@ -25,11 +31,13 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
   const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const onLogin = async (user: string, password: string) => {
-    try {
-      setError(false);
+    setError(false);
+    setLoading(true);
 
+    try {
       if (client) {
         await client.logout();
       }
@@ -62,63 +70,73 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       navigation.navigate("Chat", {});
     } catch {
       setError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        autoFocus
-        autoCapitalize={"none"}
-        autoCorrect={false}
-        style={styles.input}
-        placeholder="username"
-        onChangeText={(text) => {
-          setUsername(text);
-        }}
-      />
-      <TextInput
-        secureTextEntry
-        style={styles.input}
-        placeholder="password"
-        onChangeText={(text) => {
-          setPassword(text);
-        }}
-      />
-
-      {error && <Text style={styles.error}>Incorrect credentials</Text>}
-
-      <View style={styles.section}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => onLogin(username, password)}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigation.push("Chat", {});
+    <>
+      <View style={styles.container}>
+        <TextInput
+          autoFocus
+          autoCapitalize={"none"}
+          autoCorrect={false}
+          style={styles.input}
+          placeholder="username"
+          onChangeText={(text) => {
+            setUsername(text);
           }}
-        >
-          <Text style={styles.buttonText}>Skip</Text>
-        </TouchableOpacity>
-      </View>
+        />
+        <TextInput
+          secureTextEntry
+          style={styles.input}
+          placeholder="password"
+          onChangeText={(text) => {
+            setPassword(text);
+          }}
+        />
 
-      <View style={{ flexDirection: "row" }}>
-        {presetUsers.map(({ username, password }) => (
+        {error && <Text style={styles.error}>Incorrect credentials</Text>}
+
+        <View style={styles.section}>
           <TouchableOpacity
-            key={username}
-            style={styles.presetUser}
+            style={styles.button}
+            onPress={() => onLogin(username, password)}
+          >
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
             onPress={() => {
-              onLogin(username, password);
+              navigation.push("Chat", {});
             }}
           >
-            <Text>{username}</Text>
+            <Text style={styles.buttonText}>Skip</Text>
           </TouchableOpacity>
-        ))}
+        </View>
+
+        <View style={{ flexDirection: "row" }}>
+          {presetUsers.map(({ username, password }) => (
+            <TouchableOpacity
+              key={username}
+              style={styles.presetUser}
+              onPress={() => {
+                onLogin(username, password);
+              }}
+            >
+              <Text>{username}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
-    </View>
+
+      {loading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="white" />
+        </View>
+      )}
+    </>
   );
 };
 
@@ -163,6 +181,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "darkred",
     textAlign: "center",
+  },
+  overlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    backgroundColor: "#00000088",
   },
 });
 
