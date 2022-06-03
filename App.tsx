@@ -4,27 +4,19 @@ import "intl/locale-data/jsonp/en";
 import "./intl-collator";
 import "react-native-gesture-handler";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import emoji from "emoji-datasource";
 import { useFonts } from "expo-font";
 import { MatrixClient } from "matrix-js-sdk";
 import React, { useEffect, useState } from "react";
 import { LogBox, StatusBar, StyleSheet, View } from "react-native";
 
-import {
-  DefaultEmojisNames,
-  StorageKeyForEmojis,
-} from "./src/Constants/Emojis";
 import { ChatContextProvider } from "./src/contexts/ChatContext";
-import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
+import { EmojiHistoryContextProvider } from "./src/contexts/EmojiHistoryContext";
 import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
 import { UserContext } from "./src/contexts/UserContext";
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
-import { Chat } from "./src/types/Chat";
-import { Emoji } from "./src/types/Emoji";
 import { User } from "./src/types/User";
 
 const Stack = createStackNavigator();
@@ -46,53 +38,8 @@ export default function App() {
     THICCCBOI_Regular: require("./assets/fonts/THICCCBOI-Regular.ttf"),
   });
 
-  const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [client, setClient] = useState<MatrixClient | null>(null);
-
-  const addEmojiToHistory = async (emoji: Emoji) => {
-    const history = await AsyncStorage.getItem(StorageKeyForEmojis);
-    let value: Emoji[] = [];
-    if (!history) {
-      value.push(Object.assign({}, emoji, { count: 1 }));
-    } else {
-      value = JSON.parse(history) as Emoji[];
-      const emojiIndex = value.findIndex((e) => e.unified === emoji.unified);
-      if (emojiIndex >= 0) {
-        value.splice(emojiIndex, 1);
-      }
-      value.unshift(emoji);
-    }
-    AsyncStorage.setItem(StorageKeyForEmojis, JSON.stringify(value));
-    setEmojisHistory(value);
-  };
-
-  const loadEmojisHistory = async () => {
-    const history = await AsyncStorage.getItem(StorageKeyForEmojis);
-    if (!history) {
-      const defaultEmojis = emoji
-        .filter((emoji: Emoji) => DefaultEmojisNames.includes(emoji.name))
-        .map((e) => ({
-          name: e.name,
-          unified: e.unified,
-          category: e.category,
-          subcategory: e.subcategory,
-          sort_order: e.sort_order,
-        })) as Emoji[];
-
-      await AsyncStorage.setItem(
-        StorageKeyForEmojis,
-        JSON.stringify(defaultEmojis)
-      );
-      return setEmojisHistory(defaultEmojis);
-    }
-
-    setEmojisHistory(JSON.parse(history) as Emoji[]);
-  };
-
-  useEffect(() => {
-    loadEmojisHistory();
-  }, []);
 
   if (!fontsLoaded) {
     return <></>;
@@ -102,9 +49,7 @@ export default function App() {
     <View style={styles.container}>
       <UserContext.Provider value={{ user, setUser }}>
         <MatrixClientContext.Provider value={{ client, setClient }}>
-          <EmojiHistoryContext.Provider
-            value={{ emojisHistory, addEmojiToHistory }}
-          >
+          <EmojiHistoryContextProvider>
             <ChatContextProvider>
               <NavigationContainer>
                 <StatusBar
@@ -119,7 +64,7 @@ export default function App() {
                 </Stack.Navigator>
               </NavigationContainer>
             </ChatContextProvider>
-          </EmojiHistoryContext.Provider>
+          </EmojiHistoryContextProvider>
         </MatrixClientContext.Provider>
       </UserContext.Provider>
     </View>
