@@ -44,7 +44,7 @@ export const ChatListItem = (props: Props) => {
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
             <Text style={styles.chatName}>{name}</Text>
 
-            {totalUnReadMessages > 0 && (
+            {false && totalUnReadMessages > 0 && (
               <View style={styles.totalUnReadMessages}>
                 <Text style={styles.totalUnReadMessagesText}>
                   {totalUnReadMessages}
