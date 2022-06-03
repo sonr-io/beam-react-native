@@ -196,16 +196,7 @@ export default function App() {
                   backgroundColor={"transparent"}
                   translucent
                 />
-                {/*
-                <Tab.Navigator
-                  screenOptions={{ headerShown: false }}
-                  initialRouteName="Chat"
-                >
-                  <Tab.Screen name="Nearby" component={NearbyScreen} />
-                  <Tab.Screen name="Chat" component={ChatListScreen} />
-                  <Tab.Screen name="Profile" component={ProfileScreen} />
-                </Tab.Navigator>
-                */}
+
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
                   <Stack.Screen name="Login" component={LoginScreen} />
                   <Stack.Screen name="Chat" component={ChatScreen} />
