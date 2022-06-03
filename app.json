@@ -6,11 +6,6 @@
     "owner": "sonr-io",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
