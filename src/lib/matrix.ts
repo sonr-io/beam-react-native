@@ -186,5 +186,5 @@ export const getUser = memoize(
       isOnline: false,
     };
   },
-  (client: MatrixClient, userId: string) => `${client.getUserId()}${userId}`
+  (client, userId) => `${client.getUserId()}${userId}`
 );
