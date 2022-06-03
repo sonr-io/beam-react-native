@@ -28,12 +28,6 @@ import { Chat } from "./src/types/Chat";
 import { Emoji } from "./src/types/Emoji";
 import { User } from "./src/types/User";
 
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import NearbyScreen from "./src/screens/Nearby";
-// import ProfileScreen from "./src/screens/Profile";
-
-// const Tab = createBottomTabNavigator();
-
 const Stack = createStackNavigator();
 
 export type StackParams = {
