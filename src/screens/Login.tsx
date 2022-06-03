@@ -111,22 +111,12 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
         {error && <Text style={styles.error}>Incorrect credentials</Text>}
 
-        <View style={styles.section}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => onLogin(username, password)}
-          >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              navigation.push("Chat", {});
-            }}
-          >
-            <Text style={styles.buttonText}>Skip</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => onLogin(username, password)}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
 
         <View style={{ flexDirection: "row" }}>
           {presetUsers.map(({ username, password }) => (
@@ -171,12 +161,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: "100%",
   },
-  button: {
-    flex: 1,
+  loginButton: {
     borderRadius: 4,
     backgroundColor: "dodgerblue",
-    marginHorizontal: 10,
     padding: 10,
+    marginBottom: 20,
   },
   buttonText: {
     textAlign: "center",
