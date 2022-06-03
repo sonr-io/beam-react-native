@@ -13,7 +13,6 @@ import { MatrixClient } from "matrix-js-sdk";
 import React, { useEffect, useState } from "react";
 import { LogBox, StatusBar, StyleSheet, View } from "react-native";
 
-import { fakeChats } from "./src/_data/chats";
 import {
   DefaultEmojisNames,
   StorageKeyForEmojis,
@@ -57,7 +56,7 @@ export default function App() {
   const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [client, setClient] = useState<MatrixClient | null>(null);
-  const [chats, setChats] = useState<Chat[]>(fakeChats);
+  const [chats, setChats] = useState<Chat[]>([]);
 
   const addMessage = ({
     id,
