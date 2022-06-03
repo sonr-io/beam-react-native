@@ -4,20 +4,19 @@ import "intl/locale-data/jsonp/en";
 import "./intl-collator";
 import "react-native-gesture-handler";
 
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { LogBox, StatusBar, View } from "react-native";
 import { useFonts } from "expo-font";
-import { MatrixClient } from "matrix-js-sdk";
-import React, { useEffect, useState } from "react";
-import { LogBox, StatusBar, StyleSheet, View } from "react-native";
 
 import { ChatContextProvider } from "./src/contexts/ChatContext";
 import { EmojiHistoryContextProvider } from "./src/contexts/EmojiHistoryContext";
-import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
-import { UserContext } from "./src/contexts/UserContext";
+import { MatrixClientContextProvider } from "./src/contexts/MatrixClientContext";
+import { UserContextProvider } from "./src/contexts/UserContext";
+
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
-import { User } from "./src/types/User";
 
 const Stack = createStackNavigator();
 
@@ -38,17 +37,14 @@ export default function App() {
     THICCCBOI_Regular: require("./assets/fonts/THICCCBOI-Regular.ttf"),
   });
 
-  const [user, setUser] = useState<User | null>(null);
-  const [client, setClient] = useState<MatrixClient | null>(null);
-
   if (!fontsLoaded) {
     return <></>;
   }
 
   return (
-    <View style={styles.container}>
-      <UserContext.Provider value={{ user, setUser }}>
-        <MatrixClientContext.Provider value={{ client, setClient }}>
+    <View style={{ flex: 1 }}>
+      <UserContextProvider>
+        <MatrixClientContextProvider>
           <EmojiHistoryContextProvider>
             <ChatContextProvider>
               <NavigationContainer>
@@ -65,14 +61,8 @@ export default function App() {
               </NavigationContainer>
             </ChatContextProvider>
           </EmojiHistoryContextProvider>
-        </MatrixClientContext.Provider>
-      </UserContext.Provider>
+        </MatrixClientContextProvider>
+      </UserContextProvider>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
