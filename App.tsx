@@ -17,11 +17,10 @@ import {
   DefaultEmojisNames,
   StorageKeyForEmojis,
 } from "./src/Constants/Emojis";
-import { ChatContext } from "./src/contexts/ChatContext";
+import { ChatContextProvider } from "./src/contexts/ChatContext";
 import { EmojiHistoryContext } from "./src/contexts/EmojiHistoryContext";
 import { MatrixClientContext } from "./src/contexts/MatrixClientContext";
 import { UserContext } from "./src/contexts/UserContext";
-import { charFromEmojiObject } from "./src/lib/emoji";
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
 import { Chat } from "./src/types/Chat";
@@ -50,77 +49,8 @@ export default function App() {
   const [emojisHistory, setEmojisHistory] = useState<Emoji[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [client, setClient] = useState<MatrixClient | null>(null);
-  const [chats, setChats] = useState<Chat[]>([]);
 
-  const addMessage = ({
-    id,
-    chatId,
-    message,
-    parentId,
-    forwardedFrom,
-    sender,
-  }: {
-    id: string;
-    chatId: string;
-    message: string;
-    sender: User;
-    parentId?: string;
-    forwardedFrom?: string;
-  }) => {
-    setChats((chats) =>
-      chats.map((chat) => {
-        if (chat.id !== chatId) {
-          return chat;
-        }
-
-        chat.messages.push({
-          id,
-          text: message,
-          timestamp: new Date().getTime(),
-          sender,
-          reactions: [],
-          parentId,
-          forwardedFrom,
-        });
-        return chat;
-      })
-    );
-  };
-
-  const addReaction = (chatId: string, messageId: string, emoji: Emoji) => {
-    if (user) {
-      updateEmojisHistory(emoji);
-      const emojiChar = charFromEmojiObject(emoji);
-      addReactionToMessage(chatId, messageId, user, emojiChar);
-    }
-  };
-
-  const addReactionToMessage = (
-    chatId: string,
-    messageId: string,
-    user: User,
-    emojiChar: string
-  ) => {
-    setChats((chats) => {
-      const chat = chats.find((chat) => chat.id === chatId);
-
-      if (chat) {
-        const i = chat.messages.findIndex((m) => m.id === messageId);
-        const reactionIndex = chat.messages[i].reactions.findIndex(
-          (e) => e.user.id === user.id && e.emoji === emojiChar
-        );
-        if (reactionIndex >= 0) {
-          chat.messages[i].reactions.splice(reactionIndex, 1);
-        } else {
-          chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
-        }
-      }
-
-      return [...chats];
-    });
-  };
-
-  const updateEmojisHistory = async (emoji: Emoji) => {
+  const addEmojiToHistory = async (emoji: Emoji) => {
     const history = await AsyncStorage.getItem(StorageKeyForEmojis);
     let value: Emoji[] = [];
     if (!history) {
@@ -173,17 +103,9 @@ export default function App() {
       <UserContext.Provider value={{ user, setUser }}>
         <MatrixClientContext.Provider value={{ client, setClient }}>
           <EmojiHistoryContext.Provider
-            value={{ emojisHistory, addEmojiToHistory: updateEmojisHistory }}
+            value={{ emojisHistory, addEmojiToHistory }}
           >
-            <ChatContext.Provider
-              value={{
-                chats,
-                setChats,
-                addMessage,
-                addReaction,
-                addReactionToMessage,
-              }}
-            >
+            <ChatContextProvider>
               <NavigationContainer>
                 <StatusBar
                   barStyle="light-content"
@@ -196,7 +118,7 @@ export default function App() {
                   <Stack.Screen name="Chat" component={ChatScreen} />
                 </Stack.Navigator>
               </NavigationContainer>
-            </ChatContext.Provider>
+            </ChatContextProvider>
           </EmojiHistoryContext.Provider>
         </MatrixClientContext.Provider>
       </UserContext.Provider>
