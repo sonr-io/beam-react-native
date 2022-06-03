@@ -38,10 +38,10 @@ export const MessageBubble = (props: Props) => {
         <Text style={[stylesCommon.text, stylesCustom.text]}>
           {splitText.map(({ word, separator, url }, index) => {
             return url ? (
-              <>
+              <Text key={index}>
                 <Link text={word} url={url} index={index} />
                 {separator}
-              </>
+              </Text>
             ) : (
               word + separator
             );
