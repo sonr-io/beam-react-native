@@ -11,7 +11,7 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
-import { getChats, getUser, login, onReceiveMessage } from "../lib/matrix";
+import { getChats, getUser, login } from "../lib/matrix";
 import { client } from "../matrixClient";
 
 interface PresetUser {

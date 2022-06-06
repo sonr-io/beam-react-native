@@ -19,7 +19,7 @@ import {
   useChatContext,
 } from "../../contexts/ChatContext";
 import { StackParams } from "../../../App";
-import { getUser, onReceiveMessage } from "../../lib/matrix";
+import { getUser, onNewChat, onReceiveMessage } from "../../lib/matrix";
 import { client } from "../../matrixClient";
 
 export type Params = {
@@ -37,7 +37,7 @@ export type Params = {
 };
 
 const ChatSection = () => {
-  const { addMessage, addReactionToMessage } = useChatContext();
+  const { addMessage, addReactionToMessage, setChats } = useChatContext();
 
   useEffect(() => {
     onReceiveMessage(
@@ -63,6 +63,19 @@ const ChatSection = () => {
         addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
       }
     );
+    onNewChat(client, ({ id, name, user }) => {
+      setChats((chats) => {
+        chats.push({
+          id,
+          lastSeen: 0,
+          messages: [],
+          name,
+          isMember: false,
+          user,
+        });
+        return [...chats];
+      });
+    });
   }, []);
 
   const Stack = createStackNavigator();

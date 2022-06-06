@@ -6,6 +6,7 @@ import {
   MatrixClient,
   Room,
   RoomEvent,
+  RoomMemberEvent,
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
@@ -149,6 +150,30 @@ export const onReceiveMessage = (
         }
       }
     });
+  });
+};
+
+type NewChatCallback = (params: {
+  id: string;
+  name: string;
+  user: User;
+}) => void;
+
+export const onNewChat = (client: MatrixClient, callback: NewChatCallback) => {
+  client.on(RoomMemberEvent.Membership, async (event, member) => {
+    if (
+      member.membership === "invite" &&
+      member.userId === client.getUserId()
+    ) {
+      const user = getUser(client, event.getSender());
+      const roomId = member.roomId;
+      await client.joinRoom(roomId);
+      callback({
+        id: roomId,
+        name: user.name,
+        user,
+      });
+    }
   });
 };
 
