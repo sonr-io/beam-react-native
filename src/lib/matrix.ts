@@ -29,7 +29,7 @@ export const login = async (user: string, password: string) => {
   });
 };
 
-const getPrivateRooms = (client: MatrixClient): Room[] => {
+const getPrivateRooms = (): Room[] => {
   return client
     .getRooms()
     .filter(
@@ -41,7 +41,7 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
 const msgTypesToRender = new Set(["m.text", "m.reply", "m.forward"]);
 
 export const getChats = async (): Promise<Chat[]> => {
-  const privateRooms = getPrivateRooms(client);
+  const privateRooms = getPrivateRooms();
   const members = new Map<string, string>();
   for (const room of privateRooms) {
     room
@@ -120,11 +120,10 @@ type OnReactionCallback = (params: {
 }) => void;
 
 export const onReceiveMessage = (
-  client: MatrixClient,
   onMessage: OnMessageCallback,
   onReaction: OnReactionCallback
 ) => {
-  const privateRooms = getPrivateRooms(client);
+  const privateRooms = getPrivateRooms();
   privateRooms.forEach((room) => {
     room.on(RoomEvent.Timeline, (event) => {
       if (
@@ -159,7 +158,7 @@ type NewChatCallback = (params: {
   user: User;
 }) => void;
 
-export const onNewChat = (client: MatrixClient, callback: NewChatCallback) => {
+export const onNewChat = (callback: NewChatCallback) => {
   client.on(RoomMemberEvent.Membership, async (event, member) => {
     if (
       member.membership === "invite" &&

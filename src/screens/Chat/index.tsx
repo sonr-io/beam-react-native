@@ -41,7 +41,6 @@ const ChatSection = () => {
 
   useEffect(() => {
     onReceiveMessage(
-      client,
       ({
         messageId: id,
         roomId: chatId,
@@ -63,7 +62,7 @@ const ChatSection = () => {
         addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
       }
     );
-    onNewChat(client, ({ id, name, user }) => {
+    onNewChat(({ id, name, user }) => {
       setChats((chats) => {
         chats.push({
           id,
