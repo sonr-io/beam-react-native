@@ -14,6 +14,7 @@ import { Chat } from "../types/Chat";
 import { User } from "../types/User";
 
 export const login = async (user: string, password: string) => {
+  client.stopClient();
   await client.loginWithPassword(user, password);
   await client.startClient();
 
