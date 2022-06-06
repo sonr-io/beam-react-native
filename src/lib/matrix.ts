@@ -1,8 +1,6 @@
-import { MATRIX_NETWORK_BASE_URL } from "@env";
 import { memoize } from "lodash";
 import {
   ClientEvent,
-  createClient,
   EventType,
   JoinRule,
   MatrixClient,
@@ -10,18 +8,12 @@ import {
   RoomEvent,
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
-import request from "xmlhttp-request";
+import { client } from "../matrixClient";
 
 import { Chat } from "../types/Chat";
 import { User } from "../types/User";
 
 export const login = async (user: string, password: string) => {
-  const client = createClient({
-    baseUrl: MATRIX_NETWORK_BASE_URL,
-    request,
-    localTimeoutMs: 5000,
-  });
-
   await client.loginWithPassword(user, password);
   await client.startClient();
 
