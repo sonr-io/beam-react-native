@@ -11,7 +11,6 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
-import { useChatContext } from "../contexts/ChatContext";
 import { getChats, getUser, login, onReceiveMessage } from "../lib/matrix";
 import { client } from "../matrixClient";
 
@@ -23,7 +22,6 @@ interface PresetUser {
 type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const { addMessage, addReactionToMessage, setChats } = useChatContext();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
@@ -41,34 +39,6 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       chats
         .filter((chat) => !chat.isMember)
         .map((chat) => client.joinRoom(chat.id));
-      onReceiveMessage(
-        client,
-        ({
-          messageId: id,
-          roomId: chatId,
-          message,
-          sender,
-          parentId,
-          forwardedFrom,
-        }) => {
-          addMessage({
-            id,
-            chatId,
-            message,
-            sender: getUser(client, sender),
-            parentId,
-            forwardedFrom,
-          });
-        },
-        ({ roomId, messageId, sender, emoji }) => {
-          addReactionToMessage(
-            roomId,
-            messageId,
-            getUser(client, sender),
-            emoji
-          );
-        }
-      );
 
       navigation.navigate("Chat", { user: _user, chats: chats });
     } catch {
