@@ -4,19 +4,17 @@ import { User } from "../types/User";
 
 type UserContextType = {
   user: User | null;
-  setUser: (user: User | null) => void;
 };
 const UserContext = createContext<UserContextType>({
   user: null,
-  setUser: () => {},
 });
 export const useUserContext = () => useContext(UserContext);
 
-export const UserContextProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+type Props = {
+  user: User;
+};
+export const UserContextProvider: React.FC<Props> = ({ user, children }) => {
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
+    <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
   );
 };

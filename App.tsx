@@ -10,18 +10,19 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { LogBox, StatusBar, View } from "react-native";
 import { useFonts } from "expo-font";
 
-import { ChatContextProvider } from "./src/contexts/ChatContext";
-import { EmojiHistoryContextProvider } from "./src/contexts/EmojiHistoryContext";
-import { UserContextProvider } from "./src/contexts/UserContext";
-
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
+import { User } from "./src/types/User";
+import { Chat } from "./src/types/Chat";
 
 const Stack = createStackNavigator();
 
 export type StackParams = {
   Login: {};
-  Chat: {};
+  Chat: {
+    user: User;
+    chats: Chat[];
+  };
 };
 
 export default function App() {
@@ -42,24 +43,18 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }}>
-      <UserContextProvider>
-        <EmojiHistoryContextProvider>
-          <ChatContextProvider>
-            <NavigationContainer>
-              <StatusBar
-                barStyle="light-content"
-                backgroundColor={"transparent"}
-                translucent
-              />
+      <NavigationContainer>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor={"transparent"}
+          translucent
+        />
 
-              <Stack.Navigator screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="Chat" component={ChatScreen} />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </ChatContextProvider>
-        </EmojiHistoryContextProvider>
-      </UserContextProvider>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Chat" component={ChatScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </View>
   );
 }

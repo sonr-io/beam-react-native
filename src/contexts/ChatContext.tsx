@@ -37,8 +37,14 @@ const ChatContext = createContext<ChatContextType>({
 });
 export const useChatContext = () => useContext(ChatContext);
 
-export const ChatContextProvider: React.FC = ({ children }) => {
-  const [chats, setChats] = useState<Chat[]>([]);
+type Props = {
+  chats: Chat[];
+};
+export const ChatContextProvider: React.FC<Props> = ({
+  chats: _chats,
+  children,
+}) => {
+  const [chats, setChats] = useState(_chats);
   const { user } = useUserContext();
   const { addEmojiToHistory } = useEmojiHistoryContext();
 

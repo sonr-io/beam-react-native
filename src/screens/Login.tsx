@@ -12,7 +12,6 @@ import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
 import { useChatContext } from "../contexts/ChatContext";
-import { useUserContext } from "../contexts/UserContext";
 import { getChats, getUser, login, onReceiveMessage } from "../lib/matrix";
 import { client } from "../matrixClient";
 
@@ -24,7 +23,6 @@ interface PresetUser {
 type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const { setUser } = useUserContext();
   const { addMessage, addReactionToMessage, setChats } = useChatContext();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -38,12 +36,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     try {
       await login(user, password);
-      setUser(getUser(client, client.getUserId()));
+      const _user = getUser(client, client.getUserId());
       const chats = await getChats();
       chats
         .filter((chat) => !chat.isMember)
         .map((chat) => client.joinRoom(chat.id));
-      setChats(chats);
       onReceiveMessage(
         client,
         ({
@@ -73,7 +70,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         }
       );
 
-      navigation.navigate("Chat", {});
+      navigation.navigate("Chat", { user: _user, chats: chats });
     } catch {
       setError(true);
     } finally {
