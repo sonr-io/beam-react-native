@@ -28,19 +28,20 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  const onLogin = async (user: string, password: string) => {
+  const onLogin = async (username: string, password: string) => {
     setError(false);
     setLoading(true);
 
     try {
-      await login(user, password);
-      const _user = getUser(client, client.getUserId());
+      await login(username, password);
+      const user = getUser(client, client.getUserId());
       const chats = await getChats();
+
       chats
         .filter((chat) => !chat.isMember)
         .map((chat) => client.joinRoom(chat.id));
 
-      navigation.navigate("Chat", { user: _user, chats: chats });
+      navigation.navigate("Chat", { user, chats });
     } catch {
       setError(true);
     } finally {
