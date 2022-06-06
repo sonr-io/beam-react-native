@@ -84,11 +84,9 @@ export const ChatContextProvider: React.FC<Props> = ({
   };
 
   const addReaction = (chatId: string, messageId: string, emoji: Emoji) => {
-    if (user) {
-      addEmojiToHistory(emoji);
-      const emojiChar = charFromEmojiObject(emoji);
-      addReactionToMessage(chatId, messageId, user, emojiChar);
-    }
+    addEmojiToHistory(emoji);
+    const emojiChar = charFromEmojiObject(emoji);
+    addReactionToMessage(chatId, messageId, user, emojiChar);
   };
 
   const addReactionToMessage = (

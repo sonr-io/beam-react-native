@@ -38,10 +38,6 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { addReaction, addMessage } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
 
-  if (!user) {
-    return <></>;
-  }
-
   const pushEmoji = async (emoji: Emoji) => {
     await client.sendMessage(chatId, {
       msgtype: "m.reaction",
