@@ -39,7 +39,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await login(user, password);
       setUser(getUser(client, client.getUserId()));
-      const chats = await getChats(client);
+      const chats = await getChats();
       chats
         .filter((chat) => !chat.isMember)
         .map((chat) => client.joinRoom(chat.id));

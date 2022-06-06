@@ -15,6 +15,7 @@ import { User } from "../types/User";
 
 export const login = async (user: string, password: string) => {
   client.stopClient();
+  await client.clearStores();
   await client.loginWithPassword(user, password);
   await client.startClient();
 
@@ -38,7 +39,7 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
 
 const msgTypesToRender = new Set(["m.text", "m.reply", "m.forward"]);
 
-export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
+export const getChats = async (): Promise<Chat[]> => {
   const privateRooms = getPrivateRooms(client);
   const members = new Map<string, string>();
   for (const room of privateRooms) {
