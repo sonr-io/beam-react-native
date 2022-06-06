@@ -19,12 +19,12 @@ import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
 import { MessageBubble } from "../../components/MessageBubble";
 import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
-import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconCopy from "../../icons/Copy";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
 import { charFromEmojiObject } from "../../lib/emoji";
+import { client } from "../../matrixClient";
 import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
@@ -36,10 +36,9 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
   const { addReaction, addMessage } = useChatContext();
-  const { client } = useMatrixClientContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
 
-  if (!user || !client) {
+  if (!user) {
     return <></>;
   }
 

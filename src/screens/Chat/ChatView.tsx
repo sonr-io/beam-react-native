@@ -12,13 +12,13 @@ import { ChatItem } from "../../components/Chat/ChatItem";
 import { GradientTop } from "../../components/GradientTop";
 import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
-import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconArrowDown from "../../icons/ArrowDown";
 import IconBackArrow from "../../icons/BackArrow";
 import IconBeam from "../../icons/Beam";
 import IconMore from "../../icons/More";
 import { getFormattedDay } from "../../lib/getFormattedDay";
+import { client } from "../../matrixClient";
 import { Chat, Message, ViewableMessage } from "../../types/Chat";
 import { User } from "../../types/User";
 
@@ -51,7 +51,6 @@ type Props = StackScreenProps<Params, "ChatView">;
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { user } = useUserContext();
   const { chats, addMessage } = useChatContext();
-  const { client } = useMatrixClientContext();
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
@@ -79,7 +78,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   }, [chats, chatId]);
 
   const pushMessage = async (message: string) => {
-    if (client && user) {
+    if (user) {
       const { event_id: id } = await client.sendTextMessage(chatId, message);
       addMessage({ id, chatId, message, sender: user });
       scrollToBottom();

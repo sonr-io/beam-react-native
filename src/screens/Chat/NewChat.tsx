@@ -8,13 +8,12 @@ import { StartNewChat } from "../../components/StartNewChat";
 import TransparentModal from "../../components/TransparentModal";
 import { UserList } from "../../components/UserList";
 import { useChatContext } from "../../contexts/ChatContext";
-import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
+import { client } from "../../matrixClient";
 import { User } from "../../types/User";
 
 type Props = StackScreenProps<Params, "NewChat">;
 
 const NewChat: React.FC<Props> = ({ navigation }) => {
-  const { client } = useMatrixClientContext();
   const { chats, setChats } = useChatContext();
   const users = chats.map((chat) => chat.user);
   const [error, setError] = React.useState(false);
@@ -27,7 +26,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
   const startNew = async (id: string) => {
     const fullId = `@${id}:matrix.sonr.network`;
 
-    if (fullId === client?.getUserId()) {
+    if (fullId === client.getUserId()) {
       setError(true);
       return;
     }
@@ -39,13 +38,13 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
     }
 
     try {
-      await client?.getProfileInfo(fullId);
+      await client.getProfileInfo(fullId);
     } catch {
       setError(true);
       return;
     }
 
-    const response = await client?.createRoom({
+    const response = await client.createRoom({
       invite: [fullId],
       preset: Preset.PrivateChat,
     });
