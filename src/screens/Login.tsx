@@ -12,9 +12,9 @@ import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
 import { useChatContext } from "../contexts/ChatContext";
-import { useMatrixClientContext } from "../contexts/MatrixClientContext";
 import { useUserContext } from "../contexts/UserContext";
 import { getChats, getUser, login, onReceiveMessage } from "../lib/matrix";
+import { client } from "../matrixClient";
 
 interface PresetUser {
   username: string;
@@ -24,7 +24,6 @@ interface PresetUser {
 type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const { client, setClient } = useMatrixClientContext();
   const { setUser } = useUserContext();
   const { addMessage, addReactionToMessage, setChats } = useChatContext();
   const [username, setUsername] = React.useState("");
@@ -38,20 +37,15 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     setLoading(true);
 
     try {
-      if (client) {
-        await client.logout();
-      }
-
-      const _client = await login(user, password);
-      setClient(_client);
-      setUser(getUser(_client, _client.getUserId()));
-      const chats = await getChats(_client);
+      await login(user, password);
+      setUser(getUser(client, client.getUserId()));
+      const chats = await getChats();
       chats
         .filter((chat) => !chat.isMember)
-        .map((chat) => _client.joinRoom(chat.id));
+        .map((chat) => client.joinRoom(chat.id));
       setChats(chats);
       onReceiveMessage(
-        _client,
+        client,
         ({
           messageId: id,
           roomId: chatId,
@@ -64,7 +58,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             id,
             chatId,
             message,
-            sender: getUser(_client, sender),
+            sender: getUser(client, sender),
             parentId,
             forwardedFrom,
           });
@@ -73,7 +67,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           addReactionToMessage(
             roomId,
             messageId,
-            getUser(_client, sender),
+            getUser(client, sender),
             emoji
           );
         }

@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
-import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 
 import { Message } from "../../types/Chat";
 import { User } from "../../types/User";

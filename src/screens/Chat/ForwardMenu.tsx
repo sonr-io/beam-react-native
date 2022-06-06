@@ -7,8 +7,8 @@ import TransparentModal from "../../components/TransparentModal";
 import UserSelector from "../../components/UserSelector";
 
 import { useChatContext } from "../../contexts/ChatContext";
-import { useMatrixClientContext } from "../../contexts/MatrixClientContext";
 import { useUserContext } from "../../contexts/UserContext";
+import { client } from "../../matrixClient";
 
 import { User } from "../../types/User";
 
@@ -18,10 +18,9 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
   const { from, text } = route.params;
   const { chats, addMessage } = useChatContext();
   const { user } = useUserContext();
-  const { client } = useMatrixClientContext();
   const [markedUsers, setMarkedUsers] = React.useState(new Set<string>());
 
-  if (!user || !client) {
+  if (!user) {
     return <></>;
   }
 

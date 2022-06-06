@@ -1,8 +1,6 @@
-import { MATRIX_NETWORK_BASE_URL } from "@env";
 import { memoize } from "lodash";
 import {
   ClientEvent,
-  createClient,
   EventType,
   JoinRule,
   MatrixClient,
@@ -10,47 +8,24 @@ import {
   RoomEvent,
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
-import request from "xmlhttp-request";
+import { client } from "../matrixClient";
 
-import { MatrixLoginType } from "../Constants/Matrix";
 import { Chat } from "../types/Chat";
 import { User } from "../types/User";
 
 export const login = async (user: string, password: string) => {
-  const response = await fetch(
-    `${MATRIX_NETWORK_BASE_URL}/_matrix/client/r0/login`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        type: MatrixLoginType.LoginPassword,
-        user,
-        password,
-      }),
-    }
-  );
-  const { user_id: userId, access_token: accessToken } = await response.json();
+  client.stopClient();
+  await client.clearStores();
+  await client.loginWithPassword(user, password);
+  await client.startClient();
 
-  if (!userId || !accessToken) {
-    throw new Error("login failed");
-  }
-
-  const client = createClient({
-    baseUrl: MATRIX_NETWORK_BASE_URL,
-    request,
-    userId,
-    accessToken,
-    localTimeoutMs: 5000,
-  });
-  const result = new Promise<MatrixClient>((resolve) => {
+  return new Promise<MatrixClient>((resolve) => {
     client.once(ClientEvent.Sync, (state) => {
       if (state === SyncState.Prepared) {
         resolve(client);
       }
     });
   });
-  await client.startClient();
-
-  return result;
 };
 
 const getPrivateRooms = (client: MatrixClient): Room[] => {
@@ -64,7 +39,7 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
 
 const msgTypesToRender = new Set(["m.text", "m.reply", "m.forward"]);
 
-export const getChats = async (client: MatrixClient): Promise<Chat[]> => {
+export const getChats = async (): Promise<Chat[]> => {
   const privateRooms = getPrivateRooms(client);
   const members = new Map<string, string>();
   for (const room of privateRooms) {

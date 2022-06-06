@@ -12,7 +12,6 @@ import { useFonts } from "expo-font";
 
 import { ChatContextProvider } from "./src/contexts/ChatContext";
 import { EmojiHistoryContextProvider } from "./src/contexts/EmojiHistoryContext";
-import { MatrixClientContextProvider } from "./src/contexts/MatrixClientContext";
 import { UserContextProvider } from "./src/contexts/UserContext";
 
 import ChatScreen from "./src/screens/Chat";
@@ -44,24 +43,22 @@ export default function App() {
   return (
     <View style={{ flex: 1 }}>
       <UserContextProvider>
-        <MatrixClientContextProvider>
-          <EmojiHistoryContextProvider>
-            <ChatContextProvider>
-              <NavigationContainer>
-                <StatusBar
-                  barStyle="light-content"
-                  backgroundColor={"transparent"}
-                  translucent
-                />
+        <EmojiHistoryContextProvider>
+          <ChatContextProvider>
+            <NavigationContainer>
+              <StatusBar
+                barStyle="light-content"
+                backgroundColor={"transparent"}
+                translucent
+              />
 
-                <Stack.Navigator screenOptions={{ headerShown: false }}>
-                  <Stack.Screen name="Login" component={LoginScreen} />
-                  <Stack.Screen name="Chat" component={ChatScreen} />
-                </Stack.Navigator>
-              </NavigationContainer>
-            </ChatContextProvider>
-          </EmojiHistoryContextProvider>
-        </MatrixClientContextProvider>
+              <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Chat" component={ChatScreen} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </ChatContextProvider>
+        </EmojiHistoryContextProvider>
       </UserContextProvider>
     </View>
   );
