@@ -12,45 +12,26 @@ import {
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import request from "xmlhttp-request";
 
-import { MatrixLoginType } from "../Constants/Matrix";
 import { Chat } from "../types/Chat";
 import { User } from "../types/User";
 
 export const login = async (user: string, password: string) => {
-  const response = await fetch(
-    `${MATRIX_NETWORK_BASE_URL}/_matrix/client/r0/login`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        type: MatrixLoginType.LoginPassword,
-        user,
-        password,
-      }),
-    }
-  );
-  const { user_id: userId, access_token: accessToken } = await response.json();
-
-  if (!userId || !accessToken) {
-    throw new Error("login failed");
-  }
-
   const client = createClient({
     baseUrl: MATRIX_NETWORK_BASE_URL,
     request,
-    userId,
-    accessToken,
     localTimeoutMs: 5000,
   });
-  const result = new Promise<MatrixClient>((resolve) => {
+
+  await client.loginWithPassword(user, password);
+  await client.startClient();
+
+  return new Promise<MatrixClient>((resolve) => {
     client.once(ClientEvent.Sync, (state) => {
       if (state === SyncState.Prepared) {
         resolve(client);
       }
     });
   });
-  await client.startClient();
-
-  return result;
 };
 
 const getPrivateRooms = (client: MatrixClient): Room[] => {
