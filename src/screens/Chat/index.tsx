@@ -75,7 +75,7 @@ const ChatSection = () => {
   useEffect(() => {
     onReceiveMessage(onMessage, onReaction);
     onNewChat(({ id, name, user, room }) => {
-      onReceiveMessage(onMessage, onReaction, room);
+      onReceiveMessage(onMessage, onReaction, room.roomId);
       setChats((chats) => {
         chats.push({
           id,

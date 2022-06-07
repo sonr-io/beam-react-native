@@ -122,14 +122,14 @@ export type OnReactionCallback = (params: {
 export const onReceiveMessage = (
   onMessage: OnMessageCallback,
   onReaction: OnReactionCallback,
-  room?: Room
+  roomId?: string
 ) => {
-  if (room) {
-    _onReceiveMessage(onMessage, onReaction, room);
+  if (roomId) {
+    _onReceiveMessage(onMessage, onReaction, roomId);
   } else {
     const privateRooms = getPrivateRooms();
     privateRooms.forEach((room) => {
-      _onReceiveMessage(onMessage, onReaction, room);
+      _onReceiveMessage(onMessage, onReaction, room.roomId);
     });
   }
 };
@@ -137,17 +137,17 @@ export const onReceiveMessage = (
 export const _onReceiveMessage = (
   onMessage: OnMessageCallback,
   onReaction: OnReactionCallback,
-  room: Room
+  roomId: string
 ) => {
   client.on(RoomEvent.Timeline, (event) => {
     if (
-      event.getRoomId() === room.roomId &&
+      event.getRoomId() === roomId &&
       event.getType() === EventType.RoomMessage &&
       event.getSender() !== client.getUserId()
     ) {
       if (event.getContent().msgtype === "m.reaction") {
         onReaction({
-          roomId: room.roomId,
+          roomId: roomId,
           messageId: event.getContent().messageId,
           sender: event.getSender(),
           emoji: event.getContent().emoji,
@@ -155,7 +155,7 @@ export const _onReceiveMessage = (
       } else {
         onMessage({
           messageId: event.getId(),
-          roomId: room.roomId,
+          roomId: roomId,
           message: event.getContent().body,
           sender: event.getSender(),
           parentId: event.getContent().parentId,
