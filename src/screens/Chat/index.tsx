@@ -14,13 +14,9 @@ import NewChat from "./NewChat";
 import { Message } from "../../types/Chat";
 import { UserContextProvider } from "../../contexts/UserContext";
 import { EmojiHistoryContextProvider } from "../../contexts/EmojiHistoryContext";
-import {
-  ChatContextProvider,
-  useChatContext,
-} from "../../contexts/ChatContext";
+import { ChatContextProvider } from "../../contexts/ChatContext";
 import { StackParams } from "../../../App";
-import { onNewChat } from "../../lib/matrix";
-import { useMessageListeners } from "../../lib/matrixHooks";
+import { useListeners } from "../../lib/matrixHooks";
 
 export type Params = {
   ChatList: {};
@@ -37,25 +33,10 @@ export type Params = {
 };
 
 const ChatSection = () => {
-  const { setChats } = useChatContext();
-  const { addMessageListeners } = useMessageListeners();
+  const { addListeners } = useListeners();
 
   useEffect(() => {
-    addMessageListeners();
-    onNewChat(({ id, name, user, room }) => {
-      addMessageListeners(room.roomId);
-      setChats((chats) => {
-        chats.push({
-          id,
-          lastSeen: 0,
-          messages: [],
-          name,
-          isMember: false,
-          user,
-        });
-        return [...chats];
-      });
-    });
+    addListeners();
   }, []);
 
   const Stack = createStackNavigator();

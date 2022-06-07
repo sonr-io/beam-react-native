@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useChatContext } from "../contexts/ChatContext";
 import { client } from "../matrixClient";
 import {
@@ -5,10 +6,12 @@ import {
   getUser,
   OnReactionCallback,
   onReceiveMessage,
+  onNewChat,
 } from "./matrix";
 
-export const useMessageListeners = () => {
-  const { addMessage, addReactionToMessage } = useChatContext();
+export const useListeners = () => {
+  const { addMessage, addReactionToMessage, setChats } = useChatContext();
+  const [initialListenersAdded, setInitialListenersAdded] = useState(false);
 
   const onMessage: OnMessageCallback = ({
     messageId: id,
@@ -37,9 +40,31 @@ export const useMessageListeners = () => {
     addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
   };
 
-  const addMessageListeners = (roomId?: string) => {
+  const addListeners = () => {
+    if (!initialListenersAdded) {
+      // only add listeners one time to avoid receiving repeated messages
+      onReceiveMessage(onMessage, onReaction);
+      onNewChat(({ id, name, user, room }) => {
+        addRoomListeners(room.roomId);
+        setChats((chats) => {
+          chats.push({
+            id,
+            lastSeen: 0,
+            messages: [],
+            name,
+            isMember: false,
+            user,
+          });
+          return [...chats];
+        });
+      });
+      setInitialListenersAdded(true);
+    }
+  };
+
+  const addRoomListeners = (roomId: string) => {
     onReceiveMessage(onMessage, onReaction, roomId);
   };
 
-  return { addMessageListeners };
+  return { addListeners, addRoomListeners };
 };
