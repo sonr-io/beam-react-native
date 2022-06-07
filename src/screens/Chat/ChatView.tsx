@@ -5,6 +5,7 @@ import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import uuid from "react-native-uuid";
 
 import { Params } from ".";
 import { Avatar } from "../../components/Avatar/Avatar";
@@ -78,11 +79,12 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   }, [chats, chatId]);
 
   const pushMessage = async (message: string) => {
+    const tempId = uuid.v4() as string;
+    addMessage({ id: null, tempId, chatId, message, sender: user });
     const { event_id: id } = await client.sendMessage(chatId, {
       msgtype: "m.text",
       body: message,
     });
-    addMessage({ id, chatId, message, sender: user });
     scrollToBottom();
   };
 
@@ -164,7 +166,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
             </View>
           );
         }}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id || item.tempId}
       />
       {showScrollDown && (
         <View

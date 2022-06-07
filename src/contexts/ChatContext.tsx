@@ -12,7 +12,8 @@ type ChatContextType = {
   chats: Chat[];
   setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
   addMessage: (params: {
-    id: string;
+    id: string | null;
+    tempId: string | null;
     chatId: string;
     message: string;
     sender: User;
@@ -50,13 +51,15 @@ export const ChatContextProvider: React.FC<Props> = ({
 
   const addMessage = ({
     id,
+    tempId,
     chatId,
     message,
     parentId,
     forwardedFrom,
     sender,
   }: {
-    id: string;
+    id: string | null;
+    tempId: string | null;
     chatId: string;
     message: string;
     sender: User;
@@ -71,6 +74,7 @@ export const ChatContextProvider: React.FC<Props> = ({
 
         chat.messages.push({
           id,
+          tempId,
           text: message,
           timestamp: new Date().getTime(),
           sender,

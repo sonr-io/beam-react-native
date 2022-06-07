@@ -6,12 +6,13 @@ export type Reaction = {
 };
 
 export type Message = {
-  id: string;
-  parentId?: string;
+  id: string | null;
+  tempId: string | null;
   text: string;
   timestamp: number;
   sender: User;
   reactions: Reaction[];
+  parentId?: string;
   forwardedFrom?: string;
 };
 
