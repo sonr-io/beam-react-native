@@ -1,5 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
+import uuid from "react-native-uuid";
 
 import { Params } from ".";
 
@@ -16,7 +17,7 @@ type Props = StackScreenProps<Params, "ForwardMenu">;
 
 const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
   const { from, text } = route.params;
-  const { chats, addMessage } = useChatContext();
+  const { chats, addMessage, setMessageId } = useChatContext();
   const { user } = useUserContext();
   const [markedUsers, setMarkedUsers] = React.useState(new Set<string>());
 
@@ -34,33 +35,35 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
     setMarkedUsers(new Set(markedUsers));
   };
 
-  const forwardMessage = async (to: string, text: string, from: string) => {
-    const chat = chats.find((chat) => chat.user.id === to);
-    if (chat) {
-      const { event_id: id } = await client.sendMessage(chat.id, {
-        msgtype: "m.text",
-        body: text,
-        forwardedFrom: from,
-      });
-      addMessage({
-        id,
-        chatId: chat.id,
-        message: text,
-        forwardedFrom: from,
-        sender: user,
-      });
-      return chat.id;
-    }
+  const forwardMessage = async (chatId: string, text: string, from: string) => {
+    const tempId = uuid.v4() as string;
+    addMessage({
+      id: null,
+      tempId,
+      chatId: chatId,
+      message: text,
+      forwardedFrom: from,
+      sender: user,
+    });
+    const { event_id: id } = await client.sendMessage(chatId, {
+      msgtype: "m.text",
+      body: text,
+      forwardedFrom: from,
+    });
+    setMessageId(chatId, tempId, id);
   };
 
   const onSend = async () => {
     if (markedUsers.size === 1) {
-      const { value: id } = markedUsers.values().next();
-      const chatId = (await forwardMessage(id, text, from)) ?? "";
-      navigation.navigate("ChatView", { id: chatId });
+      const { value: userId } = markedUsers.values().next();
+      const chat = chats.find((chat) => chat.user.id === userId)!;
+      forwardMessage(chat.id, text, from);
+      navigation.navigate("ChatView", { id: chat.id });
     } else {
-      await Promise.all(
-        [...markedUsers.values()].map((id) => forwardMessage(id, text, from))
+      Promise.all(
+        [...markedUsers.values()]
+          .map((userId) => chats.find((chat) => chat.user.id === userId)!)
+          .map((chat) => forwardMessage(chat.id, text, from))
       );
       navigation.navigate("ChatList", {});
     }
