@@ -12,6 +12,7 @@ type Props = {
   onPress: (value: string) => void;
   onChangeText?: (value: string) => void;
   hasError: boolean;
+  isLoading: boolean;
 };
 export const StartNewChat = (props: Props) => {
   const ref = React.useRef<TextInput>(null);
@@ -30,6 +31,7 @@ export const StartNewChat = (props: Props) => {
           style={[
             styles.inputContainer,
             props.hasError && { borderColor: "#FF2866" },
+            props.isLoading && { backgroundColor: "#0001" },
           ]}
         >
           <TextInput
