@@ -75,7 +75,7 @@ export const getChats = async (): Promise<Chat[]> => {
       messages: [
         ...room.timeline
           .filter((event) => event.getType() === EventType.RoomMessage)
-          .filter((event) => (event.getContent().msgtype = "m.text"))
+          .filter((event) => event.getContent().msgtype === "m.text")
           .map((event) => {
             const sender = {
               id: event.getSender(),
@@ -84,6 +84,7 @@ export const getChats = async (): Promise<Chat[]> => {
             };
             return {
               id: event.getId(),
+              tempId: null,
               text: event.getContent().body,
               timestamp: event.getTs(),
               sender,
