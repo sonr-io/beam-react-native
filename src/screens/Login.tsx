@@ -11,8 +11,6 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
-import { useChatContext } from "../contexts/ChatContext";
-import { useUserContext } from "../contexts/UserContext";
 import { getChats, getUser, login, onReceiveMessage } from "../lib/matrix";
 import { client } from "../matrixClient";
 
@@ -24,56 +22,26 @@ interface PresetUser {
 type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const { setUser } = useUserContext();
-  const { addMessage, addReactionToMessage, setChats } = useChatContext();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  const onLogin = async (user: string, password: string) => {
+  const onLogin = async (username: string, password: string) => {
     setError(false);
     setLoading(true);
 
     try {
-      await login(user, password);
-      setUser(getUser(client, client.getUserId()));
+      await login(username, password);
+      const user = getUser(client, client.getUserId());
       const chats = await getChats();
+
       chats
         .filter((chat) => !chat.isMember)
         .map((chat) => client.joinRoom(chat.id));
-      setChats(chats);
-      onReceiveMessage(
-        client,
-        ({
-          messageId: id,
-          roomId: chatId,
-          message,
-          sender,
-          parentId,
-          forwardedFrom,
-        }) => {
-          addMessage({
-            id,
-            chatId,
-            message,
-            sender: getUser(client, sender),
-            parentId,
-            forwardedFrom,
-          });
-        },
-        ({ roomId, messageId, sender, emoji }) => {
-          addReactionToMessage(
-            roomId,
-            messageId,
-            getUser(client, sender),
-            emoji
-          );
-        }
-      );
 
-      navigation.navigate("Chat", {});
+      navigation.navigate("Chat", { user, chats });
     } catch {
       setError(true);
     } finally {

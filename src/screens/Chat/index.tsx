@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   CardStyleInterpolators,
   createStackNavigator,
+  StackScreenProps,
 } from "@react-navigation/stack";
 
 import ChatList from "./ChatList";
@@ -11,8 +12,15 @@ import MessageMenu from "./MessageMenu";
 import NewChat from "./NewChat";
 
 import { Message } from "../../types/Chat";
-
-const Stack = createStackNavigator();
+import { UserContextProvider } from "../../contexts/UserContext";
+import { EmojiHistoryContextProvider } from "../../contexts/EmojiHistoryContext";
+import {
+  ChatContextProvider,
+  useChatContext,
+} from "../../contexts/ChatContext";
+import { StackParams } from "../../../App";
+import { getUser, onReceiveMessage } from "../../lib/matrix";
+import { client } from "../../matrixClient";
 
 export type Params = {
   ChatList: {};
@@ -28,35 +36,79 @@ export type Params = {
   };
 };
 
-const ChatScreen = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="ChatList" component={ChatList} />
-    <Stack.Screen name="ChatView" component={ChatView} />
-    <Stack.Screen
-      name="MessageMenu"
-      component={MessageMenu}
-      options={{
-        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-        presentation: "transparentModal",
-      }}
-    />
-    <Stack.Screen
-      name="NewChat"
-      component={NewChat}
-      options={{
-        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-        presentation: "transparentModal",
-      }}
-    />
-    <Stack.Screen
-      name="ForwardMenu"
-      component={ForwardMenu}
-      options={{
-        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-        presentation: "transparentModal",
-      }}
-    />
-  </Stack.Navigator>
-);
+const ChatSection = () => {
+  const { addMessage, addReactionToMessage } = useChatContext();
+
+  useEffect(() => {
+    onReceiveMessage(
+      client,
+      ({
+        messageId: id,
+        roomId: chatId,
+        message,
+        sender,
+        parentId,
+        forwardedFrom,
+      }) => {
+        addMessage({
+          id,
+          chatId,
+          message,
+          sender: getUser(client, sender),
+          parentId,
+          forwardedFrom,
+        });
+      },
+      ({ roomId, messageId, sender, emoji }) => {
+        addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
+      }
+    );
+  }, []);
+
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ChatList" component={ChatList} />
+      <Stack.Screen name="ChatView" component={ChatView} />
+      <Stack.Screen
+        name="MessageMenu"
+        component={MessageMenu}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="NewChat"
+        component={NewChat}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="ForwardMenu"
+        component={ForwardMenu}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+          presentation: "transparentModal",
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+type Props = StackScreenProps<StackParams, "Chat">;
+const ChatScreen: React.FC<Props> = ({ route }) => {
+  return (
+    <UserContextProvider user={route.params.user}>
+      <EmojiHistoryContextProvider>
+        <ChatContextProvider chats={route.params.chats}>
+          <ChatSection />
+        </ChatContextProvider>
+      </EmojiHistoryContextProvider>
+    </UserContextProvider>
+  );
+};
 
 export default ChatScreen;

@@ -20,10 +20,6 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
   const { user } = useUserContext();
   const [markedUsers, setMarkedUsers] = React.useState(new Set<string>());
 
-  if (!user) {
-    return <></>;
-  }
-
   const onUserSelected = (user: User) => {
     if (markedUsers.has(user.id)) {
       markedUsers.delete(user.id);
