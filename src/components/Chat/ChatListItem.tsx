@@ -42,7 +42,9 @@ export const ChatListItem = (props: Props) => {
 
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-            <Text style={styles.chatName}>{name}</Text>
+            <Text numberOfLines={1} style={styles.chatName}>
+              {name}
+            </Text>
 
             {false && totalUnReadMessages > 0 && (
               <View style={styles.totalUnReadMessages}>
@@ -66,6 +68,7 @@ export const ChatListItem = (props: Props) => {
 
 const styles = StyleSheet.create({
   chatName: {
+    flex: 1,
     fontFamily: "THICCCBOI_Bold",
     fontSize: 20,
     lineHeight: 24,
@@ -92,8 +95,8 @@ const styles = StyleSheet.create({
   messageTime: {
     fontSize: 12,
     paddingTop: 6,
+    marginLeft: 10,
     fontFamily: "THICCCBOI_Bold",
-    flex: 1,
     textAlign: "right",
     color: "#D9D7E6",
   },

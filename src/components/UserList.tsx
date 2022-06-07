@@ -23,9 +23,13 @@ export const UserList = (props: Props) => {
           onPress={() => props.onPress(item)}
         >
           <Avatar user={item} />
-          <View>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.id}>{item.id}</Text>
+          <View style={{ flex: 1 }}>
+            <Text numberOfLines={1} style={styles.name}>
+              {item.name}
+            </Text>
+            <Text numberOfLines={1} style={styles.id}>
+              {item.id}
+            </Text>
           </View>
         </TouchableOpacity>
       )}
