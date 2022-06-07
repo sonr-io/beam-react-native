@@ -50,7 +50,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
   const pushMessage = async (text: string) => {
     const { event_id: id } = await client.sendMessage(chatId, {
-      msgtype: "m.reply",
+      msgtype: "m.text",
       body: text,
       parentId: message.id,
     });

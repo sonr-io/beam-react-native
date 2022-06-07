@@ -78,7 +78,10 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   }, [chats, chatId]);
 
   const pushMessage = async (message: string) => {
-    const { event_id: id } = await client.sendTextMessage(chatId, message);
+    const { event_id: id } = await client.sendMessage(chatId, {
+      msgtype: "m.text",
+      body: message,
+    });
     addMessage({ id, chatId, message, sender: user });
     scrollToBottom();
   };
