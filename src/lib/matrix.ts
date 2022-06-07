@@ -103,7 +103,7 @@ export const getChats = async (): Promise<Chat[]> => {
   });
 };
 
-type OnMessageCallback = (params: {
+export type OnMessageCallback = (params: {
   messageId: string;
   roomId: string;
   message: string;
@@ -112,7 +112,7 @@ type OnMessageCallback = (params: {
   forwardedFrom?: string;
 }) => void;
 
-type OnReactionCallback = (params: {
+export type OnReactionCallback = (params: {
   roomId: string;
   messageId: string;
   sender: string;
@@ -121,34 +121,48 @@ type OnReactionCallback = (params: {
 
 export const onReceiveMessage = (
   onMessage: OnMessageCallback,
-  onReaction: OnReactionCallback
+  onReaction: OnReactionCallback,
+  room?: Room
 ) => {
-  const privateRooms = getPrivateRooms();
-  privateRooms.forEach((room) => {
-    room.on(RoomEvent.Timeline, (event) => {
-      if (
-        event.getType() === EventType.RoomMessage &&
-        event.getSender() !== client.getUserId()
-      ) {
-        if (event.getContent().msgtype === "m.reaction") {
-          onReaction({
-            roomId: room.roomId,
-            messageId: event.getContent().messageId,
-            sender: event.getSender(),
-            emoji: event.getContent().emoji,
-          });
-        } else {
-          onMessage({
-            messageId: event.getId(),
-            roomId: room.roomId,
-            message: event.getContent().body,
-            sender: event.getSender(),
-            parentId: event.getContent().parentId,
-            forwardedFrom: event.getContent().forwardedFrom,
-          });
-        }
-      }
+  if (room) {
+    _onReceiveMessage(onMessage, onReaction, room);
+  } else {
+    const privateRooms = getPrivateRooms();
+    privateRooms.forEach((room) => {
+      _onReceiveMessage(onMessage, onReaction, room);
     });
+  }
+};
+
+export const _onReceiveMessage = (
+  onMessage: OnMessageCallback,
+  onReaction: OnReactionCallback,
+  room: Room
+) => {
+  client.on(RoomEvent.Timeline, (event) => {
+    if (
+      event.getRoomId() === room.roomId &&
+      event.getType() === EventType.RoomMessage &&
+      event.getSender() !== client.getUserId()
+    ) {
+      if (event.getContent().msgtype === "m.reaction") {
+        onReaction({
+          roomId: room.roomId,
+          messageId: event.getContent().messageId,
+          sender: event.getSender(),
+          emoji: event.getContent().emoji,
+        });
+      } else {
+        onMessage({
+          messageId: event.getId(),
+          roomId: room.roomId,
+          message: event.getContent().body,
+          sender: event.getSender(),
+          parentId: event.getContent().parentId,
+          forwardedFrom: event.getContent().forwardedFrom,
+        });
+      }
+    }
   });
 };
 
@@ -156,6 +170,7 @@ type NewChatCallback = (params: {
   id: string;
   name: string;
   user: User;
+  room: Room;
 }) => void;
 
 export const onNewChat = (callback: NewChatCallback) => {
@@ -166,11 +181,12 @@ export const onNewChat = (callback: NewChatCallback) => {
     ) {
       const user = getUser(client, event.getSender());
       const roomId = member.roomId;
-      await client.joinRoom(roomId);
+      const room = await client.joinRoom(roomId);
       callback({
         id: roomId,
         name: user.name,
         user,
+        room,
       });
     }
   });

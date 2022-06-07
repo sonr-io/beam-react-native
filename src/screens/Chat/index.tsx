@@ -19,7 +19,13 @@ import {
   useChatContext,
 } from "../../contexts/ChatContext";
 import { StackParams } from "../../../App";
-import { getUser, onNewChat, onReceiveMessage } from "../../lib/matrix";
+import {
+  getUser,
+  OnMessageCallback,
+  onNewChat,
+  OnReactionCallback,
+  onReceiveMessage,
+} from "../../lib/matrix";
 import { client } from "../../matrixClient";
 
 export type Params = {
@@ -39,30 +45,37 @@ export type Params = {
 const ChatSection = () => {
   const { addMessage, addReactionToMessage, setChats } = useChatContext();
 
+  const onMessage: OnMessageCallback = ({
+    messageId: id,
+    roomId: chatId,
+    message,
+    sender,
+    parentId,
+    forwardedFrom,
+  }) => {
+    addMessage({
+      id,
+      chatId,
+      message,
+      sender: getUser(client, sender),
+      parentId,
+      forwardedFrom,
+    });
+  };
+
+  const onReaction: OnReactionCallback = ({
+    roomId,
+    messageId,
+    sender,
+    emoji,
+  }) => {
+    addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
+  };
+
   useEffect(() => {
-    onReceiveMessage(
-      ({
-        messageId: id,
-        roomId: chatId,
-        message,
-        sender,
-        parentId,
-        forwardedFrom,
-      }) => {
-        addMessage({
-          id,
-          chatId,
-          message,
-          sender: getUser(client, sender),
-          parentId,
-          forwardedFrom,
-        });
-      },
-      ({ roomId, messageId, sender, emoji }) => {
-        addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
-      }
-    );
-    onNewChat(({ id, name, user }) => {
+    onReceiveMessage(onMessage, onReaction);
+    onNewChat(({ id, name, user, room }) => {
+      onReceiveMessage(onMessage, onReaction, room);
       setChats((chats) => {
         chats.push({
           id,
