@@ -19,14 +19,8 @@ import {
   useChatContext,
 } from "../../contexts/ChatContext";
 import { StackParams } from "../../../App";
-import {
-  getUser,
-  OnMessageCallback,
-  onNewChat,
-  OnReactionCallback,
-  onReceiveMessage,
-} from "../../lib/matrix";
-import { client } from "../../matrixClient";
+import { onNewChat, onReceiveMessage } from "../../lib/matrix";
+import { useMessageCallbacks } from "../../lib/matrixHooks";
 
 export type Params = {
   ChatList: {};
@@ -43,34 +37,8 @@ export type Params = {
 };
 
 const ChatSection = () => {
-  const { addMessage, addReactionToMessage, setChats } = useChatContext();
-
-  const onMessage: OnMessageCallback = ({
-    messageId: id,
-    roomId: chatId,
-    message,
-    sender,
-    parentId,
-    forwardedFrom,
-  }) => {
-    addMessage({
-      id,
-      chatId,
-      message,
-      sender: getUser(client, sender),
-      parentId,
-      forwardedFrom,
-    });
-  };
-
-  const onReaction: OnReactionCallback = ({
-    roomId,
-    messageId,
-    sender,
-    emoji,
-  }) => {
-    addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
-  };
+  const { setChats } = useChatContext();
+  const { onMessage, onReaction } = useMessageCallbacks();
 
   useEffect(() => {
     onReceiveMessage(onMessage, onReaction);
