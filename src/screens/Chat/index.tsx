@@ -19,8 +19,8 @@ import {
   useChatContext,
 } from "../../contexts/ChatContext";
 import { StackParams } from "../../../App";
-import { onNewChat, onReceiveMessage } from "../../lib/matrix";
-import { useMessageCallbacks } from "../../lib/matrixHooks";
+import { onNewChat } from "../../lib/matrix";
+import { useMessageListeners } from "../../lib/matrixHooks";
 
 export type Params = {
   ChatList: {};
@@ -38,12 +38,12 @@ export type Params = {
 
 const ChatSection = () => {
   const { setChats } = useChatContext();
-  const { onMessage, onReaction } = useMessageCallbacks();
+  const { addMessageListeners } = useMessageListeners();
 
   useEffect(() => {
-    onReceiveMessage(onMessage, onReaction);
+    addMessageListeners();
     onNewChat(({ id, name, user, room }) => {
-      onReceiveMessage(onMessage, onReaction, room.roomId);
+      addMessageListeners(room.roomId);
       setChats((chats) => {
         chats.push({
           id,

@@ -8,8 +8,7 @@ import { StartNewChat } from "../../components/StartNewChat";
 import TransparentModal from "../../components/TransparentModal";
 import { UserList } from "../../components/UserList";
 import { useChatContext } from "../../contexts/ChatContext";
-import { onReceiveMessage } from "../../lib/matrix";
-import { useMessageCallbacks } from "../../lib/matrixHooks";
+import { useMessageListeners } from "../../lib/matrixHooks";
 import { client } from "../../matrixClient";
 import { User } from "../../types/User";
 
@@ -17,7 +16,7 @@ type Props = StackScreenProps<Params, "NewChat">;
 
 const NewChat: React.FC<Props> = ({ navigation }) => {
   const { chats, setChats } = useChatContext();
-  const { onMessage, onReaction } = useMessageCallbacks();
+  const { addMessageListeners } = useMessageListeners();
   const users = chats.map((chat) => chat.user);
   const [error, setError] = React.useState(false);
 
@@ -53,7 +52,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
     });
     if (!response) return;
 
-    onReceiveMessage(onMessage, onReaction, response.room_id);
+    addMessageListeners(response.room_id);
 
     chats.push({
       id: response.room_id,

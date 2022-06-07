@@ -1,8 +1,13 @@
 import { useChatContext } from "../contexts/ChatContext";
 import { client } from "../matrixClient";
-import { OnMessageCallback, getUser, OnReactionCallback } from "./matrix";
+import {
+  OnMessageCallback,
+  getUser,
+  OnReactionCallback,
+  onReceiveMessage,
+} from "./matrix";
 
-export const useMessageCallbacks = () => {
+export const useMessageListeners = () => {
   const { addMessage, addReactionToMessage } = useChatContext();
 
   const onMessage: OnMessageCallback = ({
@@ -32,5 +37,9 @@ export const useMessageCallbacks = () => {
     addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
   };
 
-  return { onMessage, onReaction };
+  const addMessageListeners = (roomId?: string) => {
+    onReceiveMessage(onMessage, onReaction, roomId);
+  };
+
+  return { addMessageListeners };
 };
