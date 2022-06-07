@@ -27,6 +27,7 @@ type ChatContextType = {
     user: User,
     emoji: string
   ) => void;
+  setMessageId: (chatId: string, tempId: string, id: string) => void;
 };
 
 const ChatContext = createContext<ChatContextType>({
@@ -35,6 +36,7 @@ const ChatContext = createContext<ChatContextType>({
   addMessage: () => {},
   addReaction: () => {},
   addReactionToMessage: () => {},
+  setMessageId: () => {},
 });
 export const useChatContext = () => useContext(ChatContext);
 
@@ -118,6 +120,19 @@ export const ChatContextProvider: React.FC<Props> = ({
     });
   };
 
+  const setMessageId = (chatId: string, tempId: string, id: string) => {
+    setChats((chats) => {
+      const chat = chats.find((chat) => chat.id === chatId);
+      if (chat) {
+        const i = chat.messages.findIndex((m) => m.tempId === tempId);
+        chat.messages[i].id = id;
+        chat.messages[i].tempId = null;
+      }
+
+      return [...chats];
+    });
+  };
+
   return (
     <ChatContext.Provider
       value={{
@@ -126,6 +141,7 @@ export const ChatContextProvider: React.FC<Props> = ({
         addMessage,
         addReaction,
         addReactionToMessage,
+        setMessageId,
       }}
     >
       {children}

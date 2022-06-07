@@ -51,7 +51,7 @@ type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { user } = useUserContext();
-  const { chats, addMessage } = useChatContext();
+  const { chats, addMessage, setMessageId } = useChatContext();
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
@@ -85,6 +85,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
       msgtype: "m.text",
       body: message,
     });
+    setMessageId(chatId, tempId, id);
     scrollToBottom();
   };
 
