@@ -30,12 +30,12 @@ export const MessageInput = ({ onSubmit, inputRef }: Props) => {
         intensity={80}
         style={[styles.messageInputBlur, { paddingBottom: insets.bottom + 8 }]}
       >
-        <View style={styles.messageToolbarButton}>
+        {/* <View style={styles.messageToolbarButton}>
           <IconPlus fill="#5E5B71" />
         </View>
         <View style={styles.messageToolbarButton}>
           <IconFontSize />
-        </View>
+        </View> */}
         <View style={styles.messageInputContainer}>
           <TextInput
             ref={inputRef}

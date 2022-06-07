@@ -128,10 +128,10 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
                 <Text style={styles.menuButtonText}>Forward</Text>
                 <IconForward />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.menuButton}>
+              {/* <TouchableOpacity style={styles.menuButton}>
                 <Text style={styles.menuButtonText}>Copy</Text>
                 <IconCopy />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </>
           )}
         </BlurView>

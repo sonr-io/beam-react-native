@@ -116,11 +116,11 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           <Text style={styles.recipientName}>{recipient.name}</Text>
           <Text style={styles.recipientId}>{recipient.id}</Text>
         </View>
-        <View style={{ flex: 1 }} />
+        {/* <View style={{ flex: 1 }} />
         <View style={{ marginRight: 8 }}>
           <IconBeam />
         </View>
-        <IconMore />
+        <IconMore /> */}
       </GradientTop>
       <FlatList
         ref={flatListRef}
