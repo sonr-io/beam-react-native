@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useChatContext } from "../contexts/ChatContext";
-import { client } from "../matrixClient";
 import {
   OnMessageCallback,
-  getUser,
   OnReactionCallback,
   onReceiveMessage,
   onNewChat,
@@ -25,7 +23,7 @@ export const useListeners = () => {
       id,
       chatId,
       message,
-      sender: getUser(client, sender),
+      sender,
       parentId,
       forwardedFrom,
     });
@@ -37,7 +35,7 @@ export const useListeners = () => {
     sender,
     emoji,
   }) => {
-    addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
+    addReactionToMessage(roomId, messageId, sender, emoji);
   };
 
   const addListeners = () => {

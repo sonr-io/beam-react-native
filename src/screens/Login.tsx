@@ -34,7 +34,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     try {
       await login(username, password);
-      const user = getUser(client, client.getUserId());
+      const user = await getUser(client.getUserId());
       const chats = await getChats();
 
       chats

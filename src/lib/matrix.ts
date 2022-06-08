@@ -107,7 +107,7 @@ export type OnMessageCallback = (params: {
   messageId: string;
   roomId: string;
   message: string;
-  sender: string;
+  sender: User;
   parentId?: string;
   forwardedFrom?: string;
 }) => void;
@@ -115,7 +115,7 @@ export type OnMessageCallback = (params: {
 export type OnReactionCallback = (params: {
   roomId: string;
   messageId: string;
-  sender: string;
+  sender: User;
   emoji: string;
 }) => void;
 
@@ -139,7 +139,7 @@ export const _onReceiveMessage = (
   onReaction: OnReactionCallback,
   roomId: string
 ) => {
-  client.on(RoomEvent.Timeline, (event) => {
+  client.on(RoomEvent.Timeline, async (event) => {
     if (
       event.getRoomId() === roomId &&
       event.getType() === EventType.RoomMessage &&
@@ -149,7 +149,7 @@ export const _onReceiveMessage = (
         onReaction({
           roomId: roomId,
           messageId: event.getContent().messageId,
-          sender: event.getSender(),
+          sender: await getUser(event.getSender()),
           emoji: event.getContent().emoji,
         });
       } else {
@@ -157,7 +157,7 @@ export const _onReceiveMessage = (
           messageId: event.getId(),
           roomId: roomId,
           message: event.getContent().body,
-          sender: event.getSender(),
+          sender: await getUser(event.getSender()),
           parentId: event.getContent().parentId,
           forwardedFrom: event.getContent().forwardedFrom,
         });
@@ -179,7 +179,7 @@ export const onNewChat = (callback: NewChatCallback) => {
       member.membership === "invite" &&
       member.userId === client.getUserId()
     ) {
-      const user = getUser(client, event.getSender());
+      const user = await getUser(event.getSender());
       const roomId = member.roomId;
       const room = await client.joinRoom(roomId);
       callback({
@@ -193,13 +193,13 @@ export const onNewChat = (callback: NewChatCallback) => {
 };
 
 export const getUser = memoize(
-  (client: MatrixClient, userId: string): User => {
-    const { displayName } = client.getUser(userId);
+  async (userId: string): Promise<User> => {
+    const { displayname } = await client.getProfileInfo(userId);
     return {
       id: userId,
-      name: displayName,
+      name: displayname ?? "",
       isOnline: false,
     };
   },
-  (client, userId) => `${client.getUserId()}${userId}`
+  (userId) => `${client.getUserId()}${userId}`
 );
