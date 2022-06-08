@@ -12,13 +12,13 @@ type ChatContextType = {
   chats: Chat[];
   setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
   addMessage: (params: {
-    id: string | null;
-    tempId: string | null;
+    id: string;
     chatId: string;
     message: string;
     sender: User;
     parentId?: string;
     forwardedFrom?: string;
+    confirmed: boolean;
   }) => void;
   addReaction: (chatId: string, messageId: string, emoji: Emoji) => void;
   addReactionToMessage: (
@@ -27,7 +27,7 @@ type ChatContextType = {
     user: User,
     emoji: string
   ) => void;
-  setMessageId: (chatId: string, tempId: string, id: string) => void;
+  confirmMessage: (chatId: string, tempId: string, id: string) => void;
 };
 
 const ChatContext = createContext<ChatContextType>({
@@ -36,7 +36,7 @@ const ChatContext = createContext<ChatContextType>({
   addMessage: () => {},
   addReaction: () => {},
   addReactionToMessage: () => {},
-  setMessageId: () => {},
+  confirmMessage: () => {},
 });
 export const useChatContext = () => useContext(ChatContext);
 
@@ -53,20 +53,20 @@ export const ChatContextProvider: React.FC<Props> = ({
 
   const addMessage = ({
     id,
-    tempId,
     chatId,
     message,
     parentId,
     forwardedFrom,
     sender,
+    confirmed,
   }: {
-    id: string | null;
-    tempId: string | null;
+    id: string;
     chatId: string;
     message: string;
     sender: User;
     parentId?: string;
     forwardedFrom?: string;
+    confirmed: boolean;
   }) => {
     setChats((chats) =>
       chats.map((chat) => {
@@ -76,13 +76,13 @@ export const ChatContextProvider: React.FC<Props> = ({
 
         chat.messages.push({
           id,
-          tempId,
           text: message,
           timestamp: new Date().getTime(),
           sender,
           reactions: [],
           parentId,
           forwardedFrom,
+          confirmed,
         });
         return chat;
       })
@@ -120,13 +120,13 @@ export const ChatContextProvider: React.FC<Props> = ({
     });
   };
 
-  const setMessageId = (chatId: string, tempId: string, id: string) => {
+  const confirmMessage = (chatId: string, tempId: string, id: string) => {
     setChats((chats) => {
       const chat = chats.find((chat) => chat.id === chatId);
       if (chat) {
-        const i = chat.messages.findIndex((m) => m.tempId === tempId);
+        const i = chat.messages.findIndex((m) => m.id === tempId);
         chat.messages[i].id = id;
-        chat.messages[i].tempId = null;
+        chat.messages[i].confirmed = true;
       }
 
       return [...chats];
@@ -141,7 +141,7 @@ export const ChatContextProvider: React.FC<Props> = ({
         addMessage,
         addReaction,
         addReactionToMessage,
-        setMessageId,
+        confirmMessage,
       }}
     >
       {children}

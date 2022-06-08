@@ -36,7 +36,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
-  const { addReaction, addMessage, setMessageId } = useChatContext();
+  const { addReaction, addMessage, confirmMessage } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
 
   const pushEmoji = async (emoji: Emoji) => {
@@ -52,12 +52,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const pushMessage = async (text: string) => {
     const tempId = uuid.v4() as string;
     addMessage({
-      id: null,
-      tempId,
+      id: tempId,
       chatId,
       message: text,
       sender: user,
       parentId: message.id as string,
+      confirmed: false,
     });
     navigation.goBack();
     const { event_id: id } = await client.sendMessage(chatId, {
@@ -65,7 +65,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
       body: text,
       parentId: message.id,
     });
-    setMessageId(chatId, tempId, id);
+    confirmMessage(chatId, tempId, id);
   };
 
   const handleEmojiSelectorVisibility = () => {

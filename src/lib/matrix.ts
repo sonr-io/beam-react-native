@@ -84,7 +84,6 @@ export const getChats = async (): Promise<Chat[]> => {
             };
             return {
               id: event.getId(),
-              tempId: null,
               text: event.getContent().body,
               timestamp: event.getTs(),
               sender,
@@ -93,6 +92,7 @@ export const getChats = async (): Promise<Chat[]> => {
               reactions: reactions
                 .filter((reaction) => reaction.messageId === event.getId())
                 .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+              confirmed: true,
             };
           }),
       ],

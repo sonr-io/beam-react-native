@@ -51,7 +51,7 @@ type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { user } = useUserContext();
-  const { chats, addMessage, setMessageId } = useChatContext();
+  const { chats, addMessage, confirmMessage } = useChatContext();
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
@@ -80,12 +80,12 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
   const pushMessage = async (message: string) => {
     const tempId = uuid.v4() as string;
-    addMessage({ id: null, tempId, chatId, message, sender: user });
+    addMessage({ id: tempId, chatId, message, sender: user, confirmed: false });
     const { event_id: id } = await client.sendMessage(chatId, {
       msgtype: "m.text",
       body: message,
     });
-    setMessageId(chatId, tempId, id);
+    confirmMessage(chatId, tempId, id);
     scrollToBottom();
   };
 
@@ -167,7 +167,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
             </View>
           );
         }}
-        keyExtractor={(item) => item.id || item.tempId}
+        keyExtractor={(item) => item.id}
       />
       {showScrollDown && (
         <View

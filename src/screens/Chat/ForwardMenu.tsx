@@ -17,7 +17,7 @@ type Props = StackScreenProps<Params, "ForwardMenu">;
 
 const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
   const { from, text } = route.params;
-  const { chats, addMessage, setMessageId } = useChatContext();
+  const { chats, addMessage, confirmMessage } = useChatContext();
   const { user } = useUserContext();
   const [markedUsers, setMarkedUsers] = React.useState(new Set<string>());
 
@@ -38,19 +38,19 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
   const forwardMessage = async (chatId: string, text: string, from: string) => {
     const tempId = uuid.v4() as string;
     addMessage({
-      id: null,
-      tempId,
+      id: tempId,
       chatId: chatId,
       message: text,
       forwardedFrom: from,
       sender: user,
+      confirmed: false,
     });
     const { event_id: id } = await client.sendMessage(chatId, {
       msgtype: "m.text",
       body: text,
       forwardedFrom: from,
     });
-    setMessageId(chatId, tempId, id);
+    confirmMessage(chatId, tempId, id);
   };
 
   const onSend = async () => {

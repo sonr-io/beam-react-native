@@ -6,14 +6,14 @@ export type Reaction = {
 };
 
 export type Message = {
-  id: string | null;
-  tempId: string | null;
+  id: string;
   text: string;
   timestamp: number;
   sender: User;
   reactions: Reaction[];
   parentId?: string;
   forwardedFrom?: string;
+  confirmed: boolean;
 };
 
 export type ViewableMessage = Message & { last: boolean; showDate: boolean };
