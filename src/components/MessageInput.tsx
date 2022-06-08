@@ -19,8 +19,12 @@ export const MessageInput = ({ onSubmit, inputRef }: Props) => {
   const [message, setMessage] = useState("");
   const insets = useSafeAreaInsets();
 
+  const messageIsValid = () => message.trim().length > 0;
+
   const pushMessage = () => {
-    onSubmit(message);
+    if (!messageIsValid()) return;
+
+    onSubmit(message.trim());
     setMessage("");
   };
 
@@ -48,7 +52,11 @@ export const MessageInput = ({ onSubmit, inputRef }: Props) => {
           />
           <View style={{ alignSelf: "flex-end" }}>
             <TouchableOpacity onPress={pushMessage}>
-              {!!message ? <IconSend /> : <View style={{ height: 32 }} />}
+              {messageIsValid() ? (
+                <IconSend />
+              ) : (
+                <View style={{ height: 32 }} />
+              )}
             </TouchableOpacity>
           </View>
         </View>
