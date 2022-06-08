@@ -38,8 +38,6 @@ const getPrivateRooms = (): Room[] => {
     );
 };
 
-const msgTypesToRender = new Set(["m.text", "m.reply", "m.forward"]);
-
 export const getChats = async (): Promise<Chat[]> => {
   const privateRooms = getPrivateRooms();
   const members = new Map<string, string>();
@@ -77,9 +75,7 @@ export const getChats = async (): Promise<Chat[]> => {
       messages: [
         ...room.timeline
           .filter((event) => event.getType() === EventType.RoomMessage)
-          .filter((event) =>
-            msgTypesToRender.has(event.getContent().msgtype ?? "")
-          )
+          .filter((event) => event.getContent().msgtype === "m.text")
           .map((event) => {
             const sender = {
               id: event.getSender(),
@@ -96,6 +92,7 @@ export const getChats = async (): Promise<Chat[]> => {
               reactions: reactions
                 .filter((reaction) => reaction.messageId === event.getId())
                 .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+              confirmed: true,
             };
           }),
       ],

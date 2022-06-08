@@ -18,6 +18,7 @@ type ChatContextType = {
     sender: User;
     parentId?: string;
     forwardedFrom?: string;
+    confirmed: boolean;
   }) => void;
   addReaction: (chatId: string, messageId: string, emoji: Emoji) => void;
   addReactionToMessage: (
@@ -26,6 +27,7 @@ type ChatContextType = {
     user: User,
     emoji: string
   ) => void;
+  confirmMessage: (chatId: string, tempId: string, id: string) => void;
 };
 
 const ChatContext = createContext<ChatContextType>({
@@ -34,6 +36,7 @@ const ChatContext = createContext<ChatContextType>({
   addMessage: () => {},
   addReaction: () => {},
   addReactionToMessage: () => {},
+  confirmMessage: () => {},
 });
 export const useChatContext = () => useContext(ChatContext);
 
@@ -55,6 +58,7 @@ export const ChatContextProvider: React.FC<Props> = ({
     parentId,
     forwardedFrom,
     sender,
+    confirmed,
   }: {
     id: string;
     chatId: string;
@@ -62,6 +66,7 @@ export const ChatContextProvider: React.FC<Props> = ({
     sender: User;
     parentId?: string;
     forwardedFrom?: string;
+    confirmed: boolean;
   }) => {
     setChats((chats) =>
       chats.map((chat) => {
@@ -77,6 +82,7 @@ export const ChatContextProvider: React.FC<Props> = ({
           reactions: [],
           parentId,
           forwardedFrom,
+          confirmed,
         });
         return chat;
       })
@@ -114,6 +120,19 @@ export const ChatContextProvider: React.FC<Props> = ({
     });
   };
 
+  const confirmMessage = (chatId: string, tempId: string, id: string) => {
+    setChats((chats) => {
+      const chat = chats.find((chat) => chat.id === chatId);
+      if (chat) {
+        const i = chat.messages.findIndex((m) => m.id === tempId);
+        chat.messages[i].id = id;
+        chat.messages[i].confirmed = true;
+      }
+
+      return [...chats];
+    });
+  };
+
   return (
     <ChatContext.Provider
       value={{
@@ -122,6 +141,7 @@ export const ChatContextProvider: React.FC<Props> = ({
         addMessage,
         addReaction,
         addReactionToMessage,
+        confirmMessage,
       }}
     >
       {children}

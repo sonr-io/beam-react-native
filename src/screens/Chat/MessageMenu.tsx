@@ -11,6 +11,7 @@ import {
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import uuid from "react-native-uuid";
 
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
@@ -35,33 +36,36 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
-  const { addReaction, addMessage } = useChatContext();
+  const { addReaction, addMessage, confirmMessage } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
 
   const pushEmoji = async (emoji: Emoji) => {
+    addReaction(chatId, message.id as string, emoji);
     await client.sendMessage(chatId, {
       msgtype: "m.reaction",
       body: "",
       messageId: message.id,
       emoji: charFromEmojiObject(emoji),
     });
-    addReaction(chatId, message.id, emoji);
   };
 
   const pushMessage = async (text: string) => {
-    const { event_id: id } = await client.sendMessage(chatId, {
-      msgtype: "m.reply",
-      body: text,
-      parentId: message.id,
-    });
+    const tempId = uuid.v4() as string;
     addMessage({
-      id,
+      id: tempId,
       chatId,
       message: text,
       sender: user,
-      parentId: message.id,
+      parentId: message.id as string,
+      confirmed: false,
     });
     navigation.goBack();
+    const { event_id: id } = await client.sendMessage(chatId, {
+      msgtype: "m.text",
+      body: text,
+      parentId: message.id,
+    });
+    confirmMessage(chatId, tempId, id);
   };
 
   const handleEmojiSelectorVisibility = () => {
@@ -94,6 +98,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           text={message.text}
           timestamp={message.timestamp}
           isIncoming={user.id !== message.sender.id}
+          isLoading={false}
           showTimestamp={true}
           reactions={message.reactions.map((r) => r.emoji)}
         />

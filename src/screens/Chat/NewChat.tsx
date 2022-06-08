@@ -19,6 +19,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
   const { addRoomListeners } = useListeners();
   const users = chats.map((chat) => chat.user);
   const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const navigateToChat = (id: string) => {
     navigation.goBack();
@@ -26,9 +27,12 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
   };
 
   const startNew = async (id: string) => {
+    setLoading(true);
+    setError(false);
     const fullId = `@${id}:matrix.sonr.network`;
 
     if (fullId === client.getUserId()) {
+      setLoading(false);
       setError(true);
       return;
     }
@@ -42,6 +46,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
     try {
       await client.getProfileInfo(fullId);
     } catch {
+      setLoading(false);
       setError(true);
       return;
     }
@@ -86,6 +91,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
         onPress={startNew}
         onChangeText={() => setError(false)}
         hasError={error}
+        isLoading={loading}
       />
 
       <View style={{ marginBottom: 24 }} />

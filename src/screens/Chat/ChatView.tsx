@@ -5,6 +5,7 @@ import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import uuid from "react-native-uuid";
 
 import { Params } from ".";
 import { Avatar } from "../../components/Avatar/Avatar";
@@ -15,8 +16,8 @@ import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconArrowDown from "../../icons/ArrowDown";
 import IconBackArrow from "../../icons/BackArrow";
-import IconBeam from "../../icons/Beam";
-import IconMore from "../../icons/More";
+// import IconBeam from "../../icons/Beam";
+// import IconMore from "../../icons/More";
 import { getFormattedDay } from "../../lib/getFormattedDay";
 import { client } from "../../matrixClient";
 import { Chat, Message, ViewableMessage } from "../../types/Chat";
@@ -50,7 +51,7 @@ type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { user } = useUserContext();
-  const { chats, addMessage } = useChatContext();
+  const { chats, addMessage, confirmMessage } = useChatContext();
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
@@ -78,8 +79,13 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   }, [chats, chatId]);
 
   const pushMessage = async (message: string) => {
-    const { event_id: id } = await client.sendTextMessage(chatId, message);
-    addMessage({ id, chatId, message, sender: user });
+    const tempId = uuid.v4() as string;
+    addMessage({ id: tempId, chatId, message, sender: user, confirmed: false });
+    const { event_id: id } = await client.sendMessage(chatId, {
+      msgtype: "m.text",
+      body: message,
+    });
+    confirmMessage(chatId, tempId, id);
     scrollToBottom();
   };
 
