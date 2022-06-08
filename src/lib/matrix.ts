@@ -134,7 +134,7 @@ export const onReceiveMessage = (
   }
 };
 
-export const _onReceiveMessage = (
+const _onReceiveMessage = (
   onMessage: OnMessageCallback,
   onReaction: OnReactionCallback,
   roomId: string
