@@ -11,7 +11,7 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 
 import { StackParams } from "../../App";
-import { getChats, getUser, login, onReceiveMessage } from "../lib/matrix";
+import { getChats, getUser, login } from "../lib/matrix";
 import { client } from "../matrixClient";
 
 interface PresetUser {
@@ -34,7 +34,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     try {
       await login(username, password);
-      const user = getUser(client, client.getUserId());
+      const user = await getUser(client.getUserId());
       const chats = await getChats();
 
       chats

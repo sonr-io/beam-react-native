@@ -14,13 +14,9 @@ import NewChat from "./NewChat";
 import { Message } from "../../types/Chat";
 import { UserContextProvider } from "../../contexts/UserContext";
 import { EmojiHistoryContextProvider } from "../../contexts/EmojiHistoryContext";
-import {
-  ChatContextProvider,
-  useChatContext,
-} from "../../contexts/ChatContext";
+import { ChatContextProvider } from "../../contexts/ChatContext";
 import { StackParams } from "../../../App";
-import { getUser, onReceiveMessage } from "../../lib/matrix";
-import { client } from "../../matrixClient";
+import { useListeners } from "../../lib/matrixHooks";
 
 export type Params = {
   ChatList: {};
@@ -37,32 +33,10 @@ export type Params = {
 };
 
 const ChatSection = () => {
-  const { addMessage, addReactionToMessage } = useChatContext();
+  const { addListeners } = useListeners();
 
   useEffect(() => {
-    onReceiveMessage(
-      client,
-      ({
-        messageId: id,
-        roomId: chatId,
-        message,
-        sender,
-        parentId,
-        forwardedFrom,
-      }) => {
-        addMessage({
-          id,
-          chatId,
-          message,
-          sender: getUser(client, sender),
-          parentId,
-          forwardedFrom,
-        });
-      },
-      ({ roomId, messageId, sender, emoji }) => {
-        addReactionToMessage(roomId, messageId, getUser(client, sender), emoji);
-      }
-    );
+    addListeners();
   }, []);
 
   const Stack = createStackNavigator();

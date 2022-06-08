@@ -10,7 +10,7 @@ import { User } from "../types/User";
 
 type ChatContextType = {
   chats: Chat[];
-  setChats: (chats: Chat[]) => void;
+  setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
   addMessage: (params: {
     id: string;
     chatId: string;

@@ -6,6 +6,7 @@ import {
   MatrixClient,
   Room,
   RoomEvent,
+  RoomMemberEvent,
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
@@ -28,7 +29,7 @@ export const login = async (user: string, password: string) => {
   });
 };
 
-const getPrivateRooms = (client: MatrixClient): Room[] => {
+const getPrivateRooms = (): Room[] => {
   return client
     .getRooms()
     .filter(
@@ -40,7 +41,7 @@ const getPrivateRooms = (client: MatrixClient): Room[] => {
 const msgTypesToRender = new Set(["m.text", "m.reply", "m.forward"]);
 
 export const getChats = async (): Promise<Chat[]> => {
-  const privateRooms = getPrivateRooms(client);
+  const privateRooms = getPrivateRooms();
   const members = new Map<string, string>();
   for (const room of privateRooms) {
     room
@@ -102,64 +103,103 @@ export const getChats = async (): Promise<Chat[]> => {
   });
 };
 
-type OnMessageCallback = (params: {
+export type OnMessageCallback = (params: {
   messageId: string;
   roomId: string;
   message: string;
-  sender: string;
+  sender: User;
   parentId?: string;
   forwardedFrom?: string;
 }) => void;
 
-type OnReactionCallback = (params: {
+export type OnReactionCallback = (params: {
   roomId: string;
   messageId: string;
-  sender: string;
+  sender: User;
   emoji: string;
 }) => void;
 
 export const onReceiveMessage = (
-  client: MatrixClient,
   onMessage: OnMessageCallback,
-  onReaction: OnReactionCallback
+  onReaction: OnReactionCallback,
+  roomId?: string
 ) => {
-  const privateRooms = getPrivateRooms(client);
-  privateRooms.forEach((room) => {
-    room.on(RoomEvent.Timeline, (event) => {
-      if (
-        event.getType() === EventType.RoomMessage &&
-        event.getSender() !== client.getUserId()
-      ) {
-        if (event.getContent().msgtype === "m.reaction") {
-          onReaction({
-            roomId: room.roomId,
-            messageId: event.getContent().messageId,
-            sender: event.getSender(),
-            emoji: event.getContent().emoji,
-          });
-        } else {
-          onMessage({
-            messageId: event.getId(),
-            roomId: room.roomId,
-            message: event.getContent().body,
-            sender: event.getSender(),
-            parentId: event.getContent().parentId,
-            forwardedFrom: event.getContent().forwardedFrom,
-          });
-        }
-      }
+  if (roomId) {
+    _onReceiveMessage(onMessage, onReaction, roomId);
+  } else {
+    const privateRooms = getPrivateRooms();
+    privateRooms.forEach((room) => {
+      _onReceiveMessage(onMessage, onReaction, room.roomId);
     });
+  }
+};
+
+const _onReceiveMessage = (
+  onMessage: OnMessageCallback,
+  onReaction: OnReactionCallback,
+  roomId: string
+) => {
+  client.on(RoomEvent.Timeline, async (event) => {
+    if (
+      event.getRoomId() === roomId &&
+      event.getType() === EventType.RoomMessage &&
+      event.getSender() !== client.getUserId()
+    ) {
+      if (event.getContent().msgtype === "m.reaction") {
+        onReaction({
+          roomId: roomId,
+          messageId: event.getContent().messageId,
+          sender: await getUser(event.getSender()),
+          emoji: event.getContent().emoji,
+        });
+      } else {
+        onMessage({
+          messageId: event.getId(),
+          roomId: roomId,
+          message: event.getContent().body,
+          sender: await getUser(event.getSender()),
+          parentId: event.getContent().parentId,
+          forwardedFrom: event.getContent().forwardedFrom,
+        });
+      }
+    }
+  });
+};
+
+type NewChatCallback = (params: {
+  id: string;
+  name: string;
+  user: User;
+  room: Room;
+}) => void;
+
+export const onNewChat = (callback: NewChatCallback) => {
+  client.on(RoomMemberEvent.Membership, async (event, member) => {
+    if (
+      member.membership === "invite" &&
+      member.userId === client.getUserId()
+    ) {
+      const user = await getUser(event.getSender());
+      const roomId = member.roomId;
+      const room = await client.joinRoom(roomId);
+      callback({
+        id: roomId,
+        name: user.name,
+        user,
+        room,
+      });
+    }
   });
 };
 
 export const getUser = memoize(
-  (client: MatrixClient, userId: string): User => {
-    const { displayName } = client.getUser(userId);
+  async (userId: string): Promise<User> => {
+    const { displayname } = await client.getProfileInfo(userId);
     return {
       id: userId,
-      name: displayName,
+      name: displayname ?? "",
       isOnline: false,
     };
   },
-  (client, userId) => `${client.getUserId()}${userId}`
+  (userId) => `${client.getUserId()}${userId}`
 );
