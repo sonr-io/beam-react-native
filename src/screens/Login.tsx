@@ -107,14 +107,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     justifyContent: "center",
     paddingHorizontal: 20,
-  },
-  section: {
-    flexDirection: "row",
-    marginHorizontal: -10,
-    marginBottom: 20,
   },
   input: {
     borderWidth: 1,
