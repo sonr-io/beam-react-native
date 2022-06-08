@@ -108,7 +108,7 @@ const stylesCommon = StyleSheet.create({
   text: {
     fontFamily: "THICCCBOI_Medium",
     fontSize: 16,
-    lineHeight: 20,
+    lineHeight: 22,
   },
   time: {
     fontFamily: "THICCCBOI_ExtraBold",
