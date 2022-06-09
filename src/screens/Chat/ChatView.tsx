@@ -137,6 +137,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         data={messages}
         contentContainerStyle={{
           paddingTop: FLATLIST_BOTTOM_OFFSET,
+          flexGrow: 1,
         }}
         // workaround to position the scrollbar correctly
         scrollIndicatorInsets={{ right: 1 }}
@@ -171,6 +172,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
             </View>
           );
         }}
+        ListEmptyComponent={() => <ListEmpty />}
         keyExtractor={(item) => item.id}
       />
       {showScrollDown && (
@@ -193,6 +195,17 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     </>
   );
 };
+
+const ListEmpty = () => (
+  <View style={styles.emptyListContainer}>
+    <View style={styles.emptyListContent}>
+      <Text style={styles.emptyListTitle}>No Messages Yet</Text>
+      <Text style={styles.emptyListSubtitle}>
+        Send a message to start the conversation
+      </Text>
+    </View>
+  </View>
+);
 
 const styles = StyleSheet.create({
   chatHeader: {
@@ -257,6 +270,29 @@ const styles = StyleSheet.create({
     borderColor: "#FFF",
     alignItems: "center",
     justifyContent: "center",
+  },
+  emptyListContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  emptyListContent: {
+    width: 180,
+    marginBottom: 50,
+    transform: [{ scaleY: -1 }],
+  },
+  emptyListTitle: {
+    fontSize: 20,
+    fontFamily: "THICCCBOI_ExtraBold",
+    marginVertical: 16,
+    textAlign: "center",
+    color: "#3A324A",
+  },
+  emptyListSubtitle: {
+    fontSize: 16,
+    fontFamily: "THICCCBOI_Regular",
+    textAlign: "center",
+    color: "#5F596D",
   },
 });
 
