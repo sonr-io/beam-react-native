@@ -26,6 +26,7 @@ export const useListeners = () => {
       sender,
       parentId,
       forwardedFrom,
+      confirmed: true,
     });
   };
 
