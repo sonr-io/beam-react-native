@@ -76,7 +76,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
   };
 
   const goToExisting = (user: User) => {
-    const chat = chats.find((chat) => chat.name === user.id);
+    const chat = chats.find((chat) => chat.user.id === user.id);
     if (chat) {
       navigateToChat(chat.id);
     }
