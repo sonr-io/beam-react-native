@@ -1,7 +1,14 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { DateTime } from "luxon";
 import React, { useEffect, useRef, useState } from "react";
-import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -60,6 +67,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const [recipient, setRecipient] = useState<User>();
   const [messages, setMessages] = useState<ViewableMessage[]>([]);
   const [showScrollDown, setShowScrollDown] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const flatListRef = useRef<FlatList>(null);
 
@@ -94,6 +102,15 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         index: 0,
         viewOffset: FLATLIST_BOTTOM_OFFSET,
       });
+    }
+  };
+
+  const onEndReached = async () => {
+    try {
+      setLoading(true);
+      await scrollback();
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,8 +161,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           const { y: yOffset } = event.nativeEvent.contentOffset;
           setShowScrollDown(yOffset > 100);
         }}
-        onEndReachedThreshold={0}
-        onEndReached={scrollback}
+        onEndReachedThreshold={1}
+        onEndReached={onEndReached}
         renderItem={({ item }) => {
           return (
             <View>
@@ -174,6 +191,13 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           );
         }}
         ListEmptyComponent={() => <ListEmpty />}
+        ListFooterComponent={() =>
+          loading ? (
+            <View style={{ marginTop: 16 }}>
+              <ActivityIndicator />
+            </View>
+          ) : null
+        }
         keyExtractor={(item) => item.id}
       />
       {showScrollDown && (
