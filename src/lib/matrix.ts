@@ -71,6 +71,8 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
             timestamp: event.getTs(),
             sender,
             parentId: event.getContent().parentId,
+            parentSender: event.getContent().parentSender,
+            parentText: event.getContent().parentText,
             forwardedFrom: event.getContent().forwardedFrom,
             reactions: reactions
               .filter((reaction) => reaction.messageId === event.getId())
@@ -102,6 +104,8 @@ export type OnMessageCallback = (params: {
   message: string;
   sender: User;
   parentId?: string;
+  parentSender?: User;
+  parentText?: string;
   forwardedFrom?: string;
 }) => void;
 
@@ -152,6 +156,8 @@ const _onReceiveMessage = (
           message: event.getContent().body,
           sender: await getUser(event.getSender()),
           parentId: event.getContent().parentId,
+          parentSender: event.getContent().parentSender,
+          parentText: event.getContent().parentText,
           forwardedFrom: event.getContent().forwardedFrom,
         });
       }

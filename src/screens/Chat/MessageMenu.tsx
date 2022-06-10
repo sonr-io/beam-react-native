@@ -57,6 +57,8 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
       message: text,
       sender: user,
       parentId: message.id as string,
+      parentSender: message.sender,
+      parentText: message.text,
       confirmed: false,
     });
     navigation.goBack();
@@ -64,6 +66,8 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
       msgtype: "m.text",
       body: text,
       parentId: message.id,
+      parentSender: message.sender,
+      parentText: message.text,
     });
     confirmMessage(chatId, tempId, id);
   };

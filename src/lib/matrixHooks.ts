@@ -18,6 +18,8 @@ export const useListeners = () => {
     message,
     sender,
     parentId,
+    parentSender,
+    parentText,
     forwardedFrom,
   }) => {
     addMessage({
@@ -26,6 +28,8 @@ export const useListeners = () => {
       message,
       sender,
       parentId,
+      parentSender,
+      parentText,
       forwardedFrom,
       confirmed: true,
     });

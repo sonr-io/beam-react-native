@@ -114,10 +114,6 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  const getParentMessage = (message: Message) => {
-    return messages.find((m) => m.id === message.parentId);
-  };
-
   if (!chatRoom || !recipient) {
     return <></>;
   }
@@ -163,33 +159,32 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         }}
         onEndReachedThreshold={1}
         onEndReached={onEndReached}
-        renderItem={({ item }) => {
-          return (
-            <View>
-              {item.showDate && (
-                <View style={styles.dateSeparatorContainer}>
-                  <View style={styles.line} />
-                  <Text style={styles.dateSeparator}>
-                    {getFormattedDay(item.timestamp)}
-                  </Text>
-                  <View style={styles.line} />
-                </View>
-              )}
-              <ChatItem
-                message={item}
-                parentMessage={getParentMessage(item)}
-                user={user}
-                onSwipe={() => {
-                  navigation.navigate("MessageMenu", {
-                    chatId,
-                    message: item,
-                  });
-                }}
-              />
-              {item.last && <View style={{ marginTop: 8 }} />}
-            </View>
-          );
-        }}
+        renderItem={({ item }: { item: ViewableMessage }) => (
+          <View>
+            {item.showDate && (
+              <View style={styles.dateSeparatorContainer}>
+                <View style={styles.line} />
+                <Text style={styles.dateSeparator}>
+                  {getFormattedDay(item.timestamp)}
+                </Text>
+                <View style={styles.line} />
+              </View>
+            )}
+            <ChatItem
+              message={item}
+              parentSender={item.parentSender}
+              parentText={item.parentText}
+              user={user}
+              onSwipe={() => {
+                navigation.navigate("MessageMenu", {
+                  chatId,
+                  message: item,
+                });
+              }}
+            />
+            {item.last && <View style={{ marginTop: 8 }} />}
+          </View>
+        )}
         ListEmptyComponent={() => <ListEmpty />}
         ListFooterComponent={() =>
           loading ? (

@@ -12,6 +12,8 @@ export type Message = {
   sender: User;
   reactions: Reaction[];
   parentId?: string;
+  parentSender?: User;
+  parentText?: string;
   forwardedFrom?: string;
   confirmed: boolean;
 };

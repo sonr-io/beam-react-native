@@ -9,14 +9,16 @@ import { ReplyBubble } from "../ReplyBubble";
 
 interface Props {
   message: Message;
-  parentMessage?: Message;
+  parentSender?: User;
+  parentText?: string;
   user: User;
   onSwipe: () => void;
 }
 
 export const ChatItem: React.FC<Props> = ({
   message,
-  parentMessage,
+  parentSender,
+  parentText,
   user,
   onSwipe,
 }) => {
@@ -26,7 +28,7 @@ export const ChatItem: React.FC<Props> = ({
   const renderLeftActions = () => <View style={{ width: 30 }} />;
 
   const isSender = message.sender.id === user.id;
-  const selfReply = parentMessage?.sender.id === user.id;
+  const selfReply = parentSender?.id === user.id;
 
   return (
     <Swipeable
@@ -39,11 +41,11 @@ export const ChatItem: React.FC<Props> = ({
         swipeableRef.current?.close();
       }}
     >
-      {!!parentMessage && (
+      {!!parentSender && !!parentText && (
         <View style={styles.parentMessageContainer}>
           <ReplyBubble
-            text={parentMessage.text}
-            senderName={parentMessage.sender.name}
+            text={parentText}
+            senderName={parentSender.name}
             selfReply={selfReply}
             isIncoming={!isSender}
           />
