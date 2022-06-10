@@ -19,6 +19,7 @@ import IconBackArrow from "../../icons/BackArrow";
 // import IconBeam from "../../icons/Beam";
 // import IconMore from "../../icons/More";
 import { getFormattedDay } from "../../lib/getFormattedDay";
+import { useScrollback } from "../../lib/matrixHooks";
 import { client } from "../../matrixClient";
 import { Chat, Message, ViewableMessage } from "../../types/Chat";
 import { User } from "../../types/User";
@@ -50,8 +51,10 @@ const ios = Platform.OS === "ios";
 type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
+  const { id: chatId } = route.params;
   const { user } = useUserContext();
   const { chats, addMessage, confirmMessage } = useChatContext();
+  const { scrollback } = useScrollback(chatId);
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
@@ -62,12 +65,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
 
   const insets = useSafeAreaInsets();
   const FLATLIST_BOTTOM_OFFSET = 58 + insets.bottom;
-  const { id: chatId } = route.params;
 
   useEffect(() => {
-    if (!chatId || !chats || !chats.length) {
-      return;
-    }
     const chat = chats.find((chat) => chat.id === chatId);
     if (!chat) {
       return;
@@ -76,7 +75,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     setChatRoom(chat);
     setRecipient(chat.user);
     setMessages(toViewable(chat.messages).reverse());
-  }, [chats, chatId]);
+  }, [chats]);
 
   const pushMessage = async (message: string) => {
     const tempId = uuid.v4() as string;
@@ -145,6 +144,8 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           const { y: yOffset } = event.nativeEvent.contentOffset;
           setShowScrollDown(yOffset > 100);
         }}
+        onEndReachedThreshold={0}
+        onEndReached={scrollback}
         renderItem={({ item }) => {
           return (
             <View>

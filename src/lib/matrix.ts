@@ -38,66 +38,62 @@ const getPrivateRooms = (): Room[] => {
     );
 };
 
-export const getChats = async (): Promise<Chat[]> => {
-  const privateRooms = getPrivateRooms();
-  const members = new Map<string, string>();
-  for (const room of privateRooms) {
-    room
-      .getMembers()
-      .forEach((member) => members.set(member.userId, member.name));
-    // load all events
-    while (room.oldState.paginationToken) {
-      await client.scrollback(room);
-    }
-  }
-
-  return privateRooms.map((room) => {
-    // we know that there are at least 2 members, so this will always find a user
-    const interlocutor = room
-      .getMembers()
-      .find((member) => member.userId !== room.myUserId)!;
-    const reactions = room.timeline
-      .filter((event) => event.getContent().msgtype === "m.reaction")
-      .map((event) => ({
-        messageId: event.getContent().messageId,
-        emoji: event.getContent().emoji,
-      }));
-    return {
-      id: room.roomId,
+const getChatFromRoom = async (room: Room): Promise<Chat> => {
+  // we know that there are at least 2 members, so this will always find a user
+  const interlocutor = room
+    .getMembers()
+    .find((member) => member.userId !== room.myUserId)!;
+  const reactions = room.timeline
+    .filter((event) => event.getContent().msgtype === "m.reaction")
+    .map((event) => ({
+      messageId: event.getContent().messageId,
+      emoji: event.getContent().emoji,
+    }));
+  return {
+    id: room.roomId,
+    name: interlocutor.name,
+    user: {
+      id: interlocutor.userId,
       name: interlocutor.name,
-      user: {
-        id: interlocutor.userId,
-        name: interlocutor.name,
-        isOnline: false,
-      },
-      lastSeen: 0,
-      isMember: room.getMyMembership() === "join",
-      messages: [
-        ...room.timeline
-          .filter((event) => event.getType() === EventType.RoomMessage)
-          .filter((event) => event.getContent().msgtype === "m.text")
-          .map((event) => {
-            const sender = {
-              id: event.getSender(),
-              name: members.get(event.getSender()) ?? event.getSender(),
-              isOnline: false,
-            };
-            return {
-              id: event.getId(),
-              text: event.getContent().body,
-              timestamp: event.getTs(),
-              sender,
-              parentId: event.getContent().parentId,
-              forwardedFrom: event.getContent().forwardedFrom,
-              reactions: reactions
-                .filter((reaction) => reaction.messageId === event.getId())
-                .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
-              confirmed: true,
-            };
-          }),
-      ],
-    };
-  });
+      isOnline: false,
+    },
+    lastSeen: 0,
+    isMember: room.getMyMembership() === "join",
+    messages: await Promise.all([
+      ...room.timeline
+        .filter((event) => event.getType() === EventType.RoomMessage)
+        .filter((event) => event.getContent().msgtype === "m.text")
+        .map(async (event) => {
+          const sender = await getUser(event.getSender());
+          return {
+            id: event.getId(),
+            text: event.getContent().body,
+            timestamp: event.getTs(),
+            sender,
+            parentId: event.getContent().parentId,
+            forwardedFrom: event.getContent().forwardedFrom,
+            reactions: reactions
+              .filter((reaction) => reaction.messageId === event.getId())
+              .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+            confirmed: true,
+          };
+        }),
+    ]),
+  };
+};
+
+export const getChats = () => {
+  return Promise.all(getPrivateRooms().map((room) => getChatFromRoom(room)));
+};
+
+export const scrollbackRoom = async (roomId: string) => {
+  const room = client.getRoom(roomId);
+  if (room && room.oldState.paginationToken) {
+    await client.scrollback(room);
+    return getChatFromRoom(room);
+  } else {
+    return null;
+  }
 };
 
 export type OnMessageCallback = (params: {

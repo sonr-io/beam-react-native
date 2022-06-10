@@ -5,6 +5,7 @@ import {
   OnReactionCallback,
   onReceiveMessage,
   onNewChat,
+  scrollbackRoom,
 } from "./matrix";
 
 export const useListeners = () => {
@@ -66,4 +67,21 @@ export const useListeners = () => {
   };
 
   return { addListeners, addRoomListeners };
+};
+
+export const useScrollback = (roomId: string) => {
+  const { setChats } = useChatContext();
+
+  const scrollback = async () => {
+    const chat = await scrollbackRoom(roomId);
+    if (chat) {
+      setChats((chats) => {
+        const index = chats.findIndex((_chat) => _chat.id === chat.id);
+        chats[index] = chat;
+        return [...chats];
+      });
+    }
+  };
+
+  return { scrollback };
 };

@@ -106,13 +106,15 @@ export const ChatContextProvider: React.FC<Props> = ({
 
       if (chat) {
         const i = chat.messages.findIndex((m) => m.id === messageId);
-        const reactionIndex = chat.messages[i].reactions.findIndex(
-          (e) => e.user.id === user.id && e.emoji === emojiChar
-        );
-        if (reactionIndex >= 0) {
-          chat.messages[i].reactions.splice(reactionIndex, 1);
-        } else {
-          chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
+        if (i >= 0) {
+          const reactionIndex = chat.messages[i].reactions.findIndex(
+            (e) => e.user.id === user.id && e.emoji === emojiChar
+          );
+          if (reactionIndex >= 0) {
+            chat.messages[i].reactions.splice(reactionIndex, 1);
+          } else {
+            chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
+          }
         }
       }
 
