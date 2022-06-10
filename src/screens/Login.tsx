@@ -3,12 +3,15 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import {
   ActivityIndicator,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import KeyboardSpacer from "react-native-keyboard-spacer";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackParams } from "../../App";
 import { getChats, getUser, login } from "../lib/matrix";
@@ -27,6 +30,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const insets = useSafeAreaInsets();
 
   const onLogin = async (username: string, password: string) => {
     setError(false);
@@ -80,7 +84,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <View style={{ flexDirection: "row" }}>
+        <View style={styles.presetContainer}>
           {presetUsers.map(({ username, password }) => (
             <TouchableOpacity
               key={username}
@@ -93,6 +97,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
           ))}
         </View>
+
+        {Platform.OS === "ios" && (
+          <KeyboardSpacer topSpacing={-insets.bottom} />
+        )}
       </View>
 
       {loading && (
@@ -127,12 +135,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
+  presetContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignContent: "space-between",
+  },
   presetUser: {
     borderRadius: 20,
     paddingVertical: 5,
     paddingHorizontal: 10,
     backgroundColor: "lightgray",
     marginRight: 10,
+    marginBottom: 10,
   },
   error: {
     marginBottom: 20,
