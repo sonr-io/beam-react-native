@@ -11,8 +11,7 @@ import {
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
 
-import { Chat } from "../types/Chat";
-import { User } from "../types/User";
+import { Chat, User } from "../types/Chat";
 
 export const login = async (user: string, password: string) => {
   client.stopClient();

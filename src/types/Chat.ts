@@ -1,4 +1,8 @@
-import { User } from "./User";
+export type User = {
+  id: string;
+  name: string;
+  isOnline: boolean;
+};
 
 export type Reaction = {
   emoji: string;

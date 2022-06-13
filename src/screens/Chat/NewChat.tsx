@@ -10,7 +10,7 @@ import { UserList } from "../../components/UserList";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useListeners } from "../../lib/matrixHooks";
 import { client } from "../../matrixClient";
-import { User } from "../../types/User";
+import { User } from "../../types/Chat";
 
 type Props = StackScreenProps<Params, "NewChat">;
 

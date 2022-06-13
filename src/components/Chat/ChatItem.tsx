@@ -2,8 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 
-import { Message } from "../../types/Chat";
-import { User } from "../../types/User";
+import { Message, User } from "../../types/Chat";
 import { MessageBubble } from "../MessageBubble";
 import { ReplyBubble } from "../ReplyBubble";
 

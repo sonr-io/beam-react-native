@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   SectionList,
 } from "react-native";
-import { User } from "../types/User";
+import { User } from "../types/Chat";
 import { Avatar } from "./Avatar/Avatar";
 
 type Props = {

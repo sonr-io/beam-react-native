@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useChatContext } from "../contexts/ChatContext";
 import IconClose from "../icons/Close";
-import { User } from "../types/User";
+import { User } from "../types/Chat";
 import { UserList } from "./UserList";
 
 interface Props {

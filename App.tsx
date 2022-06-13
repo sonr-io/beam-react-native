@@ -12,8 +12,7 @@ import { useFonts } from "expo-font";
 
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
-import { User } from "./src/types/User";
-import { Chat } from "./src/types/Chat";
+import { Chat, User } from "./src/types/Chat";
 
 const Stack = createStackNavigator();
 

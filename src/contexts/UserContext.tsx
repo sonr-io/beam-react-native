@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 
-import { User } from "../types/User";
+import { User } from "../types/Chat";
 
 type UserContextType = { user: User };
 const UserContext = createContext<UserContextType>({
