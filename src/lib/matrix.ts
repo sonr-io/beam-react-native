@@ -50,7 +50,6 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     }));
   return {
     id: room.roomId,
-    name: interlocutor.name,
     user: {
       id: interlocutor.userId,
       name: interlocutor.name,
