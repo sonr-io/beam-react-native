@@ -1,7 +1,14 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { DateTime } from "luxon";
 import React, { useEffect, useRef, useState } from "react";
-import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,6 +26,7 @@ import IconBackArrow from "../../icons/BackArrow";
 // import IconBeam from "../../icons/Beam";
 // import IconMore from "../../icons/More";
 import { getFormattedDay } from "../../lib/getFormattedDay";
+import { useScrollback } from "../../lib/matrixHooks";
 import { client } from "../../matrixClient";
 import { Chat, Message, ViewableMessage } from "../../types/Chat";
 import { User } from "../../types/User";
@@ -50,24 +58,23 @@ const ios = Platform.OS === "ios";
 type Props = StackScreenProps<Params, "ChatView">;
 
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
+  const { id: chatId } = route.params;
   const { user } = useUserContext();
   const { chats, addMessage, confirmMessage } = useChatContext();
+  const { scrollback } = useScrollback(chatId);
 
   const [chatRoom, setChatRoom] = useState<Chat>();
   const [recipient, setRecipient] = useState<User>();
   const [messages, setMessages] = useState<ViewableMessage[]>([]);
   const [showScrollDown, setShowScrollDown] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const flatListRef = useRef<FlatList>(null);
 
   const insets = useSafeAreaInsets();
   const FLATLIST_BOTTOM_OFFSET = 58 + insets.bottom;
-  const { id: chatId } = route.params;
 
   useEffect(() => {
-    if (!chatId || !chats || !chats.length) {
-      return;
-    }
     const chat = chats.find((chat) => chat.id === chatId);
     if (!chat) {
       return;
@@ -76,7 +83,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     setChatRoom(chat);
     setRecipient(chat.user);
     setMessages(toViewable(chat.messages).reverse());
-  }, [chats, chatId]);
+  }, [chats]);
 
   const pushMessage = async (message: string) => {
     const tempId = uuid.v4() as string;
@@ -98,8 +105,13 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  const getParentMessage = (message: Message) => {
-    return messages.find((m) => m.id === message.parentId);
+  const onEndReached = async () => {
+    try {
+      setLoading(true);
+      await scrollback();
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!chatRoom || !recipient) {
@@ -145,34 +157,42 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
           const { y: yOffset } = event.nativeEvent.contentOffset;
           setShowScrollDown(yOffset > 100);
         }}
-        renderItem={({ item }) => {
-          return (
-            <View>
-              {item.showDate && (
-                <View style={styles.dateSeparatorContainer}>
-                  <View style={styles.line} />
-                  <Text style={styles.dateSeparator}>
-                    {getFormattedDay(item.timestamp)}
-                  </Text>
-                  <View style={styles.line} />
-                </View>
-              )}
-              <ChatItem
-                message={item}
-                parentMessage={getParentMessage(item)}
-                user={user}
-                onSwipe={() => {
-                  navigation.navigate("MessageMenu", {
-                    chatId,
-                    message: item,
-                  });
-                }}
-              />
-              {item.last && <View style={{ marginTop: 8 }} />}
-            </View>
-          );
-        }}
+        onEndReachedThreshold={1}
+        onEndReached={onEndReached}
+        renderItem={({ item }: { item: ViewableMessage }) => (
+          <View>
+            {item.showDate && (
+              <View style={styles.dateSeparatorContainer}>
+                <View style={styles.line} />
+                <Text style={styles.dateSeparator}>
+                  {getFormattedDay(item.timestamp)}
+                </Text>
+                <View style={styles.line} />
+              </View>
+            )}
+            <ChatItem
+              message={item}
+              parentSender={item.parentSender}
+              parentText={item.parentText}
+              user={user}
+              onSwipe={() => {
+                navigation.navigate("MessageMenu", {
+                  chatId,
+                  message: item,
+                });
+              }}
+            />
+            {item.last && <View style={{ marginTop: 8 }} />}
+          </View>
+        )}
         ListEmptyComponent={() => <ListEmpty />}
+        ListFooterComponent={() =>
+          loading ? (
+            <View style={{ marginTop: 16 }}>
+              <ActivityIndicator />
+            </View>
+          ) : null
+        }
         keyExtractor={(item) => item.id}
       />
       {showScrollDown && (

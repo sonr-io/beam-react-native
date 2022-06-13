@@ -8,18 +8,22 @@ import { Chat } from "../types/Chat";
 import { Emoji } from "../types/Emoji";
 import { User } from "../types/User";
 
+type AddMessage = (params: {
+  id: string;
+  chatId: string;
+  message: string;
+  sender: User;
+  parentId?: string;
+  parentSender?: User;
+  parentText?: string;
+  forwardedFrom?: string;
+  confirmed: boolean;
+}) => void;
+
 type ChatContextType = {
   chats: Chat[];
   setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
-  addMessage: (params: {
-    id: string;
-    chatId: string;
-    message: string;
-    sender: User;
-    parentId?: string;
-    forwardedFrom?: string;
-    confirmed: boolean;
-  }) => void;
+  addMessage: AddMessage;
   addReaction: (chatId: string, messageId: string, emoji: Emoji) => void;
   addReactionToMessage: (
     chatId: string,
@@ -51,22 +55,16 @@ export const ChatContextProvider: React.FC<Props> = ({
   const { user } = useUserContext();
   const { addEmojiToHistory } = useEmojiHistoryContext();
 
-  const addMessage = ({
+  const addMessage: AddMessage = ({
     id,
     chatId,
     message,
     parentId,
+    parentSender,
+    parentText,
     forwardedFrom,
     sender,
     confirmed,
-  }: {
-    id: string;
-    chatId: string;
-    message: string;
-    sender: User;
-    parentId?: string;
-    forwardedFrom?: string;
-    confirmed: boolean;
   }) => {
     setChats((chats) =>
       chats.map((chat) => {
@@ -81,6 +79,8 @@ export const ChatContextProvider: React.FC<Props> = ({
           sender,
           reactions: [],
           parentId,
+          parentSender,
+          parentText,
           forwardedFrom,
           confirmed,
         });
@@ -106,13 +106,15 @@ export const ChatContextProvider: React.FC<Props> = ({
 
       if (chat) {
         const i = chat.messages.findIndex((m) => m.id === messageId);
-        const reactionIndex = chat.messages[i].reactions.findIndex(
-          (e) => e.user.id === user.id && e.emoji === emojiChar
-        );
-        if (reactionIndex >= 0) {
-          chat.messages[i].reactions.splice(reactionIndex, 1);
-        } else {
-          chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
+        if (i >= 0) {
+          const reactionIndex = chat.messages[i].reactions.findIndex(
+            (e) => e.user.id === user.id && e.emoji === emojiChar
+          );
+          if (reactionIndex >= 0) {
+            chat.messages[i].reactions.splice(reactionIndex, 1);
+          } else {
+            chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
+          }
         }
       }
 
