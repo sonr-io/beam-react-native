@@ -11,7 +11,6 @@ import {
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import uuid from "react-native-uuid";
 
 import { Params } from ".";
 import BlurView from "../../components/BlurView";
@@ -21,7 +20,6 @@ import { MessageBubble } from "../../components/MessageBubble";
 import { MessageInput } from "../../components/MessageInput";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
-import IconCopy from "../../icons/Copy";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
 import { charFromEmojiObject } from "../../lib/emoji";
@@ -36,7 +34,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
-  const { addReaction, addMessage, confirmMessage } = useChatContext();
+  const { addReaction } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
 
   const pushEmoji = async (emoji: Emoji) => {
@@ -49,27 +47,15 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
     });
   };
 
-  const pushMessage = async (text: string) => {
-    const tempId = uuid.v4() as string;
-    addMessage({
-      id: tempId,
-      chatId,
-      message: text,
-      sender: user,
-      parentId: message.id as string,
-      parentSender: message.sender,
-      parentText: message.text,
-      confirmed: false,
-    });
+  const pushMessage = (text: string) => {
     navigation.goBack();
-    const { event_id: id } = await client.sendMessage(chatId, {
+    client.sendMessage(chatId, {
       msgtype: "m.text",
       body: text,
       parentId: message.id,
       parentSender: message.sender,
       parentText: message.text,
     });
-    confirmMessage(chatId, tempId, id);
   };
 
   const handleEmojiSelectorVisibility = () => {
@@ -102,7 +88,6 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           text={message.text}
           timestamp={message.timestamp}
           isIncoming={user.id !== message.sender.id}
-          isLoading={false}
           showTimestamp={true}
           reactions={message.reactions.map((r) => r.emoji)}
         />

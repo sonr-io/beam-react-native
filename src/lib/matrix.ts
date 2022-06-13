@@ -77,7 +77,6 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
             reactions: reactions
               .filter((reaction) => reaction.messageId === event.getId())
               .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
-            confirmed: true,
           };
         }),
     ]),
@@ -137,30 +136,28 @@ const _onReceiveMessage = (
   roomId: string
 ) => {
   client.on(RoomEvent.Timeline, async (event) => {
-    if (
-      event.getRoomId() === roomId &&
-      event.getType() === EventType.RoomMessage &&
-      event.getSender() !== client.getUserId()
-    ) {
-      if (event.getContent().msgtype === "m.reaction") {
-        onReaction({
-          roomId: roomId,
-          messageId: event.getContent().messageId,
-          sender: await getUser(event.getSender()),
-          emoji: event.getContent().emoji,
-        });
-      } else {
-        onMessage({
-          messageId: event.getId(),
-          roomId: roomId,
-          message: event.getContent().body,
-          sender: await getUser(event.getSender()),
-          parentId: event.getContent().parentId,
-          parentSender: event.getContent().parentSender,
-          parentText: event.getContent().parentText,
-          forwardedFrom: event.getContent().forwardedFrom,
-        });
-      }
+    const isMessage = event.getType() === EventType.RoomMessage;
+    const isDifferentRoom = event.getRoomId() !== roomId;
+    if (!isMessage || isDifferentRoom) return;
+
+    if (event.getContent().msgtype === "m.reaction") {
+      onReaction({
+        roomId: roomId,
+        messageId: event.getContent().messageId,
+        sender: await getUser(event.getSender()),
+        emoji: event.getContent().emoji,
+      });
+    } else {
+      onMessage({
+        messageId: event.getId(),
+        roomId: roomId,
+        message: event.getContent().body,
+        sender: await getUser(event.getSender()),
+        parentId: event.getContent().parentId,
+        parentSender: event.getContent().parentSender,
+        parentText: event.getContent().parentText,
+        forwardedFrom: event.getContent().forwardedFrom,
+      });
     }
   });
 };

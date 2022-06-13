@@ -9,7 +9,6 @@ import IconForwarded from "../icons/Forwarded";
 type Props = {
   text: string;
   isIncoming: boolean;
-  isLoading: boolean;
   timestamp: number;
   showTimestamp: boolean;
   reactions: string[];
@@ -19,10 +18,9 @@ type Props = {
 export const MessageBubble = (props: Props) => {
   const stylesCustom = props.isIncoming ? stylesIncoming : stylesOutgoing;
   const splitText = splitMessageText(props.text);
-  const opacityStyle = { opacity: props.isLoading ? 0.4 : 1 };
 
   return (
-    <View style={[stylesCustom.container, opacityStyle]}>
+    <View style={stylesCustom.container}>
       <View style={[stylesCommon.bubble, stylesCustom.bubble]}>
         {props.showTimestamp && (
           <Text style={[stylesCommon.time, stylesCustom.time]}>

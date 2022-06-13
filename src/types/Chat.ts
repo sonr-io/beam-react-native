@@ -15,7 +15,6 @@ export type Message = {
   parentSender?: User;
   parentText?: string;
   forwardedFrom?: string;
-  confirmed: boolean;
 };
 
 export type ViewableMessage = Message & { last: boolean; showDate: boolean };

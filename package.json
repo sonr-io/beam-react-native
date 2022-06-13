@@ -49,7 +49,6 @@
     "react-native-screens": "~3.10.1",
     "react-native-scrollable-tab-view": "ptomasroos/react-native-scrollable-tab-view#1371236e91c217e2f42468e355419f83410e3133",
     "react-native-svg": "12.1.1",
-    "react-native-uuid": "^2.0.1",
     "react-native-web": "0.17.1",
     "string.prototype.matchall": "^4.0.7",
     "xmlhttp-request": "^0.4.1"
