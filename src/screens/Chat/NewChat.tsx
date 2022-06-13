@@ -43,13 +43,11 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    try {
-      await client.getProfileInfo(fullId);
-    } catch {
+    const profile = await client.getProfileInfo(fullId).catch(() => {
       setLoading(false);
       setError(true);
-      return;
-    }
+    });
+    if (!profile) return;
 
     const response = await client.createRoom({
       invite: [fullId],
