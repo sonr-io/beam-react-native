@@ -61,7 +61,6 @@ export const ChatItem: React.FC<Props> = ({
           text={message.text}
           timestamp={message.timestamp}
           isIncoming={!isSender}
-          isLoading={!message.confirmed}
           showTimestamp={showTimestamp}
           reactions={message.reactions.map((r) => r.emoji)}
           forwardedFrom={message.forwardedFrom}

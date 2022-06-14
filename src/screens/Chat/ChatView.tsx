@@ -12,7 +12,6 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import uuid from "react-native-uuid";
 
 import { Params } from ".";
 import { Avatar } from "../../components/Avatar/Avatar";
@@ -60,7 +59,7 @@ type Props = StackScreenProps<Params, "ChatView">;
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { id: chatId } = route.params;
   const { user } = useUserContext();
-  const { chats, addMessage, confirmMessage } = useChatContext();
+  const { chats } = useChatContext();
   const { scrollback } = useScrollback(chatId);
 
   const [chatRoom, setChatRoom] = useState<Chat>();
@@ -85,14 +84,11 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     setMessages(toViewable(chat.messages).reverse());
   }, [chats]);
 
-  const pushMessage = async (message: string) => {
-    const tempId = uuid.v4() as string;
-    addMessage({ id: tempId, chatId, message, sender: user, confirmed: false });
-    const { event_id: id } = await client.sendMessage(chatId, {
+  const pushMessage = (message: string) => {
+    client.sendMessage(chatId, {
       msgtype: "m.text",
       body: message,
     });
-    confirmMessage(chatId, tempId, id);
     scrollToBottom();
   };
 

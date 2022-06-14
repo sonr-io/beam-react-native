@@ -17,7 +17,6 @@ type AddMessage = (params: {
   parentSender?: User;
   parentText?: string;
   forwardedFrom?: string;
-  confirmed: boolean;
 }) => void;
 
 type ChatContextType = {
@@ -31,7 +30,6 @@ type ChatContextType = {
     user: User,
     emoji: string
   ) => void;
-  confirmMessage: (chatId: string, tempId: string, id: string) => void;
 };
 
 const ChatContext = createContext<ChatContextType>({
@@ -40,7 +38,6 @@ const ChatContext = createContext<ChatContextType>({
   addMessage: () => {},
   addReaction: () => {},
   addReactionToMessage: () => {},
-  confirmMessage: () => {},
 });
 export const useChatContext = () => useContext(ChatContext);
 
@@ -64,7 +61,6 @@ export const ChatContextProvider: React.FC<Props> = ({
     parentText,
     forwardedFrom,
     sender,
-    confirmed,
   }) => {
     setChats((chats) =>
       chats.map((chat) => {
@@ -82,7 +78,6 @@ export const ChatContextProvider: React.FC<Props> = ({
           parentSender,
           parentText,
           forwardedFrom,
-          confirmed,
         });
         return chat;
       })
@@ -122,19 +117,6 @@ export const ChatContextProvider: React.FC<Props> = ({
     });
   };
 
-  const confirmMessage = (chatId: string, tempId: string, id: string) => {
-    setChats((chats) => {
-      const chat = chats.find((chat) => chat.id === chatId);
-      if (chat) {
-        const i = chat.messages.findIndex((m) => m.id === tempId);
-        chat.messages[i].id = id;
-        chat.messages[i].confirmed = true;
-      }
-
-      return [...chats];
-    });
-  };
-
   return (
     <ChatContext.Provider
       value={{
@@ -143,7 +125,6 @@ export const ChatContextProvider: React.FC<Props> = ({
         addMessage,
         addReaction,
         addReactionToMessage,
-        confirmMessage,
       }}
     >
       {children}
