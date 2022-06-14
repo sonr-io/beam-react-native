@@ -18,7 +18,6 @@ import { EmojiPresetBar } from "../../components/Emojis/EmojiPresetBar";
 import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
 import { MessageBubble } from "../../components/MessageBubble";
 import { MessageInput } from "../../components/MessageInput";
-import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
@@ -34,12 +33,11 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
-  const { addReaction } = useChatContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
 
-  const pushEmoji = async (emoji: Emoji) => {
-    addReaction(chatId, message.id as string, emoji);
-    await client.sendMessage(chatId, {
+  const pushEmoji = (emoji: Emoji) => {
+    navigation.goBack();
+    client.sendMessage(chatId, {
       msgtype: "m.reaction",
       body: "",
       messageId: message.id,
