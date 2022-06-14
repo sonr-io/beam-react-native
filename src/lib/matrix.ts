@@ -49,6 +49,29 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       messageId: event.getContent().messageId,
       emoji: event.getContent().emoji,
     }));
+
+  const messages = await Promise.all([
+    ...room.timeline
+      .filter((event) => event.getType() === EventType.RoomMessage)
+      .filter((event) => event.getContent().msgtype === "m.text")
+      .map(async (event) => {
+        const sender = await getUser(event.getSender());
+        return {
+          id: event.getId(),
+          text: event.getContent().body,
+          timestamp: event.getTs(),
+          sender,
+          parentId: event.getContent().parentId,
+          parentSender: event.getContent().parentSender,
+          parentText: event.getContent().parentText,
+          forwardedFrom: event.getContent().forwardedFrom,
+          reactions: reactions
+            .filter((reaction) => reaction.messageId === event.getId())
+            .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+        };
+      }),
+  ]);
+
   return {
     id: room.roomId,
     user: {
@@ -58,27 +81,10 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     },
     lastSeen: 0,
     isMember: room.getMyMembership() === "join",
-    messages: await Promise.all([
-      ...room.timeline
-        .filter((event) => event.getType() === EventType.RoomMessage)
-        .filter((event) => event.getContent().msgtype === "m.text")
-        .map(async (event) => {
-          const sender = await getUser(event.getSender());
-          return {
-            id: event.getId(),
-            text: event.getContent().body,
-            timestamp: event.getTs(),
-            sender,
-            parentId: event.getContent().parentId,
-            parentSender: event.getContent().parentSender,
-            parentText: event.getContent().parentText,
-            forwardedFrom: event.getContent().forwardedFrom,
-            reactions: reactions
-              .filter((reaction) => reaction.messageId === event.getId())
-              .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
-          };
-        }),
-    ]),
+    preview: {
+      text: messages[0]?.text || "",
+    },
+    messages,
   };
 };
 

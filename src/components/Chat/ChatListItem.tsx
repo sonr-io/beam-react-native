@@ -13,6 +13,7 @@ type Props = {
 
 export const ChatListItem = (props: Props) => {
   const {
+    preview,
     lastSeen,
     messages,
     user: { name },
@@ -62,7 +63,7 @@ export const ChatListItem = (props: Props) => {
           </View>
 
           <Text style={styles.lastMessage} numberOfLines={1}>
-            {lastMessage.text}
+            {preview.text}
           </Text>
         </View>
       </View>

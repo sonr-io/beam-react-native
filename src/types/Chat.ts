@@ -29,6 +29,12 @@ export type Chat = {
   isMember: boolean;
   user: User;
   messages: Message[];
+  preview: ChatPreview;
+};
+
+type ChatPreview = {
+  label?: string;
+  text: string;
 };
 
 export type PageMeta = {
