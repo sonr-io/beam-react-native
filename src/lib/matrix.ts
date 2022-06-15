@@ -71,7 +71,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       }),
   ]);
 
-  const lastEvent = room.timeline
+  const lastEvent = [...room.timeline]
     .reverse()
     .find(
       (event) =>
