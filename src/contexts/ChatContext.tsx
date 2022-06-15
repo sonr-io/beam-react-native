@@ -54,7 +54,7 @@ export const ChatContextProvider: React.FC<Props> = ({
   const addMessage: AddMessage = ({
     id,
     chatId,
-    message,
+    message: text,
     parentId,
     parentSender,
     parentText,
@@ -66,10 +66,10 @@ export const ChatContextProvider: React.FC<Props> = ({
         if (chat.id !== chatId) {
           return chat;
         }
-
+        chat.preview = { text };
         chat.messages.push({
           id,
-          text: message,
+          text,
           timestamp: new Date().getTime(),
           sender,
           reactions: [],
@@ -95,10 +95,10 @@ export const ChatContextProvider: React.FC<Props> = ({
     user: User,
     emojiChar: string
   ) => {
-    setChats((chats) => {
-      const chat = chats.find((chat) => chat.id === chatId);
+    setChats((chats) =>
+      chats.map((chat) => {
+        if (chat.id !== chatId) return chat;
 
-      if (chat) {
         const i = chat.messages.findIndex((m) => m.id === messageId);
         if (i >= 0) {
           const reactionIndex = chat.messages[i].reactions.findIndex(
@@ -110,10 +110,10 @@ export const ChatContextProvider: React.FC<Props> = ({
             chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
           }
         }
-      }
 
-      return [...chats];
-    });
+        return chat;
+      })
+    );
   };
 
   return (
