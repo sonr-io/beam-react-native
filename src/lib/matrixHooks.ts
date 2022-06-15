@@ -47,7 +47,7 @@ export const useListeners = () => {
     if (!initialListenersAdded) {
       // only add listeners one time to avoid receiving repeated messages
       onReceiveMessage(onMessage, onReaction);
-      onNewChat(({ id, name, user, room }) => {
+      onNewChat(({ id, user, room }) => {
         addRoomListeners(room.roomId);
         setChats((chats) => {
           chats.push({
@@ -57,6 +57,7 @@ export const useListeners = () => {
             isMember: false,
             user,
             preview: null,
+            lastActivity: Date.now(),
           });
           return [...chats];
         });

@@ -30,6 +30,7 @@ export type Chat = {
   user: User;
   messages: Message[];
   preview: ChatPreview | null;
+  lastActivity: number;
 };
 
 type ChatPreview = {

@@ -13,19 +13,18 @@ type Props = {
 
 export const ChatListItem = (props: Props) => {
   const {
-    preview,
     lastSeen,
     messages,
     user: { name },
+    preview,
+    lastActivity,
   } = props.chat;
 
   const lastMessage = messages[messages.length - 1] || {
-    timestamp: Date.now(),
-    text: " ",
     sender: { isOnline: false },
   };
 
-  const elapsedTime = timeAgo(lastMessage.timestamp);
+  const elapsedTime = timeAgo(lastActivity);
 
   const totalUnReadMessages = messages.reduce((count, message) => {
     if (message.timestamp > lastSeen) {

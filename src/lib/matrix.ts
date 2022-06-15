@@ -97,8 +97,9 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     },
     lastSeen: 0,
     isMember: room.getMyMembership() === "join",
-    preview,
     messages,
+    preview,
+    lastActivity: room.getLastActiveTimestamp(),
   };
 };
 

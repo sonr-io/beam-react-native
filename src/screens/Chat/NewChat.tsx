@@ -61,7 +61,8 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       id: response.room_id,
       lastSeen: 0,
       messages: [],
-      preview: { text: "" },
+      preview: null,
+      lastActivity: Date.now(),
       isMember: true,
       user: {
         id: fullId,

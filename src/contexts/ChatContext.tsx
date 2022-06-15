@@ -63,10 +63,8 @@ export const ChatContextProvider: React.FC<Props> = ({
   }) => {
     setChats((chats) =>
       chats.map((chat) => {
-        if (chat.id !== chatId) {
-          return chat;
-        }
-        chat.preview = { text };
+        if (chat.id !== chatId) return chat;
+
         chat.messages.push({
           id,
           text,
@@ -78,6 +76,12 @@ export const ChatContextProvider: React.FC<Props> = ({
           parentText,
           forwardedFrom,
         });
+
+        if (Date.now() > chat.lastActivity) {
+          chat.lastActivity = Date.now();
+          chat.preview = { text };
+        }
+
         return chat;
       })
     );
@@ -100,15 +104,20 @@ export const ChatContextProvider: React.FC<Props> = ({
         if (chat.id !== chatId) return chat;
 
         const i = chat.messages.findIndex((m) => m.id === messageId);
-        if (i >= 0) {
-          const reactionIndex = chat.messages[i].reactions.findIndex(
-            (e) => e.user.id === user.id && e.emoji === emojiChar
-          );
-          if (reactionIndex >= 0) {
-            chat.messages[i].reactions.splice(reactionIndex, 1);
-          } else {
-            chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
-          }
+        if (i < 0) return chat;
+
+        const reactionIndex = chat.messages[i].reactions.findIndex(
+          (e) => e.user.id === user.id && e.emoji === emojiChar
+        );
+        if (reactionIndex >= 0) {
+          chat.messages[i].reactions.splice(reactionIndex, 1);
+          return chat;
+        }
+
+        chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
+
+        if (Date.now() > chat.lastActivity) {
+          chat.lastActivity = Date.now();
           chat.preview = {
             label: `Reacted: ${emojiChar}`,
             text: chat.messages[i].text,
