@@ -63,7 +63,11 @@ export const ChatListItem = (props: Props) => {
           </View>
 
           <Text style={styles.lastMessage} numberOfLines={1}>
-            {preview.text}
+            {preview ? (
+              preview.text
+            ) : (
+              <Text style={{ color: "#D1CED7" }}>No messages</Text>
+            )}
           </Text>
         </View>
       </View>

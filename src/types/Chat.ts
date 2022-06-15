@@ -29,7 +29,7 @@ export type Chat = {
   isMember: boolean;
   user: User;
   messages: Message[];
-  preview: ChatPreview;
+  preview: ChatPreview | null;
 };
 
 type ChatPreview = {

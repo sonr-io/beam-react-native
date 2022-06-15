@@ -11,7 +11,7 @@ import {
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
 
-import { Chat, User } from "../types/Chat";
+import { Chat, Message, User } from "../types/Chat";
 import nameFromMatrixId from "./nameFromMatrixId";
 
 export const login = async (user: string, password: string) => {
@@ -72,6 +72,9 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       }),
   ]);
 
+  const preview =
+    messages.length > 0 ? { text: messages[messages.length - 1].text } : null;
+
   return {
     id: room.roomId,
     user: {
@@ -81,9 +84,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     },
     lastSeen: 0,
     isMember: room.getMyMembership() === "join",
-    preview: {
-      text: messages[0]?.text || "",
-    },
+    preview,
     messages,
   };
 };
