@@ -12,7 +12,11 @@ type Props = {
 };
 
 export const ChatListItem = (props: Props) => {
-  const { name, lastSeen, messages } = props.chat;
+  const {
+    lastSeen,
+    messages,
+    user: { name },
+  } = props.chat;
 
   const lastMessage = messages[messages.length - 1] || {
     timestamp: Date.now(),

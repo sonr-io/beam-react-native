@@ -4,9 +4,8 @@ import { useUserContext } from "./UserContext";
 import { useEmojiHistoryContext } from "./EmojiHistoryContext";
 import { charFromEmojiObject } from "../lib/emoji";
 
-import { Chat } from "../types/Chat";
+import { Chat, User } from "../types/Chat";
 import { Emoji } from "../types/Emoji";
-import { User } from "../types/User";
 
 type AddMessage = (params: {
   id: string;

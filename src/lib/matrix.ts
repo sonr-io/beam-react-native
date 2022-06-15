@@ -11,8 +11,8 @@ import {
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
 
-import { Chat } from "../types/Chat";
-import { User } from "../types/User";
+import { Chat, User } from "../types/Chat";
+import nameFromMatrixId from "./nameFromMatrixId";
 
 export const login = async (user: string, password: string) => {
   client.stopClient();
@@ -51,10 +51,9 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     }));
   return {
     id: room.roomId,
-    name: interlocutor.name,
     user: {
       id: interlocutor.userId,
-      name: interlocutor.name,
+      name: nameFromMatrixId(interlocutor.userId),
       isOnline: false,
     },
     lastSeen: 0,

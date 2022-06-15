@@ -9,7 +9,7 @@ import UserSelector from "../../components/UserSelector";
 import { useChatContext } from "../../contexts/ChatContext";
 import { client } from "../../matrixClient";
 
-import { User } from "../../types/User";
+import { User } from "../../types/Chat";
 
 type Props = StackScreenProps<Params, "ForwardMenu">;
 

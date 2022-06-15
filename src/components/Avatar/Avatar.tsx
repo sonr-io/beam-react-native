@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { User } from "../../types/User";
+import { User } from "../../types/Chat";
 import IconUser from "../../icons/User";
 
 export const Avatar = (props: { user: User }) => {

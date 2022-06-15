@@ -22,13 +22,11 @@ import { useChatContext } from "../../contexts/ChatContext";
 import { useUserContext } from "../../contexts/UserContext";
 import IconArrowDown from "../../icons/ArrowDown";
 import IconBackArrow from "../../icons/BackArrow";
-// import IconBeam from "../../icons/Beam";
-// import IconMore from "../../icons/More";
+
 import { getFormattedDay } from "../../lib/getFormattedDay";
 import { useScrollback } from "../../lib/matrixHooks";
 import { client } from "../../matrixClient";
-import { Chat, Message, ViewableMessage } from "../../types/Chat";
-import { User } from "../../types/User";
+import { Chat, Message, User, ViewableMessage } from "../../types/Chat";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
   const messageItems: ViewableMessage[] = messages.map((m) => ({

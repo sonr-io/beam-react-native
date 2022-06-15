@@ -10,7 +10,7 @@ import { UserList } from "../../components/UserList";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useListeners } from "../../lib/matrixHooks";
 import { client } from "../../matrixClient";
-import { User } from "../../types/User";
+import { User } from "../../types/Chat";
 
 type Props = StackScreenProps<Params, "NewChat">;
 
@@ -43,13 +43,11 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    try {
-      await client.getProfileInfo(fullId);
-    } catch {
+    const profile = await client.getProfileInfo(fullId).catch(() => {
       setLoading(false);
       setError(true);
-      return;
-    }
+    });
+    if (!profile) return;
 
     const response = await client.createRoom({
       invite: [fullId],
@@ -63,7 +61,6 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       id: response.room_id,
       lastSeen: 0,
       messages: [],
-      name: id,
       isMember: true,
       user: {
         id: fullId,

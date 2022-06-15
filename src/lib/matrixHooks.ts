@@ -54,7 +54,6 @@ export const useListeners = () => {
             id,
             lastSeen: 0,
             messages: [],
-            name,
             isMember: false,
             user,
           });
