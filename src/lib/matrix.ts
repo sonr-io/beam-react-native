@@ -155,7 +155,7 @@ const _onReceiveMessage = (
   onReaction: OnReactionCallback,
   roomId: string
 ) => {
-  client.on(RoomEvent.Timeline, async (event) => {
+  client.on(ClientEvent.Event, async (event) => {
     const isMessage = event.getType() === EventType.RoomMessage;
     const isDifferentRoom = event.getRoomId() !== roomId;
     if (!isMessage || isDifferentRoom) return;
