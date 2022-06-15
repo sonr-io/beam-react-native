@@ -41,6 +41,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
       msgtype: "m.reaction",
       body: "",
       messageId: message.id,
+      parentText: message.text,
       emoji: charFromEmojiObject(emoji),
     });
   };

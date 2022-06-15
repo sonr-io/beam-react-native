@@ -52,7 +52,6 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
 
   const messages = await Promise.all([
     ...room.timeline
-      .filter((event) => event.getType() === EventType.RoomMessage)
       .filter((event) => event.getContent().msgtype === "m.text")
       .map(async (event) => {
         const sender = await getUser(event.getSender());
@@ -72,8 +71,22 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       }),
   ]);
 
-  const preview =
-    messages.length > 0 ? { text: messages[messages.length - 1].text } : null;
+  const lastEvent = room.timeline
+    .reverse()
+    .find(
+      (event) =>
+        event.getContent().msgtype === "m.text" ||
+        event.getContent().msgtype === "m.reaction"
+    );
+
+  const preview = lastEvent
+    ? lastEvent?.getContent().msgtype === "m.reaction"
+      ? {
+          text: lastEvent.getContent().parentText,
+          label: `Reacted: ${lastEvent.getContent().emoji}`,
+        }
+      : { text: lastEvent.getContent().body }
+    : null;
 
   return {
     id: room.roomId,

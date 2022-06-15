@@ -109,6 +109,10 @@ export const ChatContextProvider: React.FC<Props> = ({
           } else {
             chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
           }
+          chat.preview = {
+            label: `Reacted: ${emojiChar}`,
+            text: chat.messages[i].text,
+          };
         }
 
         return chat;
