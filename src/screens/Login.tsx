@@ -36,21 +36,22 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     setError(false);
     setLoading(true);
 
-    try {
-      await login(username, password);
-      const user = await getUser(client.getUserId());
-      const chats = await getChats();
-
-      chats
-        .filter((chat) => !chat.isMember)
-        .map((chat) => client.joinRoom(chat.id));
-
-      navigation.navigate("Chat", { user, chats });
-    } catch {
+    const client = await login(username, password).catch(() => null);
+    if (!client) {
       setError(true);
-    } finally {
       setLoading(false);
+      return;
     }
+
+    const user = await getUser(client.getUserId());
+    const chats = await getChats();
+
+    chats
+      .filter((chat) => !chat.isMember)
+      .map((chat) => client.joinRoom(chat.id));
+
+    setLoading(false);
+    navigation.navigate("Chat", { user, chats });
   };
 
   return (
