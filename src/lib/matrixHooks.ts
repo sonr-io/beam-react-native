@@ -56,6 +56,7 @@ export const useListeners = () => {
             messages: [],
             isMember: false,
             user,
+            preview: null,
           });
           return [...chats];
         });
