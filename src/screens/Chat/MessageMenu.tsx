@@ -22,6 +22,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
 import { charFromEmojiObject } from "../../lib/emoji";
+import nameFromMatrixId from "../../lib/nameFromMatrixId";
 import { client } from "../../matrixClient";
 import { Emoji } from "../../types/Emoji";
 
@@ -67,7 +68,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
     navigation.goBack();
     navigation.navigate("ForwardMenu", {
       text: message.text,
-      from: message.sender.name,
+      from: nameFromMatrixId(message.sender.id),
     });
   };
 
