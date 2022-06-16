@@ -16,15 +16,15 @@ export const ChatListItem = (props: Props) => {
     lastSeen,
     messages,
     user: { name },
+    preview,
+    lastActivity,
   } = props.chat;
 
   const lastMessage = messages[messages.length - 1] || {
-    timestamp: Date.now(),
-    text: " ",
     sender: { isOnline: false },
   };
 
-  const elapsedTime = timeAgo(lastMessage.timestamp);
+  const elapsedTime = timeAgo(lastActivity);
 
   const totalUnReadMessages = messages.reduce((count, message) => {
     if (message.timestamp > lastSeen) {
@@ -62,7 +62,18 @@ export const ChatListItem = (props: Props) => {
           </View>
 
           <Text style={styles.lastMessage} numberOfLines={1}>
-            {lastMessage.text}
+            {preview ? (
+              <>
+                {preview.label && (
+                  <Text style={{ color: "#3A324A" }}>
+                    {preview.label}&nbsp;
+                  </Text>
+                )}
+                <Text>{preview.text}</Text>
+              </>
+            ) : (
+              <Text style={{ color: "#D1CED7" }}>No messages</Text>
+            )}
           </Text>
         </View>
       </View>

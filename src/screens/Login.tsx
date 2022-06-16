@@ -15,7 +15,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackParams } from "../../App";
 import { getChats, getUser, login } from "../lib/matrix";
-import { client } from "../matrixClient";
 
 interface PresetUser {
   username: string;
@@ -36,21 +35,22 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     setError(false);
     setLoading(true);
 
-    try {
-      await login(username, password);
-      const user = await getUser(client.getUserId());
-      const chats = await getChats();
-
-      chats
-        .filter((chat) => !chat.isMember)
-        .map((chat) => client.joinRoom(chat.id));
-
-      navigation.navigate("Chat", { user, chats });
-    } catch {
+    const client = await login(username, password);
+    if (!client) {
       setError(true);
-    } finally {
       setLoading(false);
+      return;
     }
+
+    const user = await getUser(client.getUserId());
+    const chats = await getChats();
+
+    chats
+      .filter((chat) => !chat.isMember)
+      .map((chat) => client.joinRoom(chat.id));
+
+    setLoading(false);
+    navigation.navigate("Chat", { user, chats });
   };
 
   return (

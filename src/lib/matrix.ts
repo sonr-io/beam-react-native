@@ -11,13 +11,17 @@ import {
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
 
-import { Chat, User } from "../types/Chat";
+import { Chat, Message, User } from "../types/Chat";
 import nameFromMatrixId from "./nameFromMatrixId";
 
 export const login = async (user: string, password: string) => {
   client.stopClient();
   await client.clearStores();
-  await client.loginWithPassword(user, password);
+  try {
+    await client.loginWithPassword(user, password);
+  } catch {
+    return;
+  }
   await client.startClient();
 
   return new Promise<MatrixClient>((resolve) => {
@@ -49,6 +53,45 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       messageId: event.getContent().messageId,
       emoji: event.getContent().emoji,
     }));
+
+  const messages = await Promise.all([
+    ...room.timeline
+      .filter((event) => event.getContent().msgtype === "m.text")
+      .map(async (event) => {
+        const sender = await getUser(event.getSender());
+        return {
+          id: event.getId(),
+          text: event.getContent().body,
+          timestamp: event.getTs(),
+          sender,
+          parentId: event.getContent().parentId,
+          parentSender: event.getContent().parentSender,
+          parentText: event.getContent().parentText,
+          forwardedFrom: event.getContent().forwardedFrom,
+          reactions: reactions
+            .filter((reaction) => reaction.messageId === event.getId())
+            .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+        };
+      }),
+  ]);
+
+  const lastEvent = [...room.timeline]
+    .reverse()
+    .find(
+      (event) =>
+        event.getContent().msgtype === "m.text" ||
+        event.getContent().msgtype === "m.reaction"
+    );
+
+  const preview = lastEvent
+    ? lastEvent?.getContent().msgtype === "m.reaction"
+      ? {
+          text: lastEvent.getContent().parentText,
+          label: `Reacted: ${lastEvent.getContent().emoji}`,
+        }
+      : { text: lastEvent.getContent().body }
+    : null;
+
   return {
     id: room.roomId,
     user: {
@@ -58,27 +101,9 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     },
     lastSeen: 0,
     isMember: room.getMyMembership() === "join",
-    messages: await Promise.all([
-      ...room.timeline
-        .filter((event) => event.getType() === EventType.RoomMessage)
-        .filter((event) => event.getContent().msgtype === "m.text")
-        .map(async (event) => {
-          const sender = await getUser(event.getSender());
-          return {
-            id: event.getId(),
-            text: event.getContent().body,
-            timestamp: event.getTs(),
-            sender,
-            parentId: event.getContent().parentId,
-            parentSender: event.getContent().parentSender,
-            parentText: event.getContent().parentText,
-            forwardedFrom: event.getContent().forwardedFrom,
-            reactions: reactions
-              .filter((reaction) => reaction.messageId === event.getId())
-              .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
-          };
-        }),
-    ]),
+    messages,
+    preview,
+    lastActivity: room.getLastActiveTimestamp(),
   };
 };
 
@@ -134,7 +159,7 @@ const _onReceiveMessage = (
   onReaction: OnReactionCallback,
   roomId: string
 ) => {
-  client.on(RoomEvent.Timeline, async (event) => {
+  client.on(ClientEvent.Event, async (event) => {
     const isMessage = event.getType() === EventType.RoomMessage;
     const isDifferentRoom = event.getRoomId() !== roomId;
     if (!isMessage || isDifferentRoom) return;

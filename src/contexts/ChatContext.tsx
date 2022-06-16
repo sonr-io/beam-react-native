@@ -54,7 +54,7 @@ export const ChatContextProvider: React.FC<Props> = ({
   const addMessage: AddMessage = ({
     id,
     chatId,
-    message,
+    message: text,
     parentId,
     parentSender,
     parentText,
@@ -63,13 +63,11 @@ export const ChatContextProvider: React.FC<Props> = ({
   }) => {
     setChats((chats) =>
       chats.map((chat) => {
-        if (chat.id !== chatId) {
-          return chat;
-        }
+        if (chat.id !== chatId) return chat;
 
         chat.messages.push({
           id,
-          text: message,
+          text,
           timestamp: new Date().getTime(),
           sender,
           reactions: [],
@@ -78,6 +76,12 @@ export const ChatContextProvider: React.FC<Props> = ({
           parentText,
           forwardedFrom,
         });
+
+        if (Date.now() > chat.lastActivity) {
+          chat.lastActivity = Date.now();
+          chat.preview = { text };
+        }
+
         return chat;
       })
     );
@@ -95,25 +99,34 @@ export const ChatContextProvider: React.FC<Props> = ({
     user: User,
     emojiChar: string
   ) => {
-    setChats((chats) => {
-      const chat = chats.find((chat) => chat.id === chatId);
+    setChats((chats) =>
+      chats.map((chat) => {
+        if (chat.id !== chatId) return chat;
 
-      if (chat) {
         const i = chat.messages.findIndex((m) => m.id === messageId);
-        if (i >= 0) {
-          const reactionIndex = chat.messages[i].reactions.findIndex(
-            (e) => e.user.id === user.id && e.emoji === emojiChar
-          );
-          if (reactionIndex >= 0) {
-            chat.messages[i].reactions.splice(reactionIndex, 1);
-          } else {
-            chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
-          }
-        }
-      }
+        if (i < 0) return chat;
 
-      return [...chats];
-    });
+        const reactionIndex = chat.messages[i].reactions.findIndex(
+          (e) => e.user.id === user.id && e.emoji === emojiChar
+        );
+        if (reactionIndex >= 0) {
+          chat.messages[i].reactions.splice(reactionIndex, 1);
+          return chat;
+        }
+
+        chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
+
+        if (Date.now() > chat.lastActivity) {
+          chat.lastActivity = Date.now();
+          chat.preview = {
+            label: `Reacted: ${emojiChar}`,
+            text: chat.messages[i].text,
+          };
+        }
+
+        return chat;
+      })
+    );
   };
 
   return (
