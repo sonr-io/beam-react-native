@@ -15,7 +15,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackParams } from "../../App";
 import { getChats, getUser, login } from "../lib/matrix";
-import { client } from "../matrixClient";
 
 interface PresetUser {
   username: string;
@@ -36,7 +35,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     setError(false);
     setLoading(true);
 
-    const client = await login(username, password).catch(() => null);
+    const client = await login(username, password);
     if (!client) {
       setError(true);
       setLoading(false);

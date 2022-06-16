@@ -17,7 +17,11 @@ import nameFromMatrixId from "./nameFromMatrixId";
 export const login = async (user: string, password: string) => {
   client.stopClient();
   await client.clearStores();
-  await client.loginWithPassword(user, password);
+  try {
+    await client.loginWithPassword(user, password);
+  } catch {
+    return;
+  }
   await client.startClient();
 
   return new Promise<MatrixClient>((resolve) => {
