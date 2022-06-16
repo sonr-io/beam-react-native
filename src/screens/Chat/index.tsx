@@ -33,10 +33,11 @@ export type Params = {
 };
 
 const ChatSection = () => {
-  const { addListeners } = useListeners();
+  const { addListeners, removeListeners } = useListeners();
 
   useEffect(() => {
     addListeners();
+    return removeListeners;
   }, []);
 
   const Stack = createStackNavigator();
