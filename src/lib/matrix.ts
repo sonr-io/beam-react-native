@@ -212,6 +212,11 @@ export const onNewChat = (callback: NewChatCallback) => {
   });
 };
 
+export const clearListeners = () => {
+  client.removeAllListeners(RoomMemberEvent.Membership);
+  client.removeAllListeners(ClientEvent.Event);
+};
+
 export const getUser = memoize(
   async (userId: string): Promise<User> => {
     const { displayname } = await client.getProfileInfo(userId);

@@ -1,16 +1,15 @@
-import { useState } from "react";
 import { useChatContext } from "../contexts/ChatContext";
 import {
   OnMessageCallback,
   OnReactionCallback,
   onReceiveMessage,
   onNewChat,
+  clearListeners,
   scrollbackRoom,
 } from "./matrix";
 
 export const useListeners = () => {
   const { addMessage, addReactionToMessage, setChats } = useChatContext();
-  const [initialListenersAdded, setInitialListenersAdded] = useState(false);
 
   const onMessage: OnMessageCallback = ({
     messageId: id,
@@ -44,33 +43,33 @@ export const useListeners = () => {
   };
 
   const addListeners = () => {
-    if (!initialListenersAdded) {
-      // only add listeners one time to avoid receiving repeated messages
-      onReceiveMessage(onMessage, onReaction);
-      onNewChat(({ id, user, room }) => {
-        addRoomListeners(room.roomId);
-        setChats((chats) => {
-          chats.push({
-            id,
-            lastSeen: 0,
-            messages: [],
-            isMember: false,
-            user,
-            preview: null,
-            lastActivity: Date.now(),
-          });
-          return [...chats];
+    onReceiveMessage(onMessage, onReaction);
+    onNewChat(({ id, user, room }) => {
+      addRoomListeners(room.roomId);
+      setChats((chats) => {
+        chats.push({
+          id,
+          lastSeen: 0,
+          messages: [],
+          isMember: false,
+          user,
+          preview: null,
+          lastActivity: Date.now(),
         });
+        return [...chats];
       });
-      setInitialListenersAdded(true);
-    }
+    });
   };
 
   const addRoomListeners = (roomId: string) => {
     onReceiveMessage(onMessage, onReaction, roomId);
   };
 
-  return { addListeners, addRoomListeners };
+  const removeListeners = () => {
+    clearListeners();
+  };
+
+  return { addListeners, addRoomListeners, removeListeners };
 };
 
 export const useScrollback = (roomId: string) => {
