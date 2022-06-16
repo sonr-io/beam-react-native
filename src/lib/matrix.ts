@@ -54,6 +54,13 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       emoji: event.getContent().emoji,
     }));
 
+  const eventId = room.accountData["m.fully_read"]?.getContent().event_id;
+  let lastSeen = 0;
+  const event = room.timeline.find((event) => event.getId() === eventId);
+  if (event) {
+    lastSeen = event.getTs();
+  }
+
   const messages = await Promise.all([
     ...room.timeline
       .filter((event) => event.getContent().msgtype === "m.text")
@@ -99,7 +106,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       name: nameFromMatrixId(interlocutor.userId),
       isOnline: false,
     },
-    lastSeen: 0,
+    lastSeen,
     isMember: room.getMyMembership() === "join",
     messages,
     preview,

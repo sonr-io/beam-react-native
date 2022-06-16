@@ -50,7 +50,7 @@ export const ChatListItem = (props: Props) => {
               {name}
             </Text>
 
-            {false && totalUnReadMessages > 0 && (
+            {totalUnReadMessages > 0 && (
               <View style={styles.totalUnReadMessages}>
                 <Text style={styles.totalUnReadMessagesText}>
                   {totalUnReadMessages}
