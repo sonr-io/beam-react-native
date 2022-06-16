@@ -230,3 +230,11 @@ export const getUser = memoize(
   },
   (userId) => `${client.getUserId()}${userId}`
 );
+
+export const markLastMessageAsRead = async (roomId: string) => {
+  const room = client.getRoom(roomId);
+  if (room) {
+    const lastEvent = room.timeline[room.timeline.length - 1];
+    await client.setRoomReadMarkers(roomId, lastEvent.getId());
+  }
+};

@@ -24,6 +24,7 @@ import IconArrowDown from "../../icons/ArrowDown";
 import IconBackArrow from "../../icons/BackArrow";
 
 import { getFormattedDay } from "../../lib/getFormattedDay";
+import { markLastMessageAsRead } from "../../lib/matrix";
 import { useScrollback } from "../../lib/matrixHooks";
 import { client } from "../../matrixClient";
 import { Chat, Message, User, ViewableMessage } from "../../types/Chat";
@@ -57,7 +58,7 @@ type Props = StackScreenProps<Params, "ChatView">;
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { id: chatId } = route.params;
   const { user } = useUserContext();
-  const { chats } = useChatContext();
+  const { chats, updateLastSeen } = useChatContext();
   const { scrollback } = useScrollback(chatId);
 
   const [chatRoom, setChatRoom] = useState<Chat>();
@@ -80,7 +81,13 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
     setChatRoom(chat);
     setRecipient(chat.user);
     setMessages(toViewable(chat.messages).reverse());
+
+    markLastMessageAsRead(chatId);
   }, [chats]);
+
+  useEffect(() => {
+    updateLastSeen(chatId);
+  }, [messages.length]);
 
   const pushMessage = (message: string) => {
     client.sendMessage(chatId, {
