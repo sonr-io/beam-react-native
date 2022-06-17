@@ -49,7 +49,7 @@ export const useListeners = () => {
       setChats((chats) => {
         chats.push({
           id,
-          lastSeen: 0,
+          lastOpen: 0,
           messages: [],
           isMember: false,
           user,

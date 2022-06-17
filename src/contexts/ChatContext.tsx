@@ -29,7 +29,7 @@ type ChatContextType = {
     user: User,
     emoji: string
   ) => void;
-  updateLastSeen: (chatId: string) => void;
+  updateLastOpen: (chatId: string) => void;
 };
 
 const ChatContext = createContext<ChatContextType>({
@@ -38,7 +38,7 @@ const ChatContext = createContext<ChatContextType>({
   addMessage: () => {},
   addReaction: () => {},
   addReactionToMessage: () => {},
-  updateLastSeen: () => {},
+  updateLastOpen: () => {},
 });
 export const useChatContext = () => useContext(ChatContext);
 
@@ -131,11 +131,11 @@ export const ChatContextProvider: React.FC<Props> = ({
     );
   };
 
-  const updateLastSeen = (chatId: string) => {
+  const updateLastOpen = (chatId: string) => {
     setChats((chats) =>
       chats.map((chat) => {
         if (chat.id === chatId) {
-          chat.lastSeen = new Date().getTime();
+          chat.lastOpen = new Date().getTime();
         }
 
         return chat;
@@ -151,7 +151,7 @@ export const ChatContextProvider: React.FC<Props> = ({
         addMessage,
         addReaction,
         addReactionToMessage,
-        updateLastSeen,
+        updateLastOpen,
       }}
     >
       {children}

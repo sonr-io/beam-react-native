@@ -17,7 +17,9 @@ type Props = StackScreenProps<Params, "NewChat">;
 const NewChat: React.FC<Props> = ({ navigation }) => {
   const { chats, setChats } = useChatContext();
   const { addRoomListeners } = useListeners();
-  const users = chats.map((chat) => chat.user);
+  const users = chats
+    .filter((chat) => chat.messages.length > 0)
+    .map((chat) => chat.user);
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -59,7 +61,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
 
     chats.push({
       id: response.room_id,
-      lastSeen: 0,
+      lastOpen: 0,
       messages: [],
       preview: null,
       lastActivity: Date.now(),

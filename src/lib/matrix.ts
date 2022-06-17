@@ -54,8 +54,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       emoji: event.getContent().emoji,
     }));
 
-  const lastSeen = await scrollbackToLastSeen(room);
-
+  const lastOpen = await scrollbackToLastOpen(room);
   const messages = await Promise.all([
     ...room.timeline
       .filter((event) => event.getContent().msgtype === "m.text")
@@ -101,11 +100,12 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       name: nameFromMatrixId(interlocutor.userId),
       isOnline: false,
     },
-    lastSeen,
+    lastOpen,
     isMember: room.getMyMembership() === "join",
     messages,
     preview,
-    lastActivity: room.getLastActiveTimestamp(),
+    lastActivity:
+      room.getLastActiveTimestamp() > 0 ? room.getLastActiveTimestamp() : 0,
   };
 };
 
@@ -123,7 +123,7 @@ export const scrollbackRoom = async (roomId: string) => {
   }
 };
 
-const scrollbackToLastSeen = async (room: Room) => {
+const scrollbackToLastOpen = async (room: Room) => {
   const eventId = room.accountData["m.fully_read"]?.getContent().event_id;
 
   if (!eventId) {
@@ -253,6 +253,7 @@ export const markLastMessageAsRead = async (roomId: string) => {
   const room = client.getRoom(roomId);
   if (room) {
     const lastEvent = room.timeline[room.timeline.length - 1];
+    // @ts-ignore (matrix types not up to date with implementation)
     await client.setRoomReadMarkers(roomId, lastEvent.getId());
   }
 };

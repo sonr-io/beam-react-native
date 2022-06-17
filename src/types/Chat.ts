@@ -25,11 +25,11 @@ export type ViewableMessage = Message & { last: boolean; showDate: boolean };
 
 export type Chat = {
   id: string;
-  lastSeen: number;
   isMember: boolean;
   user: User;
   messages: Message[];
   preview: ChatPreview | null;
+  lastOpen: number;
   lastActivity: number;
 };
 
