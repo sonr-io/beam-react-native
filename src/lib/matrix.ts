@@ -125,10 +125,15 @@ export const scrollbackRoom = async (roomId: string) => {
 
 const scrollbackToLastSeen = async (room: Room) => {
   const eventId = room.accountData["m.fully_read"]?.getContent().event_id;
+
+  if (!eventId) {
+    return 0;
+  }
+
   const predicate = (event: MatrixEvent) => event.getId() === eventId;
 
   let event = room.timeline.find(predicate);
-  while (room.oldState.paginationToken && !event) {
+  while (!event && room.oldState.paginationToken) {
     await client.scrollback(room);
     event = room.timeline.find(predicate);
   }
