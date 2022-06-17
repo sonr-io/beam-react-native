@@ -140,8 +140,8 @@ const scrollbackToLastOpen = async (room: Room) => {
 };
 
 export type OnMessageCallback = (params: {
-  messageId: string;
-  roomId: string;
+  id: string;
+  chatId: string;
   message: string;
   sender: User;
   parentId?: string;
@@ -191,8 +191,8 @@ const _onReceiveMessage = (
       });
     } else {
       onMessage({
-        messageId: event.getId(),
-        roomId: roomId,
+        id: event.getId(),
+        chatId: roomId,
         message: event.getContent().body,
         sender: await getUser(event.getSender()),
         parentId: event.getContent().parentId,

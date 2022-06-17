@@ -11,27 +11,7 @@ import {
 export const useListeners = () => {
   const { addMessage, addReactionToMessage, setChats } = useChatContext();
 
-  const onMessage: OnMessageCallback = ({
-    messageId: id,
-    roomId: chatId,
-    message,
-    sender,
-    parentId,
-    parentSender,
-    parentText,
-    forwardedFrom,
-  }) => {
-    addMessage({
-      id,
-      chatId,
-      message,
-      sender,
-      parentId,
-      parentSender,
-      parentText,
-      forwardedFrom,
-    });
-  };
+  const onMessage: OnMessageCallback = addMessage;
 
   const onReaction: OnReactionCallback = ({
     roomId,
