@@ -4,6 +4,7 @@ import {
   EventType,
   JoinRule,
   MatrixClient,
+  MatrixEvent,
   Room,
   RoomEvent,
   RoomMemberEvent,
@@ -54,12 +55,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       emoji: event.getContent().emoji,
     }));
 
-  const eventId = room.accountData["m.fully_read"]?.getContent().event_id;
-  let lastSeen = 0;
-  const event = room.timeline.find((event) => event.getId() === eventId);
-  if (event) {
-    lastSeen = event.getTs();
-  }
+  const lastSeen = await scrollbackToLastSeen(room);
 
   const messages = await Promise.all([
     ...room.timeline
@@ -126,6 +122,19 @@ export const scrollbackRoom = async (roomId: string) => {
   } else {
     return null;
   }
+};
+
+const scrollbackToLastSeen = async (room: Room) => {
+  const eventId = room.accountData["m.fully_read"]?.getContent().event_id;
+  const predicate = (event: MatrixEvent) => event.getId() === eventId;
+
+  let event = room.timeline.find(predicate);
+  while (room.oldState.paginationToken && !event) {
+    await client.scrollback(room);
+    event = room.timeline.find(predicate);
+  }
+
+  return event?.getTs() ?? 0;
 };
 
 export type OnMessageCallback = (params: {
