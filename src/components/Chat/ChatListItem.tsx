@@ -20,10 +20,6 @@ export const ChatListItem = (props: Props) => {
     lastActivity,
   } = props.chat;
 
-  const lastMessage = messages[messages.length - 1] || {
-    sender: { isOnline: false },
-  };
-
   const elapsedTime = timeAgo(lastActivity);
 
   const totalUnReadMessages = messages.reduce((count, message) => {
@@ -42,7 +38,7 @@ export const ChatListItem = (props: Props) => {
       }}
     >
       <View style={styles.buttonContainer}>
-        <Avatar user={lastMessage.sender}></Avatar>
+        <Avatar />
 
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>

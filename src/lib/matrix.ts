@@ -98,12 +98,11 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     user: {
       id: interlocutor.userId,
       name: nameFromMatrixId(interlocutor.userId),
-      isOnline: false,
     },
-    lastOpen,
     isMember: room.getMyMembership() === "join",
     messages,
     preview,
+    lastOpen,
     lastActivity:
       room.getLastActiveTimestamp() > 0 ? room.getLastActiveTimestamp() : 0,
   };
@@ -243,7 +242,6 @@ export const getUser = memoize(
     return {
       id: userId,
       name: displayname ?? "",
-      isOnline: false,
     };
   },
   (userId) => `${client.getUserId()}${userId}`
