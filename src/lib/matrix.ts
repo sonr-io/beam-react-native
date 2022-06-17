@@ -254,6 +254,7 @@ export const markLastMessageAsRead = async (roomId: string) => {
   const room = client.getRoom(roomId);
   if (room) {
     const lastEvent = room.timeline[room.timeline.length - 1];
+    // @ts-ignore (matrix types not up to date with implementation)
     await client.setRoomReadMarkers(roomId, lastEvent.getId());
   }
 };
