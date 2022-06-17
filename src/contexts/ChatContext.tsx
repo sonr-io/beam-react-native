@@ -18,17 +18,25 @@ type AddMessage = (params: {
   forwardedFrom?: string;
 }) => void;
 
+type AddReaction = (params: {
+  chatId: string;
+  messageId: string;
+  emoji: Emoji;
+}) => void;
+
+type AddReactionToMessage = (params: {
+  chatId: string;
+  messageId: string;
+  user: User;
+  emojiChar: string;
+}) => void;
+
 type ChatContextType = {
   chats: Chat[];
   setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
   addMessage: AddMessage;
-  addReaction: (chatId: string, messageId: string, emoji: Emoji) => void;
-  addReactionToMessage: (
-    chatId: string,
-    messageId: string,
-    user: User,
-    emoji: string
-  ) => void;
+  addReaction: AddReaction;
+  addReactionToMessage: AddReactionToMessage;
   updateLastOpen: (chatId: string) => void;
 };
 
@@ -89,18 +97,18 @@ export const ChatContextProvider: React.FC<Props> = ({
     );
   };
 
-  const addReaction = (chatId: string, messageId: string, emoji: Emoji) => {
+  const addReaction: AddReaction = ({ chatId, messageId, emoji }) => {
     addEmojiToHistory(emoji);
     const emojiChar = charFromEmojiObject(emoji);
-    addReactionToMessage(chatId, messageId, user, emojiChar);
+    addReactionToMessage({ chatId, messageId, user, emojiChar });
   };
 
-  const addReactionToMessage = (
-    chatId: string,
-    messageId: string,
-    user: User,
-    emojiChar: string
-  ) => {
+  const addReactionToMessage: AddReactionToMessage = ({
+    chatId,
+    messageId,
+    user,
+    emojiChar,
+  }) => {
     setChats((chats) =>
       chats.map((chat) => {
         if (chat.id !== chatId) return chat;

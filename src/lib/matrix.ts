@@ -151,10 +151,10 @@ export type OnMessageCallback = (params: {
 }) => void;
 
 export type OnReactionCallback = (params: {
-  roomId: string;
+  chatId: string;
   messageId: string;
-  sender: User;
-  emoji: string;
+  user: User;
+  emojiChar: string;
 }) => void;
 
 export const onReceiveMessage = (
@@ -184,10 +184,10 @@ const _onReceiveMessage = (
 
     if (event.getContent().msgtype === "m.reaction") {
       onReaction({
-        roomId: roomId,
+        chatId: roomId,
         messageId: event.getContent().messageId,
-        sender: await getUser(event.getSender()),
-        emoji: event.getContent().emoji,
+        user: await getUser(event.getSender()),
+        emojiChar: event.getContent().emoji,
       });
     } else {
       onMessage({

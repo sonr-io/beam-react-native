@@ -13,14 +13,7 @@ export const useListeners = () => {
 
   const onMessage: OnMessageCallback = addMessage;
 
-  const onReaction: OnReactionCallback = ({
-    roomId,
-    messageId,
-    sender,
-    emoji,
-  }) => {
-    addReactionToMessage(roomId, messageId, sender, emoji);
-  };
+  const onReaction: OnReactionCallback = addReactionToMessage;
 
   const addListeners = () => {
     onReceiveMessage(onMessage, onReaction);
