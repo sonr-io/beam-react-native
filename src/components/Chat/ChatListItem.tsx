@@ -22,7 +22,7 @@ export const ChatListItem = (props: Props) => {
 
   const elapsedTime = timeAgo(lastActivity);
 
-  const totalUnReadMessages = messages.reduce((count, message) => {
+  const totalUnreadMessages = messages.reduce((count, message) => {
     if (message.timestamp > lastOpen) {
       return count + 1;
     }
@@ -46,10 +46,10 @@ export const ChatListItem = (props: Props) => {
               {name}
             </Text>
 
-            {totalUnReadMessages > 0 && (
-              <View style={styles.totalUnReadMessages}>
-                <Text style={styles.totalUnReadMessagesText}>
-                  {totalUnReadMessages}
+            {totalUnreadMessages > 0 && (
+              <View style={styles.totalUnreadMessages}>
+                <Text style={styles.totalUnreadMessagesText}>
+                  {totalUnreadMessages}
                 </Text>
               </View>
             )}
@@ -85,14 +85,14 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: "#353945",
   },
-  totalUnReadMessages: {
+  totalUnreadMessages: {
     borderRadius: 2,
     backgroundColor: "#14B69A",
     paddingVertical: 2,
     paddingHorizontal: 4,
     margin: 4,
   },
-  totalUnReadMessagesText: {
+  totalUnreadMessagesText: {
     fontFamily: "THICCCBOI_ExtraBold",
     color: "#FFFFFF",
     fontSize: 10,
