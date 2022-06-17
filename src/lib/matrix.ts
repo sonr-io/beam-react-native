@@ -54,8 +54,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       emoji: event.getContent().emoji,
     }));
 
-  const lastSeen = await scrollbackToLastSeen(room);
-
+  const lastOpen = await scrollbackToLastOpen(room);
   const messages = await Promise.all([
     ...room.timeline
       .filter((event) => event.getContent().msgtype === "m.text")
@@ -101,7 +100,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       name: nameFromMatrixId(interlocutor.userId),
       isOnline: false,
     },
-    lastSeen,
+    lastOpen,
     isMember: room.getMyMembership() === "join",
     messages,
     preview,
@@ -124,7 +123,7 @@ export const scrollbackRoom = async (roomId: string) => {
   }
 };
 
-const scrollbackToLastSeen = async (room: Room) => {
+const scrollbackToLastOpen = async (room: Room) => {
   const eventId = room.accountData["m.fully_read"]?.getContent().event_id;
 
   if (!eventId) {

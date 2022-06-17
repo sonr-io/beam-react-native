@@ -59,7 +59,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
 
     chats.push({
       id: response.room_id,
-      lastSeen: 0,
+      lastOpen: 0,
       messages: [],
       preview: null,
       lastActivity: Date.now(),

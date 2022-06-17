@@ -58,7 +58,7 @@ type Props = StackScreenProps<Params, "ChatView">;
 const ChatView: React.FC<Props> = ({ route, navigation }) => {
   const { id: chatId } = route.params;
   const { user } = useUserContext();
-  const { chats, updateLastSeen } = useChatContext();
+  const { chats, updateLastOpen } = useChatContext();
   const { scrollback } = useScrollback(chatId);
 
   const [chatRoom, setChatRoom] = useState<Chat>();
@@ -86,7 +86,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   }, [chats]);
 
   useEffect(() => {
-    updateLastSeen(chatId);
+    updateLastOpen(chatId);
   }, [messages.length]);
 
   const pushMessage = (message: string) => {

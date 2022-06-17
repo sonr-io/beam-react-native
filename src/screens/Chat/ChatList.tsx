@@ -11,7 +11,7 @@ import MessageBubbles from "../../icons/MessageBubbles";
 
 type Props = StackScreenProps<Params, "ChatList">;
 const ChatList: React.FC<Props> = ({ navigation }) => {
-  const { chats: unorderedChats, updateLastSeen } = useChatContext();
+  const { chats: unorderedChats, updateLastOpen } = useChatContext();
   const chats = unorderedChats.sort((a, b) => {
     if (a.messages.length <= 0 || b.messages.length <= 0) {
       return 0;
@@ -23,7 +23,7 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
 
   const navigateToChat = (id: string) => {
     navigation.navigate("ChatView", { id });
-    updateLastSeen(id);
+    updateLastOpen(id);
   };
 
   return (

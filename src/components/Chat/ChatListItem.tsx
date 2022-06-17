@@ -13,10 +13,10 @@ type Props = {
 
 export const ChatListItem = (props: Props) => {
   const {
-    lastSeen,
     messages,
     user: { name },
     preview,
+    lastOpen,
     lastActivity,
   } = props.chat;
 
@@ -27,7 +27,7 @@ export const ChatListItem = (props: Props) => {
   const elapsedTime = timeAgo(lastActivity);
 
   const totalUnReadMessages = messages.reduce((count, message) => {
-    if (message.timestamp > lastSeen) {
+    if (message.timestamp > lastOpen) {
       return count + 1;
     }
 
