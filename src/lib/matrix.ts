@@ -6,13 +6,12 @@ import {
   MatrixClient,
   MatrixEvent,
   Room,
-  RoomEvent,
   RoomMemberEvent,
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
 
-import { Chat, Message, User } from "../types/Chat";
+import { Chat, User } from "../types/Chat";
 import nameFromMatrixId from "./nameFromMatrixId";
 
 export const login = async (user: string, password: string) => {
