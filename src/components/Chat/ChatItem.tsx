@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
+import nameFromMatrixId from "../../lib/nameFromMatrixId";
 
 import { Message, User } from "../../types/Chat";
 import { MessageBubble } from "../MessageBubble";
@@ -44,7 +45,7 @@ export const ChatItem: React.FC<Props> = ({
         <View style={styles.parentMessageContainer}>
           <ReplyBubble
             text={parentText}
-            senderName={parentSender.name}
+            senderName={nameFromMatrixId(parentSender.id)}
             selfReply={selfReply}
             isIncoming={!isSender}
           />
