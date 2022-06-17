@@ -31,7 +31,9 @@ const UserSelector: React.FC<Props> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const { chats } = useChatContext();
-  const users = chats.map((chat) => chat.user);
+  const users = chats
+    .filter((chat) => chat.messages.length > 0)
+    .map((chat) => chat.user);
   const [userList, setUserList] = React.useState(users);
 
   const inputRef = React.useRef<TextInput>(null);
