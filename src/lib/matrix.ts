@@ -127,13 +127,14 @@ const scrollbackToLastSeen = async (room: Room) => {
   const eventId = room.accountData["m.fully_read"]?.getContent().event_id;
   const predicate = (event: MatrixEvent) => event.getId() === eventId;
 
-  let event = room.timeline.find(predicate);
-  while (room.oldState.paginationToken && !event) {
+  while (room.oldState.paginationToken) {
+    const event = room.timeline.find(predicate);
+    if (event) return event.getTs();
+
     await client.scrollback(room);
-    event = room.timeline.find(predicate);
   }
 
-  return event?.getTs() ?? 0;
+  return 0;
 };
 
 export type OnMessageCallback = (params: {
