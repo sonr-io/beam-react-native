@@ -54,6 +54,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       emoji: event.getContent().emoji,
     }));
 
+  const lastOpen = await scrollbackToLastOpen(room);
   const messages = await Promise.all([
     ...room.timeline
       .filter((event) => event.getContent().msgtype === "m.text")
@@ -101,7 +102,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     isMember: room.getMyMembership() === "join",
     messages,
     preview,
-    lastOpen: await scrollbackToLastOpen(room),
+    lastOpen,
     lastActivity:
       room.getLastActiveTimestamp() > 0 ? room.getLastActiveTimestamp() : 0,
   };
