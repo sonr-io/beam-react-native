@@ -11,7 +11,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.sonr.beam.ios"
     },
     "android": {
       "adaptiveIcon": {
