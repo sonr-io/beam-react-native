@@ -1,5 +1,11 @@
 import React from "react";
-import { Linking, StyleSheet, Text, View } from "react-native";
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from "react-native";
 
 import { getTime } from "../lib/getTime";
 import { splitMessageText } from "../lib/splitMessageText";
@@ -13,6 +19,7 @@ type Props = {
   showTimestamp: boolean;
   reactions: string[];
   forwardedFrom?: string;
+  onPressReactions?: () => void;
 };
 
 export const MessageBubble = (props: Props) => {
@@ -50,21 +57,28 @@ export const MessageBubble = (props: Props) => {
       </View>
 
       {props.reactions.length > 0 && (
-        <View style={stylesCommon.reactionsContainer}>
-          {props.reactions.length <= 3 ? (
-            props.reactions.map((reaction, i) => (
-              <Text key={i} style={{ fontSize: 12 }}>
-                {reaction}
-              </Text>
-            ))
-          ) : (
-            <>
-              <Text style={{ fontSize: 12 }}>{props.reactions[0]}</Text>
-              <Text style={{ fontSize: 12 }}>{props.reactions[1]}</Text>
-              <Text>+{props.reactions.length - 2}</Text>
-            </>
-          )}
-        </View>
+        <TouchableHighlight
+          style={stylesCommon.reactionsContainer}
+          onPress={props.onPressReactions}
+          activeOpacity={0.5}
+          underlayColor={"#1792FF"}
+        >
+          <>
+            {props.reactions.length <= 3 ? (
+              props.reactions.map((reaction, i) => (
+                <Text key={i} style={{ fontSize: 12 }}>
+                  {reaction}
+                </Text>
+              ))
+            ) : (
+              <>
+                <Text style={{ fontSize: 12 }}>{props.reactions[0]}</Text>
+                <Text style={{ fontSize: 12 }}>{props.reactions[1]}</Text>
+                <Text>+{props.reactions.length - 2}</Text>
+              </>
+            )}
+          </>
+        </TouchableHighlight>
       )}
     </View>
   );

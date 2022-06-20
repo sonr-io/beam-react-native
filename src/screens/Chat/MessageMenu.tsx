@@ -35,6 +35,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
+  const [showReactions, setShowReactions] = useState(false);
 
   const pushEmoji = (emoji: Emoji) => {
     navigation.goBack();
@@ -90,6 +91,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           isIncoming={user.id !== message.sender.id}
           showTimestamp={true}
           reactions={message.reactions.map((r) => r.emoji)}
+          onPressReactions={() => setShowReactions(!showReactions)}
         />
       </View>
 
@@ -107,21 +109,26 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
           {!showEmojiSelector && (
             <>
-              <TouchableOpacity
-                style={styles.menuButton}
-                onPress={() => inputRef.current?.focus()}
-              >
-                <Text style={styles.menuButtonText}>Reply</Text>
-                <IconReply />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menuButton} onPress={onForward}>
-                <Text style={styles.menuButtonText}>Forward</Text>
-                <IconForward />
-              </TouchableOpacity>
-              {/* <TouchableOpacity style={styles.menuButton}>
-                <Text style={styles.menuButtonText}>Copy</Text>
-                <IconCopy />
-              </TouchableOpacity> */}
+              {showReactions && <Text>Reaction owners</Text>}
+
+              {!showReactions && (
+                <>
+                  <TouchableOpacity
+                    style={styles.menuButton}
+                    onPress={() => inputRef.current?.focus()}
+                  >
+                    <Text style={styles.menuButtonText}>Reply</Text>
+                    <IconReply />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuButton}
+                    onPress={onForward}
+                  >
+                    <Text style={styles.menuButtonText}>Forward</Text>
+                    <IconForward />
+                  </TouchableOpacity>
+                </>
+              )}
             </>
           )}
         </BlurView>
