@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 
 import { getTime } from "../lib/getTime";
 import { splitMessageText } from "../lib/splitMessageText";
@@ -17,9 +11,8 @@ type Props = {
   isIncoming: boolean;
   timestamp: number;
   showTimestamp: boolean;
-  reactions: string[];
   forwardedFrom?: string;
-  onPressReactions?: () => void;
+  reactionsDisplay: JSX.Element;
 };
 
 export const MessageBubble = (props: Props) => {
@@ -34,6 +27,7 @@ export const MessageBubble = (props: Props) => {
             {getTime(props.timestamp)}
           </Text>
         )}
+
         {props.forwardedFrom && (
           <View style={stylesCommon.forwardContainer}>
             <IconForwarded fill={props.isIncoming ? "#B7B4C7" : "#FFF8"} />
@@ -42,6 +36,7 @@ export const MessageBubble = (props: Props) => {
             </Text>
           </View>
         )}
+
         <Text style={[stylesCommon.text, stylesCustom.text]}>
           {splitText.map(({ word, separator, url }, index) => {
             return url ? (
@@ -56,30 +51,7 @@ export const MessageBubble = (props: Props) => {
         </Text>
       </View>
 
-      {props.reactions.length > 0 && (
-        <TouchableHighlight
-          style={stylesCommon.reactionsContainer}
-          onPress={props.onPressReactions}
-          activeOpacity={0.5}
-          underlayColor={"#1792FF"}
-        >
-          <>
-            {props.reactions.length <= 3 ? (
-              props.reactions.map((reaction, i) => (
-                <Text key={i} style={{ fontSize: 12 }}>
-                  {reaction}
-                </Text>
-              ))
-            ) : (
-              <>
-                <Text style={{ fontSize: 12 }}>{props.reactions[0]}</Text>
-                <Text style={{ fontSize: 12 }}>{props.reactions[1]}</Text>
-                <Text>+{props.reactions.length - 2}</Text>
-              </>
-            )}
-          </>
-        </TouchableHighlight>
-      )}
+      {props.reactionsDisplay}
     </View>
   );
 };
@@ -138,27 +110,6 @@ const stylesCommon = StyleSheet.create({
     fontSize: 10,
     fontFamily: "THICCCBOI_ExtraBold",
     marginLeft: 2,
-  },
-
-  reactionsContainer: {
-    alignSelf: "flex-end",
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: -3,
-    marginRight: 8,
-    backgroundColor: "#D9D7E6",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#FFFFFF44",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 2,
-    padding: 4,
-    marginBottom: 2,
   },
 });
 

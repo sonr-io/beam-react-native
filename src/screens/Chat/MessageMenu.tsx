@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -18,6 +19,7 @@ import { EmojiPresetBar } from "../../components/Emojis/EmojiPresetBar";
 import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
 import { MessageBubble } from "../../components/MessageBubble";
 import { MessageInput } from "../../components/MessageInput";
+import { ReactionsDisplay } from "../../components/ReactionsDisplay";
 import { useUserContext } from "../../contexts/UserContext";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
@@ -29,7 +31,6 @@ import { Emoji } from "../../types/Emoji";
 const ios = Platform.OS === "ios";
 
 type Props = StackScreenProps<Params, "MessageMenu">;
-
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
@@ -90,8 +91,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           timestamp={message.timestamp}
           isIncoming={user.id !== message.sender.id}
           showTimestamp={true}
-          reactions={message.reactions.map((r) => r.emoji)}
-          onPressReactions={() => setShowReactions(!showReactions)}
+          reactionsDisplay={
+            <ReactionsDisplay
+              reactions={message.reactions.map((r) => r.emoji)}
+              onPressReactions={() => setShowReactions(!showReactions)}
+            />
+          }
         />
       </View>
 
