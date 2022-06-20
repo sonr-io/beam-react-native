@@ -22,7 +22,7 @@ export const UserList = (props: Props) => {
           style={styles.listItem}
           onPress={() => props.onPress(item)}
         >
-          <Avatar user={item} />
+          <Avatar />
           <View style={{ flex: 1 }}>
             <Text numberOfLines={1} style={styles.name}>
               {item.name}

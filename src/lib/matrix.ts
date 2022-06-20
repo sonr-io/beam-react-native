@@ -98,12 +98,11 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     user: {
       id: interlocutor.userId,
       name: nameFromMatrixId(interlocutor.userId),
-      isOnline: false,
     },
-    lastOpen,
     isMember: room.getMyMembership() === "join",
     messages,
     preview,
+    lastOpen,
     lastActivity:
       room.getLastActiveTimestamp() > 0 ? room.getLastActiveTimestamp() : 0,
   };
@@ -142,8 +141,8 @@ const scrollbackToLastOpen = async (room: Room) => {
 };
 
 export type OnMessageCallback = (params: {
-  messageId: string;
-  roomId: string;
+  id: string;
+  chatId: string;
   message: string;
   sender: User;
   parentId?: string;
@@ -153,10 +152,10 @@ export type OnMessageCallback = (params: {
 }) => void;
 
 export type OnReactionCallback = (params: {
-  roomId: string;
+  chatId: string;
   messageId: string;
-  sender: User;
-  emoji: string;
+  user: User;
+  emojiChar: string;
 }) => void;
 
 export const onReceiveMessage = (
@@ -186,15 +185,15 @@ const _onReceiveMessage = (
 
     if (event.getContent().msgtype === "m.reaction") {
       onReaction({
-        roomId: roomId,
+        chatId: roomId,
         messageId: event.getContent().messageId,
-        sender: await getUser(event.getSender()),
-        emoji: event.getContent().emoji,
+        user: await getUser(event.getSender()),
+        emojiChar: event.getContent().emoji,
       });
     } else {
       onMessage({
-        messageId: event.getId(),
-        roomId: roomId,
+        id: event.getId(),
+        chatId: roomId,
         message: event.getContent().body,
         sender: await getUser(event.getSender()),
         parentId: event.getContent().parentId,
@@ -243,7 +242,6 @@ export const getUser = memoize(
     return {
       id: userId,
       name: displayname ?? "",
-      isOnline: false,
     };
   },
   (userId) => `${client.getUserId()}${userId}`

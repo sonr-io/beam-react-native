@@ -7,7 +7,6 @@ const UserContext = createContext<UserContextType>({
   user: {
     id: "",
     name: "",
-    isOnline: false,
   },
 });
 

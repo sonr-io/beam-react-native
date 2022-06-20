@@ -69,7 +69,6 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
       user: {
         id: fullId,
         name: id,
-        isOnline: false,
       },
     });
     setChats([...chats]);
