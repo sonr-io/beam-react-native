@@ -47,30 +47,41 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
   const interlocutor = room
     .getMembers()
     .find((member) => member.userId !== room.myUserId)!;
-  const reactions = await Promise.all(
-    chain(room.timeline)
-      .filter((event) => event.getContent().msgtype === "m.reaction")
-      .groupBy((event) => `${event.getContent().emoji}${event.getSender()}`)
-      .filter((group) => group.length % 2 === 1)
-      .map(async ([event]): Promise<Reaction> => {
-        const sender = await getUser(event.getSender());
-        sender.name = nameFromMatrixId(sender.id);
-        return {
-          id: event.getContent().messageId,
-          emoji: event.getContent().emoji,
-          user: sender,
-        };
-      })
-      .valueOf()
-  );
+
+  const reactions = chain(room.timeline)
+    .filter((event) => event.getContent().msgtype === "m.reaction")
+    .groupBy((event) =>
+      [
+        event.getSender(),
+        event.getContent().messageId,
+        event.getContent().emoji,
+      ].join()
+    )
+    .filter((group) => group.length % 2 === 1)
+    .map(([event]): Reaction => {
+      const sender = {
+        id: event.getSender(),
+        name: nameFromMatrixId(event.getSender()),
+      };
+      return {
+        id: event.getId(),
+        emoji: event.getContent().emoji,
+        sender,
+        parentId: event.getContent().messageId,
+      };
+    })
+    .groupBy("parentId")
+    .valueOf();
 
   const lastOpen = await scrollbackToLastOpen(room);
-  const messages = await Promise.all([
+  const messages = [
     ...room.timeline
       .filter((event) => event.getContent().msgtype === "m.text")
-      .map(async (event) => {
-        const sender = await getUser(event.getSender());
-        sender.name = nameFromMatrixId(sender.id);
+      .map((event) => {
+        const sender = {
+          id: event.getSender(),
+          name: nameFromMatrixId(event.getSender()),
+        };
         return {
           id: event.getId(),
           text: event.getContent().body,
@@ -80,10 +91,10 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
           parentSender: event.getContent().parentSender,
           parentText: event.getContent().parentText,
           forwardedFrom: event.getContent().forwardedFrom,
-          reactions: reactions,
+          reactions: reactions[event.getId()] || [],
         };
       }),
-  ]);
+  ];
 
   const lastEvent = [...room.timeline]
     .reverse()

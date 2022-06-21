@@ -120,17 +120,17 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
                 <View style={styles.reactionsContainer}>
                   <FlatList
                     data={message.reactions}
-                    style={{ maxHeight: 250 }}
+                    style={{ maxHeight: 275 }}
                     renderItem={({ item }) => (
                       <View style={styles.reactionItem}>
                         <Avatar />
 
                         <View style={styles.reactionUser}>
                           <Text numberOfLines={1} style={styles.userName}>
-                            {item.user.name}
+                            {item.sender.name}
                           </Text>
                           <Text numberOfLines={1} style={styles.userId}>
-                            {item.user.id}
+                            {item.sender.id}
                           </Text>
                         </View>
 
