@@ -40,14 +40,14 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
 
-  const pushEmoji = (emoji: Emoji) => {
+  const pushEmoji = (emoji: string) => {
     navigation.goBack();
     client.sendMessage(chatId, {
       msgtype: "m.reaction",
       body: "",
       messageId: message.id,
       parentText: message.text,
-      emoji: charFromEmojiObject(emoji),
+      emoji: emoji,
     });
   };
 
@@ -107,13 +107,17 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
         <BlurView>
           <View>
             <EmojiPresetBar
-              onSelectEmoji={pushEmoji}
+              onSelectEmoji={(e) => pushEmoji(charFromEmojiObject(e))}
               isEmojiSelectorVisible={showEmojiSelector}
               handleEmojiSelectorVisibility={handleEmojiSelectorVisibility}
             />
           </View>
 
-          {showEmojiSelector && <EmojiSelector onSelectEmoji={pushEmoji} />}
+          {showEmojiSelector && (
+            <EmojiSelector
+              onSelectEmoji={(e) => pushEmoji(charFromEmojiObject(e))}
+            />
+          )}
 
           {!showEmojiSelector && (
             <>
@@ -138,6 +142,17 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
                               </Text>
                             )}
                           </View>
+
+                          {isSelf && (
+                            <TouchableOpacity
+                              style={styles.buttonRemove}
+                              onPress={() => pushEmoji(item.emoji)}
+                            >
+                              <Text style={styles.buttonRemoveText}>
+                                Remove
+                              </Text>
+                            </TouchableOpacity>
+                          )}
 
                           <Text>{item.emoji}</Text>
                         </View>
@@ -244,6 +259,18 @@ const styles = StyleSheet.create({
     fontFamily: "THICCCBOI_Medium",
     color: "#696376",
     fontSize: 14,
+  },
+  buttonRemove: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(133, 128, 144, 0.1)",
+    borderRadius: 6,
+    marginRight: 10,
+  },
+  buttonRemoveText: {
+    fontFamily: "THICCCBOI_ExtraBold",
+    fontSize: 14,
+    color: "#514A60",
   },
 });
 
