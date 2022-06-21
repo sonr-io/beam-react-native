@@ -87,6 +87,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           style={styles.touchableBackground}
         />
       </View>
+
       <View style={styles.content}>
         <MessageBubble
           text={message.text}
@@ -121,22 +122,27 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
                   <FlatList
                     data={message.reactions}
                     style={{ maxHeight: 275 }}
-                    renderItem={({ item }) => (
-                      <View style={styles.reactionItem}>
-                        <Avatar />
+                    renderItem={({ item }) => {
+                      const isSelf = item.sender.id === user.id;
+                      return (
+                        <View style={styles.reactionItem}>
+                          <Avatar />
 
-                        <View style={styles.reactionUser}>
-                          <Text numberOfLines={1} style={styles.userName}>
-                            {item.sender.name}
-                          </Text>
-                          <Text numberOfLines={1} style={styles.userId}>
-                            {item.sender.id}
-                          </Text>
+                          <View style={styles.reactionUser}>
+                            <Text numberOfLines={1} style={styles.userName}>
+                              {isSelf ? "You" : item.sender.name}
+                            </Text>
+                            {!isSelf && (
+                              <Text numberOfLines={1} style={styles.userId}>
+                                {item.sender.id}
+                              </Text>
+                            )}
+                          </View>
+
+                          <Text>{item.emoji}</Text>
                         </View>
-
-                        <Text>{item.emoji}</Text>
-                      </View>
-                    )}
+                      );
+                    }}
                   />
                 </View>
               )}
