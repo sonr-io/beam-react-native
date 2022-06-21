@@ -120,11 +120,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
                 <View style={styles.reactionsContainer}>
                   <FlatList
                     data={message.reactions}
-                    renderItem={({ item, index }) => (
-                      <View style={styles.menuItem}>
+                    style={{ maxHeight: 250 }}
+                    renderItem={({ item }) => (
+                      <View style={styles.reactionItem}>
                         <Avatar />
 
-                        <View style={{ flex: 1 }}>
+                        <View style={styles.reactionUser}>
                           <Text numberOfLines={1} style={styles.userName}>
                             {item.user.name}
                           </Text>
@@ -202,12 +203,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     paddingVertical: 15,
     flexDirection: "row",
+    alignItems: "center",
   },
   menuButtonText: {
     color: "#696376",
     fontFamily: "THICCCBOI_ExtraBold",
     fontSize: 16,
-    lineHeight: 22,
     flex: 1,
   },
 
@@ -215,7 +216,19 @@ const styles = StyleSheet.create({
     maxHeight: 300,
     overflow: "scroll",
   },
-
+  reactionItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 15,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: "#88849C20",
+  },
+  reactionUser: {
+    flex: 1,
+    justifyContent: "center",
+    marginRight: 10,
+  },
   userName: {
     fontFamily: "THICCCBOI_Medium",
     color: "#39324A",
