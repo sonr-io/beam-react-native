@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackParams } from "../../App";
 import { getChats, getUser, login } from "../lib/matrix";
+import nameFromMatrixId from "../lib/nameFromMatrixId";
 
 interface PresetUser {
   username: string;
@@ -43,6 +44,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     }
 
     const user = await getUser(client.getUserId());
+    user.name = nameFromMatrixId(user.id);
     const chats = await getChats();
 
     chats

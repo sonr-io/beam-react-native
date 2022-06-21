@@ -1,4 +1,4 @@
-import { memoize } from "lodash";
+import { memoize, chain } from "lodash";
 import {
   ClientEvent,
   EventType,
@@ -11,7 +11,7 @@ import {
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
 
-import { Chat, User } from "../types/Chat";
+import { Chat, Reaction, User } from "../types/Chat";
 import nameFromMatrixId from "./nameFromMatrixId";
 
 export const login = async (user: string, password: string) => {
@@ -47,19 +47,41 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
   const interlocutor = room
     .getMembers()
     .find((member) => member.userId !== room.myUserId)!;
-  const reactions = room.timeline
+
+  const reactions = chain(room.timeline)
     .filter((event) => event.getContent().msgtype === "m.reaction")
-    .map((event) => ({
-      messageId: event.getContent().messageId,
-      emoji: event.getContent().emoji,
-    }));
+    .groupBy((event) =>
+      [
+        event.getSender(),
+        event.getContent().messageId,
+        event.getContent().emoji,
+      ].join()
+    )
+    .filter((group) => group.length % 2 === 1)
+    .map(([event]): Reaction => {
+      const sender = {
+        id: event.getSender(),
+        name: nameFromMatrixId(event.getSender()),
+      };
+      return {
+        id: event.getId(),
+        emoji: event.getContent().emoji,
+        sender,
+        parentId: event.getContent().messageId,
+      };
+    })
+    .groupBy("parentId")
+    .valueOf();
 
   const lastOpen = await scrollbackToLastOpen(room);
-  const messages = await Promise.all([
+  const messages = [
     ...room.timeline
       .filter((event) => event.getContent().msgtype === "m.text")
-      .map(async (event) => {
-        const sender = await getUser(event.getSender());
+      .map((event) => {
+        const sender = {
+          id: event.getSender(),
+          name: nameFromMatrixId(event.getSender()),
+        };
         return {
           id: event.getId(),
           text: event.getContent().body,
@@ -69,12 +91,10 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
           parentSender: event.getContent().parentSender,
           parentText: event.getContent().parentText,
           forwardedFrom: event.getContent().forwardedFrom,
-          reactions: reactions
-            .filter((reaction) => reaction.messageId === event.getId())
-            .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+          reactions: reactions[event.getId()] || [],
         };
       }),
-  ]);
+  ];
 
   const lastEvent = [...room.timeline]
     .reverse()
@@ -152,9 +172,10 @@ export type OnMessageCallback = (params: {
 }) => void;
 
 export type OnReactionCallback = (params: {
+  id: string;
   chatId: string;
   messageId: string;
-  user: User;
+  sender: User;
   emojiChar: string;
 }) => void;
 
@@ -178,16 +199,22 @@ const _onReceiveMessage = (
   onReaction: OnReactionCallback,
   roomId: string
 ) => {
-  client.on(ClientEvent.Event, async (event) => {
+  client.on(ClientEvent.Event, (event) => {
     const isMessage = event.getType() === EventType.RoomMessage;
     const isDifferentRoom = event.getRoomId() !== roomId;
     if (!isMessage || isDifferentRoom) return;
 
+    const user = {
+      id: event.getSender(),
+      name: nameFromMatrixId(event.getSender()),
+    };
+
     if (event.getContent().msgtype === "m.reaction") {
       onReaction({
+        id: event.getId(),
         chatId: roomId,
         messageId: event.getContent().messageId,
-        user: await getUser(event.getSender()),
+        sender: user,
         emojiChar: event.getContent().emoji,
       });
     } else {
@@ -195,7 +222,7 @@ const _onReceiveMessage = (
         id: event.getId(),
         chatId: roomId,
         message: event.getContent().body,
-        sender: await getUser(event.getSender()),
+        sender: user,
         parentId: event.getContent().parentId,
         parentSender: event.getContent().parentSender,
         parentText: event.getContent().parentText,
@@ -219,6 +246,7 @@ export const onNewChat = (callback: NewChatCallback) => {
       member.userId === client.getUserId()
     ) {
       const user = await getUser(event.getSender());
+      user.name = nameFromMatrixId(user.id);
       const roomId = member.roomId;
       const room = await client.joinRoom(roomId);
       callback({

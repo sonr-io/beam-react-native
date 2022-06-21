@@ -5,6 +5,7 @@ import nameFromMatrixId from "../../lib/nameFromMatrixId";
 
 import { Message, User } from "../../types/Chat";
 import { MessageBubble } from "../MessageBubble";
+import { ReactionsDisplay } from "../ReactionsDisplay";
 import { ReplyBubble } from "../ReplyBubble";
 
 interface Props {
@@ -62,8 +63,12 @@ export const ChatItem: React.FC<Props> = ({
           timestamp={message.timestamp}
           isIncoming={!isSender}
           showTimestamp={showTimestamp}
-          reactions={message.reactions.map((r) => r.emoji)}
           forwardedFrom={message.forwardedFrom}
+          reactionsDisplay={
+            <ReactionsDisplay
+              reactions={message.reactions.map((r) => r.emoji)}
+            />
+          }
         />
       </View>
     </Swipeable>

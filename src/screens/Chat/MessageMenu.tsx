@@ -1,10 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useRef, useState } from "react";
 import {
+  FlatList,
   Platform,
   StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -13,11 +15,13 @@ import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Params } from ".";
+import { Avatar } from "../../components/Avatar/Avatar";
 import BlurView from "../../components/BlurView";
 import { EmojiPresetBar } from "../../components/Emojis/EmojiPresetBar";
 import { EmojiSelector } from "../../components/Emojis/EmojiSelector";
 import { MessageBubble } from "../../components/MessageBubble";
 import { MessageInput } from "../../components/MessageInput";
+import { ReactionsDisplay } from "../../components/ReactionsDisplay";
 import { useUserContext } from "../../contexts/UserContext";
 import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
@@ -29,12 +33,12 @@ import { Emoji } from "../../types/Emoji";
 const ios = Platform.OS === "ios";
 
 type Props = StackScreenProps<Params, "MessageMenu">;
-
 const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const { message, chatId } = route.params;
   const insets = useSafeAreaInsets();
   const { user } = useUserContext();
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
+  const [showReactions, setShowReactions] = useState(false);
 
   const pushEmoji = (emoji: Emoji) => {
     navigation.goBack();
@@ -89,7 +93,12 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           timestamp={message.timestamp}
           isIncoming={user.id !== message.sender.id}
           showTimestamp={true}
-          reactions={message.reactions.map((r) => r.emoji)}
+          reactionsDisplay={
+            <ReactionsDisplay
+              reactions={message.reactions.map((r) => r.emoji)}
+              onPressReactions={() => setShowReactions(!showReactions)}
+            />
+          }
         />
       </View>
 
@@ -107,21 +116,46 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
           {!showEmojiSelector && (
             <>
-              <TouchableOpacity
-                style={styles.menuButton}
-                onPress={() => inputRef.current?.focus()}
-              >
-                <Text style={styles.menuButtonText}>Reply</Text>
-                <IconReply />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menuButton} onPress={onForward}>
-                <Text style={styles.menuButtonText}>Forward</Text>
-                <IconForward />
-              </TouchableOpacity>
-              {/* <TouchableOpacity style={styles.menuButton}>
-                <Text style={styles.menuButtonText}>Copy</Text>
-                <IconCopy />
-              </TouchableOpacity> */}
+              {showReactions && (
+                <View style={styles.reactionsContainer}>
+                  <FlatList
+                    data={message.reactions}
+                    style={{ maxHeight: 275 }}
+                    renderItem={({ item }) => (
+                      <View style={styles.reactionItem}>
+                        <Avatar />
+
+                        <View style={styles.reactionUser}>
+                          <Text numberOfLines={1} style={styles.userName}>
+                            {item.sender.name}
+                          </Text>
+                          <Text numberOfLines={1} style={styles.userId}>
+                            {item.sender.id}
+                          </Text>
+                        </View>
+
+                        <Text>{item.emoji}</Text>
+                      </View>
+                    )}
+                  />
+                </View>
+              )}
+
+              {!showReactions && (
+                <>
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={() => inputRef.current?.focus()}
+                  >
+                    <Text style={styles.menuButtonText}>Reply</Text>
+                    <IconReply />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.menuItem} onPress={onForward}>
+                    <Text style={styles.menuButtonText}>Forward</Text>
+                    <IconForward />
+                  </TouchableOpacity>
+                </>
+              )}
             </>
           )}
         </BlurView>
@@ -163,19 +197,47 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
     borderBottomLeftRadius: 12,
   },
-  menuButton: {
+  menuItem: {
     borderTopWidth: 1,
     borderTopColor: "#88849C20",
     marginHorizontal: 15,
     paddingVertical: 15,
     flexDirection: "row",
+    alignItems: "center",
   },
   menuButtonText: {
-    color: "#88849C",
+    color: "#696376",
     fontFamily: "THICCCBOI_ExtraBold",
     fontSize: 16,
-    lineHeight: 22,
     flex: 1,
+  },
+
+  reactionsContainer: {
+    maxHeight: 300,
+    overflow: "scroll",
+  },
+  reactionItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 15,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: "#88849C20",
+  },
+  reactionUser: {
+    flex: 1,
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  userName: {
+    fontFamily: "THICCCBOI_Medium",
+    color: "#39324A",
+    fontSize: 16,
+  },
+  userId: {
+    fontFamily: "THICCCBOI_Medium",
+    color: "#696376",
+    fontSize: 14,
   },
 });
 

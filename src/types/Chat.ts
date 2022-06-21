@@ -4,8 +4,10 @@ export type User = {
 };
 
 export type Reaction = {
+  id: string;
   emoji: string;
-  user: User;
+  sender: User;
+  parentId: string;
 };
 
 export type Message = {
