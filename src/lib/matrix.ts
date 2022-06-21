@@ -199,13 +199,15 @@ const _onReceiveMessage = (
   onReaction: OnReactionCallback,
   roomId: string
 ) => {
-  client.on(ClientEvent.Event, async (event) => {
+  client.on(ClientEvent.Event, (event) => {
     const isMessage = event.getType() === EventType.RoomMessage;
     const isDifferentRoom = event.getRoomId() !== roomId;
     if (!isMessage || isDifferentRoom) return;
 
-    const user = await getUser(event.getSender());
-    user.name = nameFromMatrixId(user.id);
+    const user = {
+      id: event.getSender(),
+      name: nameFromMatrixId(event.getSender()),
+    };
 
     if (event.getContent().msgtype === "m.reaction") {
       onReaction({
