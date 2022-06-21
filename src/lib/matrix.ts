@@ -175,7 +175,7 @@ export type OnReactionCallback = (params: {
   id: string;
   chatId: string;
   messageId: string;
-  user: User;
+  sender: User;
   emojiChar: string;
 }) => void;
 
@@ -212,7 +212,7 @@ const _onReceiveMessage = (
         id: event.getId(),
         chatId: roomId,
         messageId: event.getContent().messageId,
-        user: user,
+        sender: user,
         emojiChar: event.getContent().emoji,
       });
     } else {
