@@ -1,4 +1,4 @@
-import { memoize } from "lodash";
+import { memoize, chain } from "lodash";
 import {
   ClientEvent,
   EventType,
@@ -48,9 +48,11 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
     .getMembers()
     .find((member) => member.userId !== room.myUserId)!;
   const reactions = await Promise.all(
-    room.timeline
+    chain(room.timeline)
       .filter((event) => event.getContent().msgtype === "m.reaction")
-      .map(async (event): Promise<Reaction> => {
+      .groupBy((event) => `${event.getContent().emoji}${event.getSender()}`)
+      .filter((group) => group.length % 2 === 1)
+      .map(async ([event]): Promise<Reaction> => {
         const sender = await getUser(event.getSender());
         sender.name = nameFromMatrixId(sender.id);
         return {
@@ -59,6 +61,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
           user: sender,
         };
       })
+      .valueOf()
   );
 
   const lastOpen = await scrollbackToLastOpen(room);
