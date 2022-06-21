@@ -60,6 +60,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
       .filter((event) => event.getContent().msgtype === "m.text")
       .map(async (event) => {
         const sender = await getUser(event.getSender());
+        sender.name = nameFromMatrixId(sender.id);
         return {
           id: event.getId(),
           text: event.getContent().body,
@@ -183,11 +184,14 @@ const _onReceiveMessage = (
     const isDifferentRoom = event.getRoomId() !== roomId;
     if (!isMessage || isDifferentRoom) return;
 
+    const user = await getUser(event.getSender());
+    user.name = nameFromMatrixId(user.id);
+
     if (event.getContent().msgtype === "m.reaction") {
       onReaction({
         chatId: roomId,
         messageId: event.getContent().messageId,
-        user: await getUser(event.getSender()),
+        user: user,
         emojiChar: event.getContent().emoji,
       });
     } else {
@@ -195,7 +199,7 @@ const _onReceiveMessage = (
         id: event.getId(),
         chatId: roomId,
         message: event.getContent().body,
-        sender: await getUser(event.getSender()),
+        sender: user,
         parentId: event.getContent().parentId,
         parentSender: event.getContent().parentSender,
         parentText: event.getContent().parentText,
@@ -219,6 +223,7 @@ export const onNewChat = (callback: NewChatCallback) => {
       member.userId === client.getUserId()
     ) {
       const user = await getUser(event.getSender());
+      user.name = nameFromMatrixId(user.id);
       const roomId = member.roomId;
       const room = await client.joinRoom(roomId);
       callback({
