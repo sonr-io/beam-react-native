@@ -19,12 +19,14 @@ type AddMessage = (params: {
 }) => void;
 
 type AddReaction = (params: {
+  id: string;
   chatId: string;
   messageId: string;
   emoji: Emoji;
 }) => void;
 
 type AddReactionToMessage = (params: {
+  id: string;
   chatId: string;
   messageId: string;
   user: User;
@@ -97,13 +99,14 @@ export const ChatContextProvider: React.FC<Props> = ({
     );
   };
 
-  const addReaction: AddReaction = ({ chatId, messageId, emoji }) => {
+  const addReaction: AddReaction = ({ id, chatId, messageId, emoji }) => {
     addEmojiToHistory(emoji);
     const emojiChar = charFromEmojiObject(emoji);
-    addReactionToMessage({ chatId, messageId, user, emojiChar });
+    addReactionToMessage({ id, chatId, messageId, user, emojiChar });
   };
 
   const addReactionToMessage: AddReactionToMessage = ({
+    id,
     chatId,
     messageId,
     user,
@@ -124,7 +127,7 @@ export const ChatContextProvider: React.FC<Props> = ({
           return chat;
         }
 
-        chat.messages[i].reactions.unshift({ emoji: emojiChar, user });
+        chat.messages[i].reactions.unshift({ id, emoji: emojiChar, user });
 
         if (Date.now() > chat.lastActivity) {
           chat.lastActivity = Date.now();

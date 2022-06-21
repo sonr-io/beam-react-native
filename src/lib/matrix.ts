@@ -11,7 +11,7 @@ import {
 import { SyncState } from "matrix-js-sdk/lib/sync";
 import { client } from "../matrixClient";
 
-import { Chat, User } from "../types/Chat";
+import { Chat, Reaction, User } from "../types/Chat";
 import nameFromMatrixId from "./nameFromMatrixId";
 
 export const login = async (user: string, password: string) => {
@@ -47,12 +47,19 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
   const interlocutor = room
     .getMembers()
     .find((member) => member.userId !== room.myUserId)!;
-  const reactions = room.timeline
-    .filter((event) => event.getContent().msgtype === "m.reaction")
-    .map((event) => ({
-      messageId: event.getContent().messageId,
-      emoji: event.getContent().emoji,
-    }));
+  const reactions = await Promise.all(
+    room.timeline
+      .filter((event) => event.getContent().msgtype === "m.reaction")
+      .map(async (event): Promise<Reaction> => {
+        const sender = await getUser(event.getSender());
+        sender.name = nameFromMatrixId(sender.id);
+        return {
+          id: event.getContent().messageId,
+          emoji: event.getContent().emoji,
+          user: sender,
+        };
+      })
+  );
 
   const lastOpen = await scrollbackToLastOpen(room);
   const messages = await Promise.all([
@@ -70,9 +77,7 @@ const getChatFromRoom = async (room: Room): Promise<Chat> => {
           parentSender: event.getContent().parentSender,
           parentText: event.getContent().parentText,
           forwardedFrom: event.getContent().forwardedFrom,
-          reactions: reactions
-            .filter((reaction) => reaction.messageId === event.getId())
-            .map((reaction) => ({ emoji: reaction.emoji, user: sender })),
+          reactions: reactions,
         };
       }),
   ]);
@@ -153,6 +158,7 @@ export type OnMessageCallback = (params: {
 }) => void;
 
 export type OnReactionCallback = (params: {
+  id: string;
   chatId: string;
   messageId: string;
   user: User;
@@ -189,6 +195,7 @@ const _onReceiveMessage = (
 
     if (event.getContent().msgtype === "m.reaction") {
       onReaction({
+        id: event.getId(),
         chatId: roomId,
         messageId: event.getContent().messageId,
         user: user,
