@@ -49,15 +49,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     client.on(ClientEvent.Sync, async (state) => {
       if (state === "PREPARED") {
-        const user = await getUser(client.getUserId());
-        user.name = nameFromMatrixId(user.id);
-        const chats = await getChats();
-
-        chats
-          .filter((chat) => !chat.isMember)
-          .map((chat) => client.joinRoom(chat.id));
-
-        navigation.navigate("Chat", { user, chats });
+        await completeLogin();
       }
     });
 
@@ -78,6 +70,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     AsyncStorage.setItem("sessionUser", client.getUserId());
     AsyncStorage.setItem("sessionToken", client.getAccessToken());
 
+    completeLogin();
+  };
+
+  const completeLogin = async () => {
     const user = await getUser(client.getUserId());
     user.name = nameFromMatrixId(user.id);
     const chats = await getChats();
@@ -86,7 +82,6 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       .filter((chat) => !chat.isMember)
       .map((chat) => client.joinRoom(chat.id));
 
-    setLoading(false);
     navigation.navigate("Chat", { user, chats });
   };
 
