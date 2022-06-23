@@ -1,6 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Params } from ".";
 import { ChatListItem } from "../../components/Chat/ChatListItem";
@@ -8,6 +10,7 @@ import { GradientTop } from "../../components/GradientTop";
 import { NewChatButton } from "../../components/NewChatButton";
 import { useChatContext } from "../../contexts/ChatContext";
 import MessageBubbles from "../../icons/MessageBubbles";
+import { logout } from "../../lib/matrix";
 
 type Props = StackScreenProps<Params, "ChatList">;
 const ChatList: React.FC<Props> = ({ navigation }) => {
@@ -25,10 +28,21 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
     updateLastOpen(id);
   };
 
+  const onLogout = async () => {
+    await logout();
+    await AsyncStorage.multiRemove(["sessionUser", "sessionToken"]);
+    navigation.navigate("Login", {});
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <GradientTop>
-        <Text style={styles.title}>Messages</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.title}>Messages</Text>
+          <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </GradientTop>
       <View style={styles.listContainer}>
         <FlatList
@@ -63,12 +77,23 @@ const ListEmpty = () => (
 
 const styles = StyleSheet.create({
   title: {
+    flex: 1,
     fontSize: 34,
     fontFamily: "THICCCBOI_ExtraBold",
     color: "#FFFFFF",
     paddingHorizontal: 16,
     marginTop: 4,
     marginBottom: 12,
+  },
+  logoutButton: {
+    marginRight: 16,
+    flex: 1,
+    flexDirection: "row",
+  },
+  logoutText: {
+    alignSelf: "center",
+    color: "#FFF",
+    fontFamily: "THICCCBOI_Bold",
   },
   listContainer: {
     paddingHorizontal: 16,

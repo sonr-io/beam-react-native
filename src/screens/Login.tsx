@@ -17,8 +17,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StackParams } from "../../App";
 import { getChats, getUser, login } from "../lib/matrix";
 import nameFromMatrixId from "../lib/nameFromMatrixId";
-import { client, setClient } from "../matrixClient";
-import { ClientEvent } from "matrix-js-sdk";
+import { setClient } from "../matrixClient";
+import { ClientEvent, MatrixClient } from "matrix-js-sdk";
 
 interface PresetUser {
   username: string;
@@ -45,11 +45,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    setClient(sessionUser, sessionToken);
+    const client = setClient(sessionUser, sessionToken);
 
     client.on(ClientEvent.Sync, async (state) => {
       if (state === "PREPARED") {
-        await completeLogin();
+        await completeLogin(client);
       }
     });
 
@@ -70,10 +70,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     AsyncStorage.setItem("sessionUser", client.getUserId());
     AsyncStorage.setItem("sessionToken", client.getAccessToken());
 
-    completeLogin();
+    completeLogin(client);
   };
 
-  const completeLogin = async () => {
+  const completeLogin = async (client: MatrixClient) => {
     const user = await getUser(client.getUserId());
     user.name = nameFromMatrixId(user.id);
     const chats = await getChats();
@@ -83,6 +83,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       .map((chat) => client.joinRoom(chat.id));
 
     navigation.navigate("Chat", { user, chats });
+    setLoading(false);
+    setShowForm(true);
   };
 
   useEffect(() => {
