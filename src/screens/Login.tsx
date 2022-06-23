@@ -1,6 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { USERS } from "@env";
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -16,6 +17,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StackParams } from "../../App";
 import { getChats, getUser, login } from "../lib/matrix";
 import nameFromMatrixId from "../lib/nameFromMatrixId";
+import { client, setClient } from "../matrixClient";
+import { ClientEvent } from "matrix-js-sdk";
 
 interface PresetUser {
   username: string;
@@ -25,12 +28,41 @@ interface PresetUser {
 type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
+  const [showForm, setShowForm] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const insets = useSafeAreaInsets();
+
+  const loadSession = async () => {
+    const sessionUser = await AsyncStorage.getItem("sessionUser");
+    const sessionToken = await AsyncStorage.getItem("sessionToken");
+
+    if (!sessionUser || !sessionToken) {
+      setShowForm(true);
+      return;
+    }
+
+    setClient(sessionUser, sessionToken);
+
+    client.on(ClientEvent.Sync, async (state) => {
+      if (state === "PREPARED") {
+        const user = await getUser(client.getUserId());
+        user.name = nameFromMatrixId(user.id);
+        const chats = await getChats();
+
+        chats
+          .filter((chat) => !chat.isMember)
+          .map((chat) => client.joinRoom(chat.id));
+
+        navigation.navigate("Chat", { user, chats });
+      }
+    });
+
+    await client.startClient();
+  };
 
   const onLogin = async (username: string, password: string) => {
     setError(false);
@@ -42,6 +74,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       setLoading(false);
       return;
     }
+
+    AsyncStorage.setItem("sessionUser", client.getUserId());
+    AsyncStorage.setItem("sessionToken", client.getAccessToken());
 
     const user = await getUser(client.getUserId());
     user.name = nameFromMatrixId(user.id);
@@ -55,60 +90,76 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate("Chat", { user, chats });
   };
 
+  useEffect(() => {
+    loadSession();
+  }, []);
+
   return (
     <>
-      <View style={styles.container}>
-        <TextInput
-          autoFocus
-          autoCapitalize={"none"}
-          autoCorrect={false}
-          style={styles.input}
-          placeholder="username"
-          onChangeText={(text) => {
-            setUsername(text);
-          }}
-        />
-        <TextInput
-          secureTextEntry
-          style={styles.input}
-          placeholder="password"
-          onChangeText={(text) => {
-            setPassword(text);
-          }}
-        />
+      {!showForm && (
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <ActivityIndicator />
+          </View>
+        </View>
+      )}
 
-        {error && <Text style={styles.error}>Incorrect credentials</Text>}
-
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => onLogin(username, password)}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-
-        <View style={styles.presetContainer}>
-          {presetUsers.map(({ username, password }) => (
-            <TouchableOpacity
-              key={username}
-              style={styles.presetUser}
-              onPress={() => {
-                onLogin(username, password);
+      {showForm && (
+        <>
+          <View style={styles.container}>
+            <TextInput
+              autoFocus
+              autoCapitalize={"none"}
+              autoCorrect={false}
+              style={styles.input}
+              placeholder="username"
+              onChangeText={(text) => {
+                setUsername(text);
               }}
+            />
+            <TextInput
+              secureTextEntry
+              style={styles.input}
+              placeholder="password"
+              onChangeText={(text) => {
+                setPassword(text);
+              }}
+            />
+
+            {error && <Text style={styles.error}>Incorrect credentials</Text>}
+
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={() => onLogin(username, password)}
             >
-              <Text>{username}</Text>
+              <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-          ))}
-        </View>
 
-        {Platform.OS === "ios" && (
-          <KeyboardSpacer topSpacing={-insets.bottom} />
-        )}
-      </View>
+            <View style={styles.presetContainer}>
+              {presetUsers.map(({ username, password }) => (
+                <TouchableOpacity
+                  key={username}
+                  style={styles.presetUser}
+                  onPress={() => {
+                    onLogin(username, password);
+                  }}
+                >
+                  <Text>{username}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
 
-      {loading && (
-        <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="white" />
-        </View>
+            {Platform.OS === "ios" && (
+              <KeyboardSpacer topSpacing={-insets.bottom} />
+            )}
+          </View>
+
+          {loading && (
+            <View style={styles.overlay}>
+              <ActivityIndicator size="large" color="white" />
+            </View>
+          )}
+        </>
       )}
     </>
   );

@@ -10,7 +10,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { LogBox, StatusBar, View } from "react-native";
 import { useFonts } from "expo-font";
 
-import SplashScreen from "./src/screens/Splash";
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
 import { Chat, User } from "./src/types/Chat";
@@ -18,7 +17,6 @@ import { Chat, User } from "./src/types/Chat";
 const Stack = createStackNavigator();
 
 export type StackParams = {
-  Splash: {};
   Login: {};
   Chat: {
     user: User;
@@ -52,7 +50,6 @@ export default function App() {
         />
 
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Chat" component={ChatScreen} />
         </Stack.Navigator>
