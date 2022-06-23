@@ -40,14 +40,14 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
 
-  const pushEmoji = (emoji: Emoji) => {
+  const pushEmoji = (emoji: string) => {
     navigation.goBack();
     client.sendMessage(chatId, {
       msgtype: "m.reaction",
       body: "",
       messageId: message.id,
       parentText: message.text,
-      emoji: charFromEmojiObject(emoji),
+      emoji: emoji,
     });
   };
 
@@ -87,6 +87,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
           style={styles.touchableBackground}
         />
       </View>
+
       <View style={styles.content}>
         <MessageBubble
           text={message.text}
@@ -106,13 +107,17 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
         <BlurView>
           <View>
             <EmojiPresetBar
-              onSelectEmoji={pushEmoji}
+              onSelectEmoji={(e) => pushEmoji(charFromEmojiObject(e))}
               isEmojiSelectorVisible={showEmojiSelector}
               handleEmojiSelectorVisibility={handleEmojiSelectorVisibility}
             />
           </View>
 
-          {showEmojiSelector && <EmojiSelector onSelectEmoji={pushEmoji} />}
+          {showEmojiSelector && (
+            <EmojiSelector
+              onSelectEmoji={(e) => pushEmoji(charFromEmojiObject(e))}
+            />
+          )}
 
           {!showEmojiSelector && (
             <>
@@ -121,22 +126,38 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
                   <FlatList
                     data={message.reactions}
                     style={{ maxHeight: 275 }}
-                    renderItem={({ item }) => (
-                      <View style={styles.reactionItem}>
-                        <Avatar />
+                    renderItem={({ item }) => {
+                      const isSelf = item.sender.id === user.id;
+                      return (
+                        <View style={styles.reactionItem}>
+                          <Avatar />
 
-                        <View style={styles.reactionUser}>
-                          <Text numberOfLines={1} style={styles.userName}>
-                            {item.sender.name}
-                          </Text>
-                          <Text numberOfLines={1} style={styles.userId}>
-                            {item.sender.id}
-                          </Text>
+                          <View style={styles.reactionUser}>
+                            <Text numberOfLines={1} style={styles.userName}>
+                              {isSelf ? "You" : item.sender.name}
+                            </Text>
+                            {!isSelf && (
+                              <Text numberOfLines={1} style={styles.userId}>
+                                {item.sender.id}
+                              </Text>
+                            )}
+                          </View>
+
+                          {isSelf && (
+                            <TouchableOpacity
+                              style={styles.buttonRemove}
+                              onPress={() => pushEmoji(item.emoji)}
+                            >
+                              <Text style={styles.buttonRemoveText}>
+                                Remove
+                              </Text>
+                            </TouchableOpacity>
+                          )}
+
+                          <Text>{item.emoji}</Text>
                         </View>
-
-                        <Text>{item.emoji}</Text>
-                      </View>
-                    )}
+                      );
+                    }}
                   />
                 </View>
               )}
@@ -238,6 +259,18 @@ const styles = StyleSheet.create({
     fontFamily: "THICCCBOI_Medium",
     color: "#696376",
     fontSize: 14,
+  },
+  buttonRemove: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(133, 128, 144, 0.1)",
+    borderRadius: 6,
+    marginRight: 10,
+  },
+  buttonRemoveText: {
+    fontFamily: "THICCCBOI_ExtraBold",
+    fontSize: 14,
+    color: "#514A60",
   },
 });
 
