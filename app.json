@@ -12,13 +12,15 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.sonr.beam.ios"
+      "bundleIdentifier": "io.sonr.beam.ios",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "io.sonr.beam.ios"
     },
     "web": {
       "favicon": "./assets/favicon.png"
