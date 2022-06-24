@@ -12,13 +12,7 @@ type Props = {
 };
 
 export const ChatListItem = (props: Props) => {
-  const {
-    messages,
-    user: { name },
-    preview,
-    lastOpen,
-    lastActivity,
-  } = props.chat;
+  const { messages, user, preview, lastOpen, lastActivity } = props.chat;
 
   const elapsedTime = timeAgo(lastActivity);
 
@@ -38,12 +32,12 @@ export const ChatListItem = (props: Props) => {
       }}
     >
       <View style={styles.buttonContainer}>
-        <Avatar />
+        <Avatar user={user} />
 
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
             <Text numberOfLines={1} style={styles.chatName}>
-              {name}
+              {user.name}
             </Text>
 
             {totalUnreadMessages > 0 && (

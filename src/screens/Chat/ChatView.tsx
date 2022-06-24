@@ -128,7 +128,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
         >
           <IconBackArrow />
         </TouchableOpacity>
-        <Avatar />
+        <Avatar user={recipient} />
         <View style={{ flex: 1 }}>
           <Text numberOfLines={1} style={styles.recipientName}>
             {recipient.name}
