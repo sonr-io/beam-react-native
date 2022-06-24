@@ -82,7 +82,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       .filter((chat) => !chat.isMember)
       .map((chat) => client.joinRoom(chat.id));
 
-    navigation.navigate("Chat", { user, chats });
+    navigation.replace("Chat", { user, chats });
     setLoading(false);
     setShowForm(true);
   };
