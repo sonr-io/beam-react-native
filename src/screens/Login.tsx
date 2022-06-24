@@ -15,10 +15,9 @@ import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackParams } from "../../App";
-import { getChats, getUser, login } from "../lib/matrix";
+import { getChats, getUser, login, loginWithSession } from "../lib/matrix";
 import nameFromMatrixId from "../lib/nameFromMatrixId";
-import { setClient } from "../matrixClient";
-import { ClientEvent, MatrixClient } from "matrix-js-sdk";
+import { MatrixClient } from "matrix-js-sdk";
 
 interface PresetUser {
   username: string;
@@ -45,15 +44,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    const client = setClient(sessionUser, sessionToken);
-
-    client.on(ClientEvent.Sync, async (state) => {
-      if (state === "PREPARED") {
-        await completeLogin(client);
-      }
-    });
-
-    await client.startClient();
+    const client = await loginWithSession(sessionUser, sessionToken);
+    await completeLogin(client);
   };
 
   const onLogin = async (username: string, password: string) => {

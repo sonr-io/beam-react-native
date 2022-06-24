@@ -9,7 +9,7 @@ import {
   RoomMemberEvent,
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
-import { getClient } from "../matrixClient";
+import { getClient, setClient } from "../matrixClient";
 
 import { Chat, Reaction, User } from "../types/Chat";
 import nameFromMatrixId from "./nameFromMatrixId";
@@ -21,6 +21,19 @@ export const login = async (user: string, password: string) => {
   } catch {
     return;
   }
+  await client.startClient();
+
+  return new Promise<MatrixClient>((resolve) => {
+    client.once(ClientEvent.Sync, (state) => {
+      if (state === SyncState.Prepared) {
+        resolve(client);
+      }
+    });
+  });
+};
+
+export const loginWithSession = async (user: string, token: string) => {
+  const client = setClient(user, token);
   await client.startClient();
 
   return new Promise<MatrixClient>((resolve) => {
