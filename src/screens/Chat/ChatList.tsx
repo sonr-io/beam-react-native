@@ -9,7 +9,8 @@ import { ChatListItem } from "../../components/Chat/ChatListItem";
 import { GradientTop } from "../../components/GradientTop";
 import { NewChatButton } from "../../components/NewChatButton";
 import { useChatContext } from "../../contexts/ChatContext";
-import MessageBubbles from "../../icons/MessageBubbles";
+import IconMessageBubbles from "../../icons/MessageBubbles";
+import IconLogout from "../../icons/Logout";
 import { logout } from "../../lib/matrix";
 
 type Props = StackScreenProps<Params, "ChatList">;
@@ -40,7 +41,7 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
         <View style={{ flexDirection: "row" }}>
           <Text style={styles.title}>Messages</Text>
           <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
-            <Text style={styles.logoutText}>Logout</Text>
+            <IconLogout />
           </TouchableOpacity>
         </View>
       </GradientTop>
@@ -66,7 +67,7 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
 const ListEmpty = () => (
   <View style={styles.emptyListContainer}>
     <View style={styles.emptyListContent}>
-      <MessageBubbles />
+      <IconMessageBubbles />
       <Text style={styles.emptyListTitle}>No Messages Yet</Text>
       <Text style={styles.emptyListSubtitle}>
         Messages you send or receive will appear here
@@ -86,14 +87,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   logoutButton: {
-    marginRight: 16,
+    margin: 16,
     flex: 1,
     flexDirection: "row",
-  },
-  logoutText: {
-    alignSelf: "center",
-    color: "#FFF",
-    fontFamily: "THICCCBOI_Bold",
   },
   listContainer: {
     paddingHorizontal: 16,
