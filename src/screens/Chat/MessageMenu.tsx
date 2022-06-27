@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -27,7 +26,7 @@ import IconForward from "../../icons/Forward";
 import IconReply from "../../icons/Reply";
 import { charFromEmojiObject } from "../../lib/emoji";
 import nameFromMatrixId from "../../lib/nameFromMatrixId";
-import { client } from "../../matrixClient";
+import { getClient } from "../../matrixClient";
 import { Emoji } from "../../types/Emoji";
 
 const ios = Platform.OS === "ios";
@@ -42,7 +41,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
   const pushEmoji = (emoji: string) => {
     navigation.goBack();
-    client.sendMessage(chatId, {
+    getClient().sendMessage(chatId, {
       msgtype: "m.reaction",
       body: "",
       messageId: message.id,
@@ -53,7 +52,7 @@ const MessageMenu: React.FC<Props> = ({ navigation, route }) => {
 
   const pushMessage = (text: string) => {
     navigation.goBack();
-    client.sendMessage(chatId, {
+    getClient().sendMessage(chatId, {
       msgtype: "m.text",
       body: text,
       parentId: message.id,

@@ -19,6 +19,7 @@ import { StackParams } from "../../../App";
 import { useListeners } from "../../lib/matrixHooks";
 
 export type Params = {
+  Login: {};
   ChatList: {};
   NewChat: {};
   ChatView: { id: string };

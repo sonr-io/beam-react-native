@@ -7,7 +7,7 @@ import TransparentModal from "../../components/TransparentModal";
 import UserSelector from "../../components/UserSelector";
 
 import { useChatContext } from "../../contexts/ChatContext";
-import { client } from "../../matrixClient";
+import { getClient } from "../../matrixClient";
 
 import { User } from "../../types/Chat";
 
@@ -33,7 +33,7 @@ const ForwardMenu: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const forwardMessage = (chatId: string, text: string, from: string) => {
-    client.sendMessage(chatId, {
+    getClient().sendMessage(chatId, {
       msgtype: "m.text",
       body: text,
       forwardedFrom: from,
