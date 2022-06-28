@@ -11,4 +11,5 @@
 
 RCT_EXTERN_METHOD(newWallet)
 
+
 @end

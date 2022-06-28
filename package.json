@@ -43,7 +43,7 @@
     "react-native-gesture-handler": "~2.1.0",
     "react-native-keyboard-spacer": "^0.4.1",
     "react-native-opengraph-kit": "^3.0.1",
-    "react-native-reanimated": "~2.3.1",
+    "react-native-reanimated": "~2.2.4",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
     "react-native-scrollable-tab-view": "ptomasroos/react-native-scrollable-tab-view#1371236e91c217e2f42468e355419f83410e3133",

@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { USERS } from "@env";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect } from "react";
-import MotorModule from "../lib/motorModule";
+import MotorKit from "../lib/motorModule";
 import {
   ActivityIndicator,
   Platform,
@@ -19,6 +19,7 @@ import { StackParams } from "../../App";
 import { getChats, getUser, login, loginWithSession } from "../lib/matrix";
 import nameFromMatrixId from "../lib/nameFromMatrixId";
 import { MatrixClient } from "matrix-js-sdk";
+import request from "xmlhttp-request";
 
 interface PresetUser {
   username: string;
@@ -47,6 +48,18 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     const client = await loginWithSession(sessionUser, sessionToken);
     await completeLogin(client);
+  };
+
+  const onRegister = async () => {
+    // Try-catch to avoid crashing the app if the user doesn't have a network connection
+    try {
+      const request = MotorKit.newWallet();
+      console.log(request);
+    } catch (e) {
+      console.log(e);
+      setError(true);
+      setLoading(false);
+    }
   };
 
   const onLogin = async (username: string, password: string) => {
@@ -128,7 +141,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             <TouchableOpacity
               style={styles.loginButton}
               onPress={() => {
-                MotorModule.newWallet();
+                onRegister();
               }}
             >
               <Text style={styles.buttonText}>Register</Text>
