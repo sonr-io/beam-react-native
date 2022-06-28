@@ -1,11 +1,10 @@
 {
   "name": "sorn-app",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject",
     "lint": "prettier --check .",
@@ -15,7 +14,6 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",
-    "@react-native-community/masked-view": "^0.1.11",
     "@react-native-masked-view/masked-view": "0.2.6",
     "@react-navigation/bottom-tabs": "^6.3.1",
     "@react-navigation/native": "^6.0.10",
@@ -27,6 +25,7 @@
     "expo-blur": "~11.0.0",
     "expo-font": "~10.0.4",
     "expo-linear-gradient": "~11.0.3",
+    "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
     "expo-updates": "~0.11.6",
     "intl": "^1.2.5",
