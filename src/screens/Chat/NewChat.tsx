@@ -9,7 +9,7 @@ import TransparentModal from "../../components/TransparentModal";
 import { UserList } from "../../components/UserList";
 import { useChatContext } from "../../contexts/ChatContext";
 import { useListeners } from "../../lib/matrixHooks";
-import { client } from "../../matrixClient";
+import { getClient } from "../../matrixClient";
 import { User } from "../../types/Chat";
 
 type Props = StackScreenProps<Params, "NewChat">;
@@ -32,6 +32,7 @@ const NewChat: React.FC<Props> = ({ navigation }) => {
     setLoading(true);
     setError(false);
     const fullId = `@${id}:matrix.sonr.network`;
+    const client = getClient();
 
     if (fullId === client.getUserId()) {
       setLoading(false);

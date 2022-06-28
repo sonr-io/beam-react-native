@@ -9,14 +9,13 @@ import {
   RoomMemberEvent,
 } from "matrix-js-sdk";
 import { SyncState } from "matrix-js-sdk/lib/sync";
-import { client } from "../matrixClient";
+import { getClient, setClient } from "../matrixClient";
 
 import { Chat, Reaction, User } from "../types/Chat";
 import nameFromMatrixId from "./nameFromMatrixId";
 
 export const login = async (user: string, password: string) => {
-  client.stopClient();
-  await client.clearStores();
+  const client = getClient();
   try {
     await client.loginWithPassword(user, password);
   } catch {
@@ -33,7 +32,28 @@ export const login = async (user: string, password: string) => {
   });
 };
 
+export const loginWithSession = async (user: string, token: string) => {
+  const client = setClient(user, token);
+  await client.startClient();
+
+  return new Promise<MatrixClient>((resolve) => {
+    client.once(ClientEvent.Sync, (state) => {
+      if (state === SyncState.Prepared) {
+        resolve(client);
+      }
+    });
+  });
+};
+
+export const logout = async () => {
+  const client = getClient();
+  client.stopClient();
+  await client.clearStores();
+  await client.logout();
+};
+
 const getPrivateRooms = (): Room[] => {
+  const client = getClient();
   return client
     .getRooms()
     .filter(
@@ -133,6 +153,7 @@ export const getChats = () => {
 };
 
 export const scrollbackRoom = async (roomId: string) => {
+  const client = getClient();
   const room = client.getRoom(roomId);
   if (room && room.oldState.paginationToken) {
     await client.scrollback(room);
@@ -143,6 +164,7 @@ export const scrollbackRoom = async (roomId: string) => {
 };
 
 const scrollbackToLastOpen = async (room: Room) => {
+  const client = getClient();
   const eventId = room.accountData["m.fully_read"]?.getContent().event_id;
 
   if (!eventId) {
@@ -199,7 +221,7 @@ const _onReceiveMessage = (
   onReaction: OnReactionCallback,
   roomId: string
 ) => {
-  client.on(ClientEvent.Event, (event) => {
+  getClient().on(ClientEvent.Event, (event) => {
     const isMessage = event.getType() === EventType.RoomMessage;
     const isDifferentRoom = event.getRoomId() !== roomId;
     if (!isMessage || isDifferentRoom) return;
@@ -240,6 +262,7 @@ type NewChatCallback = (params: {
 }) => void;
 
 export const onNewChat = (callback: NewChatCallback) => {
+  const client = getClient();
   client.on(RoomMemberEvent.Membership, async (event, member) => {
     if (
       member.membership === "invite" &&
@@ -260,22 +283,23 @@ export const onNewChat = (callback: NewChatCallback) => {
 };
 
 export const clearListeners = () => {
-  client.removeAllListeners(RoomMemberEvent.Membership);
-  client.removeAllListeners(ClientEvent.Event);
+  getClient().removeAllListeners(RoomMemberEvent.Membership);
+  getClient().removeAllListeners(ClientEvent.Event);
 };
 
 export const getUser = memoize(
   async (userId: string): Promise<User> => {
-    const { displayname } = await client.getProfileInfo(userId);
+    const { displayname } = await getClient().getProfileInfo(userId);
     return {
       id: userId,
       name: displayname ?? "",
     };
   },
-  (userId) => `${client.getUserId()}${userId}`
+  (userId) => `${getClient().getUserId()}${userId}`
 );
 
 export const markLastMessageAsRead = async (roomId: string) => {
+  const client = getClient();
   const room = client.getRoom(roomId);
   if (room) {
     const lastEvent = room.timeline[room.timeline.length - 1];

@@ -26,7 +26,7 @@ import IconBackArrow from "../../icons/BackArrow";
 import { getFormattedDay } from "../../lib/getFormattedDay";
 import { markLastMessageAsRead } from "../../lib/matrix";
 import { useScrollback } from "../../lib/matrixHooks";
-import { client } from "../../matrixClient";
+import { getClient } from "../../matrixClient";
 import { Chat, Message, User, ViewableMessage } from "../../types/Chat";
 
 const toViewable = (messages: Message[]): ViewableMessage[] => {
@@ -90,7 +90,7 @@ const ChatView: React.FC<Props> = ({ route, navigation }) => {
   }, [messages.length]);
 
   const pushMessage = (message: string) => {
-    client.sendMessage(chatId, {
+    getClient().sendMessage(chatId, {
       msgtype: "m.text",
       body: message,
     });
