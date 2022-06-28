@@ -50,6 +50,7 @@
     "react-native-scrollable-tab-view": "ptomasroos/react-native-scrollable-tab-view#1371236e91c217e2f42468e355419f83410e3133",
     "react-native-svg": "12.1.1",
     "react-native-web": "0.17.1",
+    "seedrandom": "^3.0.5",
     "string.prototype.matchall": "^4.0.7",
     "xmlhttp-request": "^0.4.1"
   },
@@ -62,6 +63,7 @@
     "@types/react-native": "~0.64.12",
     "@types/react-native-keyboard-spacer": "^0.4.2",
     "@types/react-native-scrollable-tab-view": "^0.10.3",
+    "@types/seedrandom": "^3.0.2",
     "husky": "^7.0.4",
     "jest": "^28.1.0",
     "prettier": "^2.6.2",
