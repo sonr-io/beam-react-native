@@ -25,6 +25,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1792FF"
+    },
     "description": "",
     "githubUrl": "https://github.com/agencyenterprise/sonr-react-native-app"
   }
