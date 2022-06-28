@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "motorkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sonr-io/MotorKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "7deabf0347e30c166f7f6896ef85dbd4ebb37232"
+      }
+    },
+    {
+      "identity" : "swift-protobuf",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-protobuf.git",
+      "state" : {
+        "revision" : "e1499bc69b9040b29184f7f2996f7bab467c1639",
+        "version" : "1.19.0"
+      }
+    }
+  ],
+  "version" : 2
+}

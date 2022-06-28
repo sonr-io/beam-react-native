@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { USERS } from "@env";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect } from "react";
+import MotorModule from "../lib/motorModule";
 import {
   ActivityIndicator,
   Platform,
@@ -122,6 +123,15 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               onPress={() => onLogin(username, password)}
             >
               <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={() => {
+                MotorModule.newWallet();
+              }}
+            >
+              <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
 
             <View style={styles.presetContainer}>
