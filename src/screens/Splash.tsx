@@ -20,20 +20,20 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
     <>
       <View style={styles.container}>
         <LinearGradient
-          style={[styles.gradientContainer]}
-          colors={["#63B6FF", "#1792FF", "#046DE8"]}
-          locations={[0.0, 0.5, 1]}
-          start={{ x: 0.6, y: 1.5 }}
-          end={{ x: 0.4, y: -0.5 }}
+          style={styles.gradientContainer}
+          colors={["#046DE8", "#63B6FF", "#1792FF"]}
+          locations={[0, 0.5, 1]}
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 1 }}
         />
         <TouchableOpacity
           onPress={() => {
             panelRef.show(320);
           }}
-          style={{ marginTop: 80 }}
+          style={{ marginTop: 120, alignItems: "center" }}
         >
           <BeamLogo width="355" height="189" />
-          <Text style={styles.h1}>BEAM</Text>
+          <Text style={styles.h1}>Beam</Text>
         </TouchableOpacity>
         <SlidingUpPanel
           ref={(c) => {
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     borderRadius: 36,
   },
   h1: {
-    fontFamily: "THICCCBOI_Regular",
+    fontFamily: "THICCCBOI_ExtraBold",
     fontSize: 34,
     fontWeight: "800",
     lineHeight: 40,
