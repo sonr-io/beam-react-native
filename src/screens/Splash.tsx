@@ -44,7 +44,7 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
         />
         <TouchableOpacity
           onPress={() => {
-            panelRef.show(320);
+            loadSession();
           }}
           style={{ marginTop: 120, alignItems: "center" }}
         >
