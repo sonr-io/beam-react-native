@@ -15,9 +15,8 @@ import KeyboardSpacer from "react-native-keyboard-spacer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackParams } from "../../App";
-import { getChats, getUser, login, loginWithSession } from "../lib/matrix";
-import nameFromMatrixId from "../lib/nameFromMatrixId";
-import { MatrixClient } from "matrix-js-sdk";
+import { login } from "../lib/matrix";
+import { completeLogin } from "../lib/login";
 
 interface PresetUser {
   username: string;
@@ -35,19 +34,6 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = React.useState(false);
   const insets = useSafeAreaInsets();
 
-  const loadSession = async () => {
-    const sessionUser = await AsyncStorage.getItem("sessionUser");
-    const sessionToken = await AsyncStorage.getItem("sessionToken");
-
-    if (!sessionUser || !sessionToken) {
-      setShowForm(true);
-      return;
-    }
-
-    const client = await loginWithSession(sessionUser, sessionToken);
-    await completeLogin(client);
-  };
-
   const onLogin = async (username: string, password: string) => {
     setError(false);
     setLoading(true);
@@ -62,25 +48,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     AsyncStorage.setItem("sessionUser", client.getUserId());
     AsyncStorage.setItem("sessionToken", client.getAccessToken());
 
-    completeLogin(client);
-  };
-
-  const completeLogin = async (client: MatrixClient) => {
-    const user = await getUser(client.getUserId());
-    user.name = nameFromMatrixId(user.id);
-    const chats = await getChats();
-
-    chats
-      .filter((chat) => !chat.isMember)
-      .map((chat) => client.joinRoom(chat.id));
-
-    navigation.replace("Chat", { user, chats });
-    setLoading(false);
-    setShowForm(true);
+    completeLogin(client, navigation);
   };
 
   useEffect(() => {
-    loadSession();
+    setShowForm(true);
   }, []);
 
   return (
