@@ -13,14 +13,12 @@ import { loginWithSession } from "../lib/matrix";
 type Props = StackScreenProps<StackParams, "Login">;
 
 const SplashScreen: React.FC<Props> = ({ navigation }) => {
-  let panelRef: any = null;
-
   const loadSession = async () => {
     const sessionUser = await AsyncStorage.getItem("sessionUser");
     const sessionToken = await AsyncStorage.getItem("sessionToken");
 
     if (!sessionUser || !sessionToken) {
-      navigation.navigate("Login", {});
+      navigation.replace("Login", {});
       return;
     }
 

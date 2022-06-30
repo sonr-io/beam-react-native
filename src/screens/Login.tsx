@@ -26,7 +26,6 @@ interface PresetUser {
 type Props = StackScreenProps<StackParams, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const [showForm, setShowForm] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const presetUsers: PresetUser[] = JSON.parse(USERS || "[]");
@@ -51,76 +50,60 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     completeLogin(client, navigation);
   };
 
-  useEffect(() => {
-    setShowForm(true);
-  }, []);
-
   return (
     <>
-      {!showForm && (
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <ActivityIndicator />
-          </View>
-        </View>
-      )}
+      <View style={styles.container}>
+        <TextInput
+          autoFocus
+          autoCapitalize={"none"}
+          autoCorrect={false}
+          style={styles.input}
+          placeholder="username"
+          onChangeText={(text) => {
+            setUsername(text);
+          }}
+        />
+        <TextInput
+          secureTextEntry
+          style={styles.input}
+          placeholder="password"
+          onChangeText={(text) => {
+            setPassword(text);
+          }}
+        />
 
-      {showForm && (
-        <>
-          <View style={styles.container}>
-            <TextInput
-              autoFocus
-              autoCapitalize={"none"}
-              autoCorrect={false}
-              style={styles.input}
-              placeholder="username"
-              onChangeText={(text) => {
-                setUsername(text);
-              }}
-            />
-            <TextInput
-              secureTextEntry
-              style={styles.input}
-              placeholder="password"
-              onChangeText={(text) => {
-                setPassword(text);
-              }}
-            />
+        {error && <Text style={styles.error}>Incorrect credentials</Text>}
 
-            {error && <Text style={styles.error}>Incorrect credentials</Text>}
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => onLogin(username, password)}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
 
+        <View style={styles.presetContainer}>
+          {presetUsers.map(({ username, password }) => (
             <TouchableOpacity
-              style={styles.loginButton}
-              onPress={() => onLogin(username, password)}
+              key={username}
+              style={styles.presetUser}
+              onPress={() => {
+                onLogin(username, password);
+              }}
             >
-              <Text style={styles.buttonText}>Login</Text>
+              <Text>{username}</Text>
             </TouchableOpacity>
+          ))}
+        </View>
 
-            <View style={styles.presetContainer}>
-              {presetUsers.map(({ username, password }) => (
-                <TouchableOpacity
-                  key={username}
-                  style={styles.presetUser}
-                  onPress={() => {
-                    onLogin(username, password);
-                  }}
-                >
-                  <Text>{username}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+        {Platform.OS === "ios" && (
+          <KeyboardSpacer topSpacing={-insets.bottom} />
+        )}
+      </View>
 
-            {Platform.OS === "ios" && (
-              <KeyboardSpacer topSpacing={-insets.bottom} />
-            )}
-          </View>
-
-          {loading && (
-            <View style={styles.overlay}>
-              <ActivityIndicator size="large" color="white" />
-            </View>
-          )}
-        </>
+      {loading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="white" />
+        </View>
       )}
     </>
   );
