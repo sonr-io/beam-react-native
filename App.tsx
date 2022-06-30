@@ -12,6 +12,7 @@ import { useFonts } from "expo-font";
 
 import ChatScreen from "./src/screens/Chat";
 import LoginScreen from "./src/screens/Login";
+import SplashScreen from "./src/screens/Splash";
 import { Chat, User } from "./src/types/Chat";
 
 const Stack = createStackNavigator();
@@ -50,6 +51,7 @@ export default function App() {
         />
 
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Chat" component={ChatScreen} />
         </Stack.Navigator>
