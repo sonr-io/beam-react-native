@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { USERS } from "@env";
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   Platform,
