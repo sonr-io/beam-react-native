@@ -1765,6 +1765,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@react-native-async-storage/async-storage@^1.17.7":
+  version "1.17.7"
+  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.17.7.tgz#f9213e8cc6202a8c29df5a4da1db588f3b0fa8a9"
+  integrity sha512-mDtWhCcpxzrZhA95f6zi0pnBsjBEZW1LKZWfxVXG0UfaWpPxDBCKowNk2xjRTytckZeVhjmPJPtBU+8QNQcR0A==
+  dependencies:
+    merge-options "^3.0.4"
+
 "@react-native-async-storage/async-storage@~1.15.0":
   version "1.15.17"
   resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.17.tgz#0dae263a52e476ffce871086f1fef5b8e44708eb"
@@ -8374,6 +8381,13 @@ scheduler@^0.20.1:
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
+
+sdk-react-native-test@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/sdk-react-native-test/-/sdk-react-native-test-1.0.5.tgz#24b5c9177834120d39ccc6b650ccdf9ac9f12535"
+  integrity sha512-He8tbiDwFUjl8sISun3OSdiztBr6qfF+/QE6XWpH13l7TVfw02rnbiF/5yhKHMpdIZsPBN0BMqHZJbzDKBxlCw==
+  dependencies:
+    "@react-native-async-storage/async-storage" "^1.17.7"
 
 "semver@2 || 3 || 4 || 5", semver@^5.5.0, semver@^5.6.0:
   version "5.7.1"

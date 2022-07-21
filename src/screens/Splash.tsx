@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,16 +9,23 @@ import { StackParams } from "../../App";
 import BeamLogo from "../icons/Beam";
 import { completeLogin } from "../lib/login";
 import { loginWithSession } from "../lib/matrix";
+import { AuthenticationComponent } from "sdk-react-native-test";
 
 type Props = StackScreenProps<StackParams, "Login">;
 
 const SplashScreen: React.FC<Props> = ({ navigation }) => {
+  const [sdk, setSdk] = useState(false);
+  const onSuccessHandler = (data: any) => {
+    console.log("hello world", data);
+    // navigation.replace("Login", {});
+    // navigation.replace("SDK", { onSuccess: onSuccessHandler });
+  };
   const loadSession = async () => {
     const sessionUser = await AsyncStorage.getItem("sessionUser");
     const sessionToken = await AsyncStorage.getItem("sessionToken");
 
     if (!sessionUser || !sessionToken) {
-      navigation.replace("Login", {});
+      setSdk(true);
       return;
     }
 
@@ -50,6 +57,7 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.h1}>Beam</Text>
         </TouchableOpacity>
       </View>
+      {sdk && <AuthenticationComponent onSuccess={onSuccessHandler} />}
     </>
   );
 };
