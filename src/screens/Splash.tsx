@@ -9,22 +9,26 @@ import { StackParams } from "../../App";
 import BeamLogo from "../icons/Beam";
 import { completeLogin } from "../lib/login";
 import { loginWithSession } from "../lib/matrix";
-import { AuthenticationComponent } from "sdk-react-native-test";
+import { AuthenticationComponent } from "@sonr-io/react-native-ui-components";
 
 type Props = StackScreenProps<StackParams, "Login">;
 
 const SplashScreen: React.FC<Props> = ({ navigation }) => {
   const [sdk, setSdk] = useState(false);
-  const onSuccessHandler = (data: any) => {
+  const onSuccessHandler = async (data: any) => {
     console.log("hello world", data);
-    // navigation.replace("Login", {});
-    // navigation.replace("SDK", { onSuccess: onSuccessHandler });
+    const client = await loginWithSession(
+      data.matrixUsername,
+      data.matrixPassword
+    );
+    await completeLogin(client, navigation);
   };
   const loadSession = async () => {
     const sessionUser = await AsyncStorage.getItem("sessionUser");
     const sessionToken = await AsyncStorage.getItem("sessionToken");
 
     if (!sessionUser || !sessionToken) {
+      // navigation.replace("Login", {});
       setSdk(true);
       return;
     }
