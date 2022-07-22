@@ -32,7 +32,7 @@ const ChatList: React.FC<Props> = ({ navigation }) => {
   const onLogout = async () => {
     await logout();
     await AsyncStorage.multiRemove(["sessionUser", "sessionToken"]);
-    navigation.replace("Login", {});
+    navigation.replace("Splash", {});
   };
 
   return (

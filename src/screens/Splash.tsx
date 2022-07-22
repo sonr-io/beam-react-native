@@ -8,19 +8,20 @@ import { StackParams } from "../../App";
 
 import BeamLogo from "../icons/Beam";
 import { completeLogin } from "../lib/login";
+import { login } from "../lib/matrix";
 import { loginWithSession } from "../lib/matrix";
 import { AuthenticationComponent } from "@sonr-io/react-native-ui-components";
 
 type Props = StackScreenProps<StackParams, "Login">;
 
 const SplashScreen: React.FC<Props> = ({ navigation }) => {
-  const [sdk, setSdk] = useState(false);
+  const [showAuthentication, setShowAuthentication] = useState(false);
   const onSuccessHandler = async (data: any) => {
-    console.log("hello world", data);
-    const client = await loginWithSession(
-      data.matrixUsername,
-      data.matrixPassword
-    );
+    const client = await login(data.matrixUsername, data.matrixPassword);
+    if (!client) {
+      setShowAuthentication(true);
+      return;
+    }
     await completeLogin(client, navigation);
   };
   const loadSession = async () => {
@@ -28,8 +29,7 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
     const sessionToken = await AsyncStorage.getItem("sessionToken");
 
     if (!sessionUser || !sessionToken) {
-      // navigation.replace("Login", {});
-      setSdk(true);
+      setShowAuthentication(true);
       return;
     }
 
@@ -61,7 +61,9 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.h1}>Beam</Text>
         </TouchableOpacity>
       </View>
-      {sdk && <AuthenticationComponent onSuccess={onSuccessHandler} />}
+      {showAuthentication && (
+        <AuthenticationComponent onSuccess={onSuccessHandler} />
+      )}
     </>
   );
 };
