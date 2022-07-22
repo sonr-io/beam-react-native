@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,17 +8,28 @@ import { StackParams } from "../../App";
 
 import BeamLogo from "../icons/Beam";
 import { completeLogin } from "../lib/login";
+import { login } from "../lib/matrix";
 import { loginWithSession } from "../lib/matrix";
+import { AuthenticationComponent } from "@sonr-io/react-native-ui-components";
 
 type Props = StackScreenProps<StackParams, "Login">;
 
 const SplashScreen: React.FC<Props> = ({ navigation }) => {
+  const [showAuthentication, setShowAuthentication] = useState(false);
+  const onSuccessHandler = async (data: any) => {
+    const client = await login(data.matrixUsername, data.matrixPassword);
+    if (!client) {
+      setShowAuthentication(true);
+      return;
+    }
+    await completeLogin(client, navigation);
+  };
   const loadSession = async () => {
     const sessionUser = await AsyncStorage.getItem("sessionUser");
     const sessionToken = await AsyncStorage.getItem("sessionToken");
 
     if (!sessionUser || !sessionToken) {
-      navigation.replace("Login", {});
+      setShowAuthentication(true);
       return;
     }
 
@@ -50,6 +61,9 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.h1}>Beam</Text>
         </TouchableOpacity>
       </View>
+      {showAuthentication && (
+        <AuthenticationComponent onSuccess={onSuccessHandler} />
+      )}
     </>
   );
 };

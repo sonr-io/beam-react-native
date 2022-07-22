@@ -19,6 +19,7 @@ const Stack = createStackNavigator();
 
 export type StackParams = {
   Login: {};
+  Splash: {};
   Chat: {
     user: User;
     chats: Chat[];

@@ -1765,6 +1765,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@react-native-async-storage/async-storage@^1.17.7":
+  version "1.17.7"
+  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.17.7.tgz#f9213e8cc6202a8c29df5a4da1db588f3b0fa8a9"
+  integrity sha512-mDtWhCcpxzrZhA95f6zi0pnBsjBEZW1LKZWfxVXG0UfaWpPxDBCKowNk2xjRTytckZeVhjmPJPtBU+8QNQcR0A==
+  dependencies:
+    merge-options "^3.0.4"
+
 "@react-native-async-storage/async-storage@~1.15.0":
   version "1.15.17"
   resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.17.tgz#0dae263a52e476ffce871086f1fef5b8e44708eb"
@@ -2012,6 +2019,13 @@
   integrity sha512-BPS4ynJW/o92PUR4wgriz2Ud5gpST5vz6GQfMixEDK0Z8ZCUv2M7SkBLykH56T++Xs+8ln9zTGbOvNGIe02/jw==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
+
+"@sonr-io/react-native-ui-components@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@sonr-io/react-native-ui-components/-/react-native-ui-components-0.0.5.tgz#a0bf88bb41e18538933030e0e936497cddb4c1bf"
+  integrity sha512-oTbrv4qdOaSfW2s/VBRF2UVfWnnz2H02HDv1c3duCbth61XtuuHTfbvx0qK8Tnrdl4l1AV8rouFYkVdIramQrQ==
+  dependencies:
+    "@react-native-async-storage/async-storage" "^1.17.7"
 
 "@types/babel__core@^7.1.14":
   version "7.1.19"
